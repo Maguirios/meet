@@ -10,10 +10,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@material-ui/core": "^3.9.2",
+    "crypto": "^1.0.1",
     "express": "^4.16.4",
+    "ics": "^2.13.2",
+    "mandrill-api": "^1.0.45",
+    "moment": "^2.24.0",
     "mongoose": "^5.4.20",
     "morgan": "^1.9.1",
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.18.10",
+    "passport": "^0.4.0",
+    "socket.io": "^2.2.0",
+    "twilio": "^3.29.2"
   }
 }
