@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const app = express();
+var path = require('path');
 
 //conecting to db
 mongoose.connect('mongodb://localhost/meet')
@@ -19,6 +20,11 @@ app.use(morgan('dev'))
 
 app.use('/', routes);
 app.use(express.urlencoded({extended: false}))
+app.use(express.static(path.resolve(__dirname, 'public')))
+
+app.get('/*', function (req, res) {
+    res.sendFile(__dirname + '/public/index.html')
+  });
 
 
 app.listen(app.get('port'), () => {

@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import Main from './components/Main';
-import store from './redux/store';
+import Main from './containers/Main';
+import store from './redux/store'
 
 
 var nVer = navigator.appVersion;
@@ -84,7 +84,7 @@ function browserCheck(browser, version) {
   }
 }
 
-if (!browserCheck(browserName, majorVersion)) {
+if (browserCheck(browserName, majorVersion)) {
   ReactDOM.render(
     <Provider store={store}>
       <BrowserRouter>
@@ -95,7 +95,7 @@ if (!browserCheck(browserName, majorVersion)) {
   );
 } else {
   ReactDOM.render(
-    <img width='1440px' height='1024px' src="/Images/BrowserIncompatibility.png" />,
+    <img width='1440px' height='1024px' src="/utils/images/BrowserIncompatibility.png" />,
     document.getElementById('app')
   );
 }
