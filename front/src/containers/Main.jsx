@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import SingUP from "../components/SingUp"
 
 class Main extends Component {
 
@@ -7,7 +8,7 @@ class Main extends Component {
   render() {
     return (
       <div>
-        hola
+   <SingUP/>
       </div>
     )
   }
