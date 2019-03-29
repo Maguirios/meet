@@ -5,12 +5,6 @@ import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { fetchUser } from "../redux/action-creators/usersActions";
 
-const styles = theme => ({
-  button: {
-    backgroundColor: "#4dc2f1"
-  }
-});
-
 class SingUp extends React.Component {
   constructor() {
     super();
@@ -34,8 +28,7 @@ class SingUp extends React.Component {
       <form className="containerInputs" noValidate autoComplete="off">
         <TextField
           className="inputStyle"
-          //   id="standard-name"
-          label="EMAIL"
+          label="Email"
           margin="normal"
           name="email"
           onChange={this.handleLogin}
@@ -43,8 +36,7 @@ class SingUp extends React.Component {
 
         <TextField
           className="inputStyle"
-          //   id="standard-uncontrolled"
-          label="PASSWORD"
+          label="Password"
           margin="normal"
           name="password"
           onChange={this.handleLogin}
@@ -79,4 +71,4 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(SingUp);
-// export default withStyles(styles)(SingUp);
+
