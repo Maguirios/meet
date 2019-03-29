@@ -43,7 +43,7 @@ class Code extends React.Component {
     return (
 
 
-      <form noValidate autoComplete="off" id='containerInputs' className='code'>
+      <form noValidate autoComplete="off" id='containerInputsCode' className='code'>
         <div>
         <TextField
           id="title"
