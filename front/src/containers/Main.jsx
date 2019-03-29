@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import SingUp from "../components/SingUp"
+import { Route, Link } from 'react-router-dom'
+import RegisterContainer from './Register'
 
 class Main extends Component {
 
@@ -8,7 +9,8 @@ class Main extends Component {
   render() {
     return (
       <div>
-   <SingUp/>
+        <Link to='/register'> REGISTRARSE </Link>
+        <Route path='/register' render= {({ history }) => <RegisterContainer  history={history}/>} />
       </div>
     )
   }
