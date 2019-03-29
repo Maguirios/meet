@@ -4,6 +4,7 @@ import {TextField} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
+import Input from '@material-ui/core/Input';
 
 
 const styles = theme => ({
@@ -45,10 +46,11 @@ class Code extends React.Component {
 
       <form noValidate autoComplete="off" id='containerInputsCode' className='code'>
         <div>
-        <TextField
+        <Input
           id="title"
           label="Código de Video Conferencia"
           margin="normal"
+          disableUnderline = {true}
         />
         </div>
         <div className='code2darow'>
@@ -56,6 +58,7 @@ class Code extends React.Component {
           id="text2"
           label="Ingrese su nombre"
           margin="normal"
+          variant = 'filled'
         />
           <Button variant="contained" size="small" color="primary" id= 'buttonSendStyle'>
             <Icon>send</Icon>
