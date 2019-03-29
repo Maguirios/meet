@@ -1,0 +1,23 @@
+.containerInputs {
+  display: grid;
+  width: 528px;
+  height: 290px;
+  border-radius: 5px;
+  box-shadow: 0 2px 20px 5px rgba(0, 0, 0, 0.2);
+  background-image: linear-gradient(to bottom, #ffffff, #ffffff);
+  justify-items: center;
+}
+
+.inputStyle {
+  width: 448px;
+  height: 40px;
+  border-radius: 5px;
+  border: solid 2px #4dc2f1;
+}
+.button {
+  width: 110px;
+  height: 32px;
+  border-radius: 5px;
+  background-color: #4dc2f1;
+}
+
