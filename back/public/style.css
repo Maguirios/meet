@@ -1,0 +1,40 @@
+body{
+    background-image: url('/utils/images/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.home{
+    display: grid;
+    grid-template-rows: 1fr 14fr 0.7fr;
+}
+
+.home-top{
+    display: 'inline'; 
+    margin-left: 100px;
+}
+
+#register{
+    margin-left: 30px;
+}
+
+.button-home{
+    margin-left: 20px;
+}
+
+.hora{
+    float: right;
+    color: white;
+}
+
+.home-center{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+    padding-left: 140px;
+}
+.isologo-horizontal-white {
+    width: 364px;
+    height: 76px;
+  }
