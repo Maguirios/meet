@@ -5,11 +5,11 @@ const app = express();
 var path = require('path');
 
 //conecting to db
-mongoose.connect('mongodb://localhost/meet')
+mongoose.connect('mongodb://localhost/meet',{useNewUrlParser : true})
 .then(db => console.log('db connected'))
 .catch(err => console.log(err))
 
-const routes = require('./routes/index')
+const apiRoutes = require('./routes/index')
 
 //settings
 app.set('port', process.env.PORT || 3000)
@@ -18,7 +18,7 @@ app.set('port', process.env.PORT || 3000)
 app.use(morgan('dev'))
 
 
-app.use('/', routes);
+app.use('/api', apiRoutes);
 app.use(express.urlencoded({extended: false}))
 app.use(express.static(path.resolve(__dirname, 'public')))
 

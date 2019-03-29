@@ -25501,7 +25501,7 @@ function warning(message) {
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
   \***************************************************************/
-/*! exports provided: MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, generatePath, matchPath, withRouter, __RouterContext, BrowserRouter, HashRouter, Link, NavLink */
+/*! exports provided: BrowserRouter, HashRouter, Link, NavLink, MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, generatePath, matchPath, withRouter, __RouterContext */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -30872,13 +30872,13 @@ if (browserCheck(browserName, majorVersion)) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
 /* harmony import */ var _userReducers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./userReducers */ "./src/redux/reducers/userReducers.js");
-/* harmony import */ var _roomsReducers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./roomsReducers */ "./src/redux/reducers/roomsReducers.js");
+/* harmony import */ var _roomsReducers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./roomsReducers */ "./src/redux/reducers/roomsReducers.js");
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(redux__WEBPACK_IMPORTED_MODULE_0__["combineReducers"])({
   users: _userReducers__WEBPACK_IMPORTED_MODULE_1__["default"],
-  rooms: _roomsReducers__WEBPACK_IMPORTED_MODULE_3__["default"]
+  rooms: _roomsReducers__WEBPACK_IMPORTED_MODULE_2__["default"]
 }));
 
 /***/ }),
