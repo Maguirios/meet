@@ -33,7 +33,6 @@ class Register extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this)
   }
   handleChange(e) {
-    console.log('hola estoy en el handle change')
     this.setState({ [e.target.name]: e.target.value })
   }
   handleSubmit(e) {
@@ -43,10 +42,10 @@ class Register extends React.Component {
         var errorCode = error.code;
         var errorMessage = error.message;
         console.log('El codigo de error es', errorCode, ' y el mensaje es: ', errorMessage)
-      });
+      })
+    this.props.history.push('/signIn')
   }
   render() {
-    console.log(this.state)
     const { classes } = this.props;
     return (
       <form noValidate autoComplete="off" className='containerInputs' onSubmit={this.handleSubmit}>

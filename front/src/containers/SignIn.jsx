@@ -4,6 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { fetchUser } from "../redux/action-creators/usersActions";
+import firebase from '../firebase'
 
 class SingUp extends React.Component {
   constructor() {
@@ -20,7 +21,10 @@ class SingUp extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.fetchUser(this.state);
+    firebase.auth().signInWithEmailAndPassword(this.state.email,this.state.password)
+    .then(data=> 
+      this.props.history.push('/'))
+
   }
 
   render() {
@@ -39,6 +43,7 @@ class SingUp extends React.Component {
           label="Password"
           margin="normal"
           name="password"
+          type='password'
           onChange={this.handleLogin}
         />
 
