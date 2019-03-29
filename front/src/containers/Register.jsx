@@ -49,7 +49,7 @@ class Register extends React.Component {
     console.log(this.state)
     const { classes } = this.props;
     return (
-      <form noValidate autoComplete="off" id='containerInputs' onSubmit={this.handleSubmit}>
+      <form noValidate autoComplete="off" className='containerInputs' onSubmit={this.handleSubmit}>
         <TextField
           id="standard"
           label="Email"
@@ -71,7 +71,7 @@ class Register extends React.Component {
           onChange={this.handleChange}
         />
         <Button variant="contained" color="primary" className='buttonsStyle' type='submit'>
-          Sign Up
+          Registrarse
         </Button>
       </form>
     );
