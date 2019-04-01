@@ -28,12 +28,12 @@ class Main extends Component {
           <Link to='/signIn'>
             <Button variant="contained" color="primary">
               INICIAR SESIÓN
-          </Button>
+            </Button>
           </Link>
-          <Link to='/register'>
-            <Button variant="contained" color="primary" id='register'>
+          <Link to='/register' id='register'>
+            <Button variant="contained" color="primary" >
               REGISTRARSE
-          </Button>
+            </Button>
           </Link>
         </div>
         <div className='home-center'>

@@ -34,6 +34,7 @@ class SingUp extends React.Component {
           className="inputStyle"
           label="Email"
           margin="normal"
+          type='email'
           name="email"
           onChange={this.handleLogin}
         />
@@ -51,7 +52,7 @@ class SingUp extends React.Component {
           onClick={this.handleSubmit}
           variant="contained"
           color="primary"
-          className="button"
+          className="buttonsStyle"
         >
           {" "}
           Ingresar{" "}

@@ -100,11 +100,6 @@ class Register extends React.Component {
   handleClose() {
     this.setState({ open: false });
   };
-
-  componentDidUpdate() {
-
-  }
-
   render() {
     const { classes } = this.props;
 
