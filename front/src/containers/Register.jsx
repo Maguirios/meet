@@ -78,7 +78,10 @@ class Register extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault()
-    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(function () {
+        return firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+      })
       .then(create => {
         this.props.history.push('/')
       })
@@ -90,15 +93,15 @@ class Register extends React.Component {
         this.setState({ error: errorMessage, open: true })
       });
   }
-  handleClickOpen (){
+  handleClickOpen() {
     this.setState({ open: true });
   };
 
-  handleClose (){
+  handleClose() {
     this.setState({ open: false });
   };
 
-  componentDidUpdate(){
+  componentDidUpdate() {
 
   }
 
