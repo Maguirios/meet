@@ -23,9 +23,9 @@ body{
     text-decoration: none
 }
 
-.button-home{
+/* .button-home{
     margin-left: 20px;
-}
+} */
 
 .hora{
     float: right;
@@ -60,3 +60,48 @@ body{
   border: solid 2px #4dc2f1;
 }
 
+.buttonsStyle {
+  width: 110px;
+  height: 32px;
+  border-radius: 5px;
+  background-color: #4dc2f1;
+}
+
+#containerInputsCode{
+  width: 600px;
+  height: 180px;
+  border-radius: 5px;
+  box-shadow: 0 2px 20px 5px rgba(0, 0, 0, 0.2);
+  background-image: linear-gradient(to bottom, #ffffff, #ffffff);    
+}
+
+.code{
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  padding: 30px;
+  align-items: center;
+}
+.code2darow{
+  display: grid;
+  grid-template-columns: 5fr 0.6fr;
+  align-items: center;
+}
+#buttonSendStyle{
+  width: 44px;
+  height: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+  background-color: #4dc2f1;
+}
+#title {
+ margin-left: 10px;
+ width: 500px;
+}
+.withUser{
+  float: right;
+}
+
+#salir{
+  margin-left: 15px;
+}
