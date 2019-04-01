@@ -87,13 +87,8 @@ class Register extends React.Component {
         var errorCode = error.code;
         var errorMessage = error.message;
         console.log('El codigo de error es', errorCode, ' y el mensaje es: ', errorMessage)
-<<<<<<< HEAD
         this.setState({ error: errorMessage, open: true })
       });
-=======
-      })
-    this.props.history.push('/signIn')
->>>>>>> 01842280ab0a1cdbfcac930885660958ad49c295
   }
   handleClickOpen (){
     this.setState({ open: true });
