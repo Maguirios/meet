@@ -1,40 +1,44 @@
 body{
-    background-color: #4dc2f1;
+    background-image: url('/utils/images/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
-#containerInputsCode{
 
-    width: 600px;
-    height: 180px;
-    border-radius: 5px;
-    box-shadow: 0 2px 20px 5px rgba(0, 0, 0, 0.2);
-    background-image: linear-gradient(to bottom, #ffffff, #ffffff);    
-}
-.code{
+.home{
     display: grid;
-    grid-template-rows: 1fr 1fr;
-    padding: 30px;
-    align-items: center;
+    grid-template-rows: 1fr 24fr 0.7fr;
 }
-.code2darow{
+
+.home-top{
+    display: 'inline'; 
+    margin-left: 100px;
+}
+
+#register{
+    margin-left: 30px;
+}
+
+.button-home{
+    margin-left: 20px;
+}
+
+.hora{
+    float: right;
+    color: white;
+}
+
+.home-center{
     display: grid;
-    grid-template-columns: 5fr 0.6fr;
+    grid-template-columns: 1fr 2fr;
     align-items: center;
-
+    padding-left: 140px;
 }
-#buttonSendStyle{
-    width: 44px;
-    height: 30px;
-    margin-left: 10px;
-    margin-right: 10px;
-    border-radius: 5px;
-    background-color: #4dc2f1;
-}
-#title {
-   margin-left: 10px;
-   width: 500px;
-
+.isologo-horizontal-white {
+    width: 364px;
+    height: 76px;
   }
-#containerInputs {
+.containerInputs {
   display: grid;
   width: 528px;
   height: 290px;
@@ -47,7 +51,7 @@ body{
 }
 .inputStyle{
   width: 448px;
-  height: 32px;
+  height: 40px;
   border-radius: 5px;
   border: solid 2px #4dc2f1;
 }
@@ -57,4 +61,36 @@ body{
   height: 32px;
   border-radius: 5px;
   background-color: #4dc2f1;
+}
+
+#containerInputsCode{
+  width: 600px;
+  height: 180px;
+  border-radius: 5px;
+  box-shadow: 0 2px 20px 5px rgba(0, 0, 0, 0.2);
+  background-image: linear-gradient(to bottom, #ffffff, #ffffff);    
+}
+
+.code{
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  padding: 30px;
+  align-items: center;
+}
+.code2darow{
+  display: grid;
+  grid-template-columns: 5fr 0.6fr;
+  align-items: center;
+}
+#buttonSendStyle{
+  width: 44px;
+  height: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+  background-color: #4dc2f1;
+}
+#title {
+ margin-left: 10px;
+ width: 500px;
 }
