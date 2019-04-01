@@ -87,8 +87,13 @@ class Register extends React.Component {
         var errorCode = error.code;
         var errorMessage = error.message;
         console.log('El codigo de error es', errorCode, ' y el mensaje es: ', errorMessage)
+<<<<<<< HEAD
         this.setState({ error: errorMessage, open: true })
       });
+=======
+      })
+    this.props.history.push('/signIn')
+>>>>>>> 01842280ab0a1cdbfcac930885660958ad49c295
   }
   handleClickOpen (){
     this.setState({ open: true });
@@ -106,7 +111,7 @@ class Register extends React.Component {
     const { classes } = this.props;
 
     return (
-      <form noValidate autoComplete="off" id='containerInputs' onSubmit={this.handleSubmit}>
+      <form noValidate autoComplete="off" className='containerInputs' onSubmit={this.handleSubmit}>
         <TextField
           id="standard"
           label="Email"
@@ -128,7 +133,7 @@ class Register extends React.Component {
           onChange={this.handleChange}
         />
         <Button variant="contained" color="primary" className='buttonsStyle' type='submit'>
-          Sign Up
+          Registrarse
         </Button>
         <Dialog
           open={this.state.open}
