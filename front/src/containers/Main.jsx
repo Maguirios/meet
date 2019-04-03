@@ -7,6 +7,7 @@ import RegisterContainer from './Register'
 import Code from '../components/Code';
 import SignIn from "./SignIn";
 import firebase from '../firebase';
+import CreateRoom from './createRoom';
 
 
 class Main extends Component {
@@ -80,6 +81,7 @@ class Main extends Component {
           <div className="components">
             <Route exact path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
             <Route exact path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user}/>} />
+            <Route exact path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={this.state.user}/>} />
             <Route exact path='/' component={Code} />
           </div>
         </div>

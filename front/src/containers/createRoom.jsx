@@ -60,7 +60,8 @@ const styles = theme => ({
     height: 32,
     borderRadius: 5,
     backgroundColor: '#4dc2f1',
-  }, text: {
+  }, 
+  text: {
     fontFamily: 'Avenir',
     fontSize: 12,
     fontWeight: 500,
@@ -71,8 +72,8 @@ const styles = theme => ({
     color: '#8d9aa3',
   },
   buttons:{
-    justify: "center",
-    alignItems: "center"
+    justifyContent: "center",
+    margin: '0 auto',
   }
 })
 moment.locale("es");
@@ -154,20 +155,13 @@ export class createRoom extends Component {
               />
               <p className={classes.text}>Agregar otro invitado</p>
             </Grid>
-            <Grid
-            className={classes.buttons}
-              item sm>
-              <Button
-                variant="contained"
-                className={classes.button1}>
-                Cancelar
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button2} >
-                Crear
-              </Button>
+            <Grid className={classes.buttons} container sm spacing={24}>
+             <Grid item>
+              <Button variant="contained" className={classes.button1}>Cancelar</Button>
+             </Grid>
+             <Grid item>
+              <Button variant="contained" color="primary" className={classes.button2}>Crear</Button>
+             </Grid>
             </Grid>
           </form>
         </Grid>
