@@ -8,12 +8,8 @@ body{
 }
 .home{
     display: grid;
-<<<<<<< HEAD
-    grid-template-rows: 1fr 24fr 0.7fr;
-=======
     grid-template-rows: 1fr 12fr 0.7fr;
     width: 95vw;
->>>>>>> 82e54f9cddf8d0f00da1512a41e7c550958b1366
     height: 95vh;
 }
 
