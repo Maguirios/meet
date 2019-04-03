@@ -4,9 +4,12 @@ import { Route, Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import * as moment from 'moment';
 import RegisterContainer from './Register'
-import Code from '../components/Code';
-import SignIn from "./SignIn"
-
+import SingIn from './SingIn'
+import Streaming from './Streaming'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import GetMuiTheme from 'material-ui/styles/getMuiTheme'
+import lightBaseTheme from  'material-ui/styles/baseThemes/lightBaseTheme'
+ 
 
 class Main extends Component {
 
@@ -23,30 +26,18 @@ class Main extends Component {
     newTime()
     const { classes } = this.props;
     return (
-      <div className='home'>
-        <div className='home-top'>
-          <Link to='/signIn'>
-            <Button variant="contained" color="primary">
-              INICIAR SESIÓN
-          </Button>
-          </Link>
-          <Link to='/register'>
-            <Button variant="contained" color="primary" id='register'>
-              REGISTRARSE
-          </Button>
-          </Link>
+      <div>
+        {/* <Link to='/register'> REGISTRARSE </Link>
+        <Link to='/singIn'> INICIAR SESION </Link>
+        <Link to='/stream'> Streaming </Link>
+        <Route path='/register' render= {({ history }) => <RegisterContainer  history={history}/>} />
+        <Route path='/singIn' render= {({ history }) => <SingIn history={history}/>} /> */}
+        <MuiThemeProvider  muiTheme={GetMuiTheme(lightBaseTheme)} >
+        <div>
+          <Streaming/>
         </div>
-        <div className='home-center'>
-          <img className='isologo-horizontal-white' src='/utils/images/logor.png' />
-          <div className="components">
-            <Route exact path='/register' render={({ history }) => <RegisterContainer history={history} />} />
-            <Route exact path='/signIn' render={({ history }) => <SignIn history={history} />} />
-            <Route exact path='/' component={Code} />
-          </div>
-        </div>
-        <div className='home-bottom'>
-          <div className="hora">{time}</div>
-        </div>
+        </MuiThemeProvider>
+        {/* <Route path='/stream' render= {({ history }) => <Streaming history={history}/>} /> */}
       </div>
     )
   }
