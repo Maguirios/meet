@@ -26,8 +26,6 @@
     "ics": "^2.13.2",
     "mandrill-api": "^1.0.45",
     "moment": "^2.24.0",
-    "mongoose": "^5.4.20",
-    "mongoose-bcrypt": "^1.6.0",
     "morgan": "^1.9.1",
     "nodemon": "^1.18.10",
     "passport": "^0.4.0",
