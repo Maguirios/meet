@@ -3,11 +3,17 @@ body{
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
+    width: 97vh;
+    height: 97vh;
 }
-
 .home{
     display: grid;
+<<<<<<< HEAD
     grid-template-rows: 1fr 24fr 0.7fr;
+=======
+    grid-template-rows: 1fr 12fr 0.7fr;
+    width: 95vw;
+>>>>>>> 82e54f9cddf8d0f00da1512a41e7c550958b1366
     height: 95vh;
 }
 
@@ -18,11 +24,12 @@ body{
 
 #register{
     margin-left: 30px;
+    text-decoration: none
 }
 
-.button-home{
+/* .button-home{
     margin-left: 20px;
-}
+} */
 
 .hora{
     float: right;
@@ -31,9 +38,9 @@ body{
 
 .home-center{
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    padding-left: 140px;
+    justify-items: center
 }
 .isologo-horizontal-white {
     width: 364px;
@@ -59,3 +66,49 @@ body{
 #style-1::-webkit-scrollbar {
     width: 1px;
 } 
+
+.buttonsStyle {
+  width: 110px;
+  height: 32px;
+  border-radius: 5px;
+  background-color: #4dc2f1;
+}
+
+#containerInputsCode{
+  width: 600px;
+  height: 180px;
+  border-radius: 5px;
+  box-shadow: 0 2px 20px 5px rgba(0, 0, 0, 0.2);
+  background-image: linear-gradient(to bottom, #ffffff, #ffffff);    
+}
+
+.code{
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  padding: 30px;
+  align-items: center;
+}
+.code2darow{
+  display: grid;
+  grid-template-columns: 5fr 0.6fr;
+  align-items: center;
+}
+#buttonSendStyle{
+  width: 44px;
+  height: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+  background-color: #4dc2f1;
+}
+#title {
+ margin-left: 10px;
+ width: 500px;
+}
+.withUser{
+  float: right;
+}
+
+#salir{
+  margin-left: 15px;
+}

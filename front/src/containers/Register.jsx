@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import { connect } from 'react-redux'
-import { createUserFn } from '../redux/action-creators/usersActions'
 import firebase from '../firebase'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -72,6 +70,10 @@ class Register extends React.Component {
     this.handleClickOpen = this.handleClickOpen.bind(this);
   }
 
+  componentDidMount() {
+    (this.props.currentUser.email)? this.props.history.push('/') : null 
+  }
+
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value })
   }
@@ -79,7 +81,7 @@ class Register extends React.Component {
   handleSubmit(e) {
     e.preventDefault()
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-      .then(function () {
+      .then(() => {
         return firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
       })
       .then(create => {
@@ -100,14 +102,8 @@ class Register extends React.Component {
   handleClose() {
     this.setState({ open: false });
   };
-
-  componentDidUpdate() {
-
-  }
-
   render() {
     const { classes } = this.props;
-
     return (
       <form noValidate autoComplete="off" className='containerInputs' onSubmit={this.handleSubmit}>
         <TextField
@@ -134,7 +130,7 @@ class Register extends React.Component {
           Registrarse
         </Button>
         <Dialog
-          open={this.state.open}
+          open={this.state.open && this.state.open}
           onClose={this.handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"

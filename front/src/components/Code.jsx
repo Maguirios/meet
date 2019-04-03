@@ -70,7 +70,6 @@ class Code extends React.Component {
 
     return (
       <div>
-
         <Grid
           container
           direction="row"
@@ -121,7 +120,6 @@ class Code extends React.Component {
           </form>
         </Grid>
       </div>
-
     );
   }
 }
