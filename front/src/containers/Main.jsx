@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import * as moment from 'moment';
 import RegisterContainer from './Register'
 import Code from '../components/Code';
+import Chat from '../components/Chat';
 import SignIn from "./SignIn"
 
 
@@ -17,9 +18,10 @@ class Main extends Component {
     }
     let newTime = () => {
       setInterval(
-      update()
-    , 1);}
- 
+        update()
+        , 1);
+    }
+
     newTime()
     const { classes } = this.props;
     return (
@@ -39,6 +41,7 @@ class Main extends Component {
         <div className='home-center'>
           <img className='isologo-horizontal-white' src='/utils/images/logor.png' />
           <div className="components">
+            <Route exact path='/chat' component={Chat} />
             <Route exact path='/register' render={({ history }) => <RegisterContainer history={history} />} />
             <Route exact path='/signIn' render={({ history }) => <SignIn history={history} />} />
             <Route exact path='/' component={Code} />
