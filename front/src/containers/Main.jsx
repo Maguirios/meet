@@ -6,6 +6,9 @@ import * as moment from 'moment';
 import RegisterContainer from './Register'
 import Code from '../components/Code';
 import SignIn from "./SignIn"
+import Permisos from './Permisos';
+import Conexion from './Conexion'
+import SalaEspera from './SalaEspera'
 
 
 class Main extends Component {
@@ -39,6 +42,9 @@ class Main extends Component {
         <div className='home-center'>
           <img className='isologo-horizontal-white' src='/utils/images/logor.png' />
           <div className="components">
+            <Route exact path='/permisos' render ={()=> <Permisos />}/>
+            <Route exact path='/conexion' render ={() => <Conexion />}/> 
+            <Route exact path='/salaespera' render ={()=> <SalaEspera />}/>
             <Route exact path='/register' render={({ history }) => <RegisterContainer history={history} />} />
             <Route exact path='/signIn' render={({ history }) => <SignIn history={history} />} />
             <Route exact path='/' component={Code} />
