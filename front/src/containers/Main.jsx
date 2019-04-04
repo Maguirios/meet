@@ -25,6 +25,7 @@ class Main extends Component {
       }
     });
   }
+
   signOut() {
     firebase.auth().signOut()
     .then(() => {
@@ -33,6 +34,7 @@ class Main extends Component {
       console.log('El error fue', error)
     });
   }
+  
   render() {
     let time = 0
     const update = () => {
@@ -45,7 +47,7 @@ class Main extends Component {
     }
     newTime()
     const { classes } = this.props;
-    console.log('estadoooo', this.state)
+    console.log('Estado', this.state)
     return (
       <div className='home'>
         <div className='home-top'>
