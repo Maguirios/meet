@@ -106,7 +106,7 @@ class Code extends React.Component {
                   item sm
                 >
                   <Button variant="contained" size="small" color="primary" className={classes.buttonSendStyle}>
-                    <Icon>send</Icon>
+                    <Icon>keyboard_arrow_right</Icon>
                   </Button>
                 </Grid>
               </Grid>

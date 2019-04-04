@@ -31,6 +31,7 @@ class Main extends Component {
       }
     });
   }
+
   signOut() {
     firebase.auth().signOut()
     .then(() => {
@@ -41,7 +42,7 @@ class Main extends Component {
   }
   update () {this.setState( {time : moment().format('LT')})};
   render() {
-    let newTime = setInterval(this.update, 1000);
+    let newTime = setInterval(this.update, 60000);
 
     const { classes } = this.props;
     return (
