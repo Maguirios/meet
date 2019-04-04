@@ -94,7 +94,37 @@ body{
  margin-left: 10px;
  width: 500px;
 }
-.Views{  width: 150px;
+/* .Views{  width: 150px;
   height: 120px;
   border-radius: 10px;
   border: solid 5px rgba(255, 255, 255, 0.5);}
+   */
+ #local-media video{
+    width: 150px;
+    height: 120px;
+    border-radius: 10px;
+    border: solid 5px rgba(255, 255, 255, 0.5);
+    position: fixed;
+    margin-top: 38%;
+    margin-left: 90%;
+  }
+  #totalRemote {
+    background-color: #000;
+    width: 100%;
+    height: 200px;
+  }
+  #totalRemote #remote-media div{
+    margin: 10px;
+    width: 150px;
+    height: 120px;
+    float: right;
+    
+  }
+  
+  #remote-media video{
+    width: 150px;
+    height: 120px;
+    border: solid 5px rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+  }
+
