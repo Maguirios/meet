@@ -40,19 +40,11 @@ class Main extends Component {
       console.log('El error fue', error)
     });
   }
-<<<<<<< HEAD
-  
-=======
   update () {this.setState( {time : moment().format('LT')})};
->>>>>>> 7d19a6447757047e11e2aeeeae4b35a04835d2ab
   render() {
-    let newTime = setInterval(this.update, 1000);
+    let newTime = setInterval(this.update, 60000);
 
     const { classes } = this.props;
-<<<<<<< HEAD
-    console.log('Estado', this.state)
-=======
->>>>>>> 7d19a6447757047e11e2aeeeae4b35a04835d2ab
     return (
       <div className='home'>
         <div className='home-top'>
