@@ -70,7 +70,7 @@ export default class VideoComponent extends Component {
   attachTracks(tracks, container) {
     tracks.forEach(track => {
       console.log("track invisible?", track);
-      container.appendChild(track.track.attach());
+      container.appendChild(track.attach());
       console.log("holaa", track);
     });
   }
@@ -104,11 +104,11 @@ export default class VideoComponent extends Component {
 
     room.on("participantConnected", participant => {
       console.log("Joining: '" + participant.identity + "'");
-
       participant.tracks.forEach(publication => {
-        if (true) {
+        console.log(publication,'000000000000000000000000000000000000000')
+        if (publication.isSubscribed) {
           const track = publication.track;
-          document.getElementById("remote-media").appendChild(track.attach());
+          document.getElementById("remote-media").appendChild(track.attach);
         }
       });
       participant.on("trackSubscribed", track => {
@@ -116,7 +116,6 @@ export default class VideoComponent extends Component {
       });
     });
     room.on("trackAdded", (track, participant) => {
-
       console.log(participant.identity + " added track: " + track.kind);
       var previewContainer = document.getElementById("remote-media");
       this.attachTracks([track], previewContainer);

@@ -4,7 +4,7 @@ import { Route, Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import * as moment from 'moment';
 import RegisterContainer from './Register'
-import SingIn from './SingIn'
+import SingIn from './SignIn'
 import Streaming from './Streaming'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import GetMuiTheme from 'material-ui/styles/getMuiTheme'
@@ -51,5 +51,5 @@ const mapDispatchToProps = {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(mapStateToProps, null)(Main);
 
