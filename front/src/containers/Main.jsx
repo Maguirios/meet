@@ -41,22 +41,8 @@ class Main extends Component {
   }
   update () {this.setState( {time : moment().format('LT')})};
   render() {
-<<<<<<< HEAD
     let newTime = setInterval(this.update, 1000);
 
-=======
-    let time = 0
-    const update = () => {
-      time = moment().format('LT')
-    }
-    let newTime = () => {
-      setInterval(
-        update()
-        , 1);
-    }
-
-    newTime()
->>>>>>> 50e25563ac5d1ef2e0cb86ed20bc3aa8720ff8c8
     const { classes } = this.props;
     return (
       <div className='home'>
