@@ -74,7 +74,6 @@ class Code extends React.Component {
           container
           direction="row"
           justify="center"
-          alignItems="center"
         >
           <form noValidate autoComplete="off" className={classes.containerInputs}>
             <div>
@@ -89,9 +88,6 @@ class Code extends React.Component {
             <div>
               <Grid
                 container
-                alignItems="center"
-
-
               >
                 <Grid
                   item sm
@@ -108,7 +104,6 @@ class Code extends React.Component {
                 <Grid
                   className={classes.centerButton}
                   item sm
-                  alignItems="center"
                 >
                   <Button variant="contained" size="small" color="primary" className={classes.buttonSendStyle}>
                     <Icon>send</Icon>

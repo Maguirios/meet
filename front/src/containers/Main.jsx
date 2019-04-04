@@ -5,17 +5,23 @@ import Button from '@material-ui/core/Button';
 import * as moment from 'moment';
 import RegisterContainer from './Register'
 import Code from '../components/Code';
-import SignIn from "./SignIn";
+import Chat from '../components/Chat';
+import SignIn from "./SignIn"
+import Permisos from './Permisos';
+import Conexion from './Conexion'
+import SalaEspera from './SalaEspera'
 import firebase from '../firebase';
-
+import CreateRoom from './createRoom';
 
 class Main extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      user: {}
+      user: {},
+      time: moment().format('LT'),
     }
     this.signOut = this.signOut.bind(this)
+    this.update = this.update.bind(this)
   }
 
   componentDidMount() {
@@ -34,20 +40,19 @@ class Main extends Component {
       console.log('El error fue', error)
     });
   }
+<<<<<<< HEAD
   
+=======
+  update () {this.setState( {time : moment().format('LT')})};
+>>>>>>> 7d19a6447757047e11e2aeeeae4b35a04835d2ab
   render() {
-    let time = 0
-    const update = () => {
-      time = moment().format('LT')
-    }
-    let newTime = () => {
-      setInterval(
-        update()
-        , 1);
-    }
-    newTime()
+    let newTime = setInterval(this.update, 1000);
+
     const { classes } = this.props;
+<<<<<<< HEAD
     console.log('Estado', this.state)
+=======
+>>>>>>> 7d19a6447757047e11e2aeeeae4b35a04835d2ab
     return (
       <div className='home'>
         <div className='home-top'>
@@ -80,13 +85,18 @@ class Main extends Component {
         <div className='home-center'>
           <img className='isologo-horizontal-white' src='/utils/images/logor.png' />
           <div className="components">
+            <Route exact path='/permisos' render ={()=> <Permisos />}/>
+            <Route exact path='/conexion' render ={() => <Conexion />}/> 
+            <Route exact path='/salaespera' render ={()=> <SalaEspera />}/>
+            <Route exact path='/chat' component={Chat} />
             <Route exact path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
             <Route exact path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user}/>} />
+            <Route exact path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={this.state.user}/>} />
             <Route exact path='/' component={Code} />
           </div>
         </div>
         <div className='home-bottom'>
-          <div className="hora">{time}</div>
+          <div className="hora">{this.state.time}</div>
         </div>
       </div>
     )
