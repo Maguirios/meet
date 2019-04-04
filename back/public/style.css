@@ -94,3 +94,7 @@ body{
  margin-left: 10px;
  width: 500px;
 }
+.Views{  width: 150px;
+  height: 120px;
+  border-radius: 10px;
+  border: solid 5px rgba(255, 255, 255, 0.5);}

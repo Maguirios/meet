@@ -16,7 +16,8 @@ export default class VideoComponent extends Component {
       previewTracks: null,
       localMediaAvailable: false,
       hasJoinedRoom: false,
-      activeRoom: null
+      activeRoom: null,
+      participant: '',
     };
     this.joinRoom = this.joinRoom.bind(this);
     this.leaveRoom = this.leaveRoom.bind(this);
@@ -57,29 +58,51 @@ export default class VideoComponent extends Component {
       connectOptions.tracks = this.state.previewTracks;
     }
 
-    Video.connect(this.state.token, connectOptions).then(
-      room=>{
-        console.log(room)
-        this.roomJoined(room)
-      }
-    ).catch(err=>{
-      console.log(err)
-    });
+    Video.connect(this.state.token, connectOptions)
+      .then(room => {
+        // this.roomJoined(room);
+        var previewContainer = this.refs.localMedia;
+        if (!previewContainer.querySelector("video")) {
+          console.log('Local')
+          this.attachLocalParticipantTracks(room.localParticipant, previewContainer);
+        }
+
+        room.participants.forEach(participantConnected);
+        room.on('participantConnected', participantConnected);
+      
+        room.on('participantDisconnected', participantDisconnected);
+        room.once('disconnected', error => room.participants.forEach(participantDisconnected));
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   attachTracks(tracks, container) {
-    tracks.forEach(track => {
+    tracks.forEach((track) => {
       console.log("track invisible?", track);
       container.appendChild(track.attach());
       console.log("holaa", track);
     });
   }
+  
   //Lo mismo que lo de arriba
   attachParticipantTracks(participant, container) {
     console.log(participant);
     var tracks = Array.from(participant.tracks.values());
     console.log(tracks);
     this.attachTracks(tracks, container);
+  }
+
+  attachLocalParticipantTracks(participant, container) {
+    console.log(participant);
+    var tracks = Array.from(participant.tracks.values());
+    console.log(tracks);
+    tracks.forEach((track) => {
+      console.log("track invisible?", track);
+      container.appendChild(track.track.attach());
+      console.log("holaa", track);
+    });
   }
 
   //Sigue el curso de la camara
@@ -93,33 +116,21 @@ export default class VideoComponent extends Component {
 
     var previewContainer = this.refs.localMedia;
     if (!previewContainer.querySelector("video")) {
-      this.attachParticipantTracks(room.localParticipant, previewContainer);
+      console.log('Local')
+      this.attachLocalParticipantTracks(room.localParticipant, previewContainer);
     }
 
     room.participants.forEach(participant => {
-      console.log("Already in Room: '" + participant.identity + "'");
       var previewContainer = this.refs.remoteMedia;
       this.attachParticipantTracks(participant, previewContainer);
     });
 
-    room.on("participantConnected", participant => {
+    room.on('participantConnected', participant => {
       console.log("Joining: '" + participant.identity + "'");
-      participant.tracks.forEach(publication => {
-        console.log(publication,'000000000000000000000000000000000000000')
-        if (publication.isSubscribed) {
-          const track = publication.track;
-          document.getElementById("remote-media").appendChild(track.attach);
-        }
-      });
-      participant.on("trackSubscribed", track => {
-        document.getElementById("remote-media").appendChild(track.attach());
-      });
     });
-    room.on("trackAdded", (track, participant) => {
-      console.log(participant.identity + " added track: " + track.kind);
-      var previewContainer = document.getElementById("remote-media");
-      this.attachTracks([track], previewContainer);
-    });
+
+    room.on('trackAdded', (track, participant) => this.attachTracks([track], this.refs.remoteMedia));
+
 
     room.on("trackRemoved", (track, participant) => {
       this.log(participant.identity + " removed track: " + track.kind);
@@ -145,6 +156,7 @@ export default class VideoComponent extends Component {
   //{Participantes}
   detachTracks(tracks) {
     tracks.forEach(track => {
+      console.log("holaaaaaquivaa");
       track.track.detach().forEach(detachedElement => {
         detachedElement.remove();
       });
@@ -152,10 +164,11 @@ export default class VideoComponent extends Component {
   }
   //{Participantes}
   detachParticipantTracks(participant) {
+    console.log("holaa aqui fuee");
     var tracks = Array.from(participant.tracks.values());
     this.detachTracks(tracks);
   }
-  //Setea el estado   a una Active Room
+
 
   //Sales de la sala
   leaveRoom() {
@@ -197,7 +210,17 @@ export default class VideoComponent extends Component {
                   this.state.roomNameErr ? "Room Name is required" : undefined
                 }
               />
-              <div className="Views" ref="remoteMedia" id="remote-media" />
+                                                                                                                                                  
+              <div>
+                {
+                  // this.props.participants.map((participant) => <div id={} ref="" />)
+                  // Otro metodo para rederear el video de los participantes
+                }
+              </div>
+
+
+              <div ref="localMedia" />
+           |
             </div>
             <br />
             {joinOrLeaveRoomButton}
@@ -206,4 +229,36 @@ export default class VideoComponent extends Component {
       </Card>
     );
   }
+}
+
+ 
+function participantConnected(participant) {
+  
+  const div = document.createElement('div');
+  div.id = participant.sid;
+  div.innerText = participant.identity;
+ 
+  participant.on('trackSubscribed', track => trackSubscribed(div, track));
+  participant.on('trackUnsubscribed', trackUnsubscribed);
+ 
+  participant.tracks.forEach(publication => {
+    if (publication.isSubscribed) {
+      trackSubscribed(div, publication.track);
+    }
+  });
+  let remoteMedias = document.getElementById('remote-media');
+  remoteMedias.appendChild(div);
+}
+ 
+function participantDisconnected(participant) {
+  console.log('Participant "%s" disconnected', participant.identity);
+  document.getElementById(participant.sid).remove();
+}
+ 
+function trackSubscribed(div, track) {
+  div.appendChild(track.attach());
+}
+ 
+function trackUnsubscribed(track) {
+  track.detach().forEach(element => element.remove());
 }

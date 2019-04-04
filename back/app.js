@@ -29,7 +29,7 @@ app.get("/token", function(request, response) {
   var identity = faker.name.findName();
   var token = new AccessToken(ACCOUNT_SID, API_KEY, API_SECRET, AUTH_TOKEN);
   token.identity = identity;
-  const grant = new VideoGrant({ room: "DailyStandup" });
+  const grant = new VideoGrant();
   token.addGrant(grant);
   response.send({
     identity: identity,
@@ -37,22 +37,22 @@ app.get("/token", function(request, response) {
   });
 });
 
-client.video.compositions
-  .create({
-    roomSid: "RMXXXX",
-    audioSources: "PAXXXX",
+client.video.compositions.
+  create({
+    roomSid: 'RMXXXX',
+    audioSources: '*',
     videoLayout: {
-      single: {
-        video_sources: ["PAXXXX"]
+      grid : {
+        video_sources: ['*']
       }
     },
-    statusCallback: "http://my.server.org/callbacks",
-    format: "mp4"
+    statusCallback: 'http://my.server.org/callbacks',
+    format: 'mp4'
   })
-  .then(composition => {
-    console.log("Created Composition with SID=" + composition.sid);
-  });
-
+  .then(composition =>{
+    console.log('Created Composition with SID=' + composition.sid);
+  });                                                                                                                                        
+  
 app.listen(app.get("port"), () => {
   console.log("Listening on port 4000");
 });
