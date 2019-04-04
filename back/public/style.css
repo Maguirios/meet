@@ -3,11 +3,14 @@ body{
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
+    width: 97vh;
+    height: 97vh;
 }
-
 .home{
     display: grid;
-    grid-template-rows: 1fr 24fr 0.7fr;
+    grid-template-rows: 1fr 12fr 0.7fr;
+    width: 95vw;
+    height: 95vh;
 }
 
 .home-top{
@@ -17,11 +20,12 @@ body{
 
 #register{
     margin-left: 30px;
+    text-decoration: none
 }
 
-.button-home{
+/* .button-home{
     margin-left: 20px;
-}
+} */
 
 .hora{
     float: right;
@@ -30,9 +34,9 @@ body{
 
 .home-center{
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    padding-left: 140px;
+    justify-items: center
 }
 .isologo-horizontal-white {
     width: 364px;
@@ -55,6 +59,9 @@ body{
   border-radius: 5px;
   border: solid 2px #4dc2f1;
 }
+#style-1::-webkit-scrollbar {
+    width: 1px;
+} 
 
 .buttonsStyle {
   width: 110px;
@@ -132,4 +139,11 @@ i{
   height: 74px;
   margin-top: 500px;
   transform: rotate(135deg);
+}
+.withUser{
+  float: right;
+}
+
+#salir{
+  margin-left: 15px;
 }
