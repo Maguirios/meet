@@ -5,10 +5,13 @@ import Button from '@material-ui/core/Button';
 import * as moment from 'moment';
 import RegisterContainer from './Register'
 import Code from '../components/Code';
-import SignIn from "./SignIn";
+import Chat from '../components/Chat';
+import SignIn from "./SignIn"
+import Permisos from './Permisos';
+import Conexion from './Conexion'
+import SalaEspera from './SalaEspera'
 import firebase from '../firebase';
 import CreateRoom from './createRoom';
-
 
 class Main extends Component {
   constructor(props) {
@@ -38,8 +41,22 @@ class Main extends Component {
   }
   update () {this.setState( {time : moment().format('LT')})};
   render() {
+<<<<<<< HEAD
     let newTime = setInterval(this.update, 1000);
 
+=======
+    let time = 0
+    const update = () => {
+      time = moment().format('LT')
+    }
+    let newTime = () => {
+      setInterval(
+        update()
+        , 1);
+    }
+
+    newTime()
+>>>>>>> 50e25563ac5d1ef2e0cb86ed20bc3aa8720ff8c8
     const { classes } = this.props;
     return (
       <div className='home'>
@@ -73,6 +90,10 @@ class Main extends Component {
         <div className='home-center'>
           <img className='isologo-horizontal-white' src='/utils/images/logor.png' />
           <div className="components">
+            <Route exact path='/permisos' render ={()=> <Permisos />}/>
+            <Route exact path='/conexion' render ={() => <Conexion />}/> 
+            <Route exact path='/salaespera' render ={()=> <SalaEspera />}/>
+            <Route exact path='/chat' component={Chat} />
             <Route exact path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
             <Route exact path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user}/>} />
             <Route exact path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={this.state.user}/>} />

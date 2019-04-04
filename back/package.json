@@ -25,6 +25,7 @@
     "firebase": "^5.9.1",
     "ics": "^2.13.2",
     "mandrill-api": "^1.0.45",
+    "material-design-icons": "^3.0.1",
     "moment": "^2.24.0",
     "mongoose": "^5.4.20",
     "mongoose-bcrypt": "^1.6.0",
