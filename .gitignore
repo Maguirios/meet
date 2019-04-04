@@ -2,3 +2,5 @@ back/public/bundle.js
 back/public/bundle.js.map
 back/node_modules/*
 front/node_modules/*
+back/public/bundle.js
+back/public/bundle.js.map

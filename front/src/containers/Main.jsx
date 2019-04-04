@@ -14,9 +14,11 @@ class Main extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      user: {}
+      user: {},
+      time: moment().format('LT'),
     }
     this.signOut = this.signOut.bind(this)
+    this.update = this.update.bind(this)
   }
 
   componentDidMount() {
@@ -34,19 +36,11 @@ class Main extends Component {
       console.log('El error fue', error)
     });
   }
+  update () {this.setState( {time : moment().format('LT')})};
   render() {
-    let time = 0
-    const update = () => {
-      time = moment().format('LT')
-    }
-    let newTime = () => {
-      setInterval(
-        update()
-        , 1);
-    }
-    newTime()
+    let newTime = setInterval(this.update, 1000);
+
     const { classes } = this.props;
-    console.log('estadoooo', this.state)
     return (
       <div className='home'>
         <div className='home-top'>
@@ -86,7 +80,7 @@ class Main extends Component {
           </div>
         </div>
         <div className='home-bottom'>
-          <div className="hora">{time}</div>
+          <div className="hora">{this.state.time}</div>
         </div>
       </div>
     )
