@@ -11,14 +11,17 @@ import Permisos from './Permisos';
 import Conexion from './Conexion'
 import SalaEspera from './SalaEspera'
 import firebase from '../firebase';
+import CreateRoom from './createRoom';
 
 class Main extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      user: {}
+      user: {},
+      time: moment().format('LT'),
     }
     this.signOut = this.signOut.bind(this)
+    this.update = this.update.bind(this)
   }
 
   componentDidMount() {
@@ -36,20 +39,11 @@ class Main extends Component {
       console.log('El error fue', error)
     });
   }
+  update () {this.setState( {time : moment().format('LT')})};
   render() {
-    let time = 0
-    const update = () => {
-      time = moment().format('LT')
-    }
-    let newTime = () => {
-      setInterval(
-        update()
-        , 1);
-    }
+    let newTime = setInterval(this.update, 1000);
 
-    newTime()
     const { classes } = this.props;
-    console.log('estadoooo', this.state)
     return (
       <div className='home'>
         <div className='home-top'>
@@ -88,11 +82,12 @@ class Main extends Component {
             <Route exact path='/chat' component={Chat} />
             <Route exact path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
             <Route exact path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user}/>} />
+            <Route exact path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={this.state.user}/>} />
             <Route exact path='/' component={Code} />
           </div>
         </div>
         <div className='home-bottom'>
-          <div className="hora">{time}</div>
+          <div className="hora">{this.state.time}</div>
         </div>
       </div>
     )
