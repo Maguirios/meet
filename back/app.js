@@ -14,16 +14,15 @@ const Twilio = require("twilio");
 const client = new Twilio(ACCOUNT_SID, API_SECRET, { accountSid: ACCOUNT_SID });
 const faker = require("faker");
 
-// const routes = require("./routes/index");
 
 app.set("port", process.env.PORT || 3000);
 
 //middleware
 app.use(morgan("dev"));
 
-// app.use("/", routes);
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.resolve(__dirname, "public")));
+app.use(express.static(path.resolve(__dirname + "/public")));
+
 
 app.get("/token", function(request, response) {
   var identity = faker.name.findName();
@@ -52,7 +51,11 @@ client.video.compositions.
   .then(composition =>{
     console.log('Created Composition with SID=' + composition.sid);
   });                                                                                                                                        
-  
+
+  app.get('/*', function(req, res) {
+    res.sendFile(__dirname + '/public/index.html')
+  })
+
 app.listen(app.get("port"), () => {
   console.log("Listening on port 4000");
 });

@@ -4,6 +4,8 @@ import axios from "axios";
 import RaisedButton from "material-ui/RaisedButton";
 import TextField from "material-ui/TextField";
 import { Card, CardHeader, CardText } from "material-ui/Card";
+import firebase from '../firebase';
+
 
 export default class VideoComponent extends Component {
   constructor(props) {
@@ -21,12 +23,22 @@ export default class VideoComponent extends Component {
     };
     this.joinRoom = this.joinRoom.bind(this);
     this.leaveRoom = this.leaveRoom.bind(this);
-    this.handleRoomNameChange = this.handleRoomNameChange.bind(this);
-   
+    // this.handleRoomNameChange = this.handleRoomNameChange.bind(this);
+
   }
 
   // Busca el token  creado en el back
   componentDidMount() {
+    // console.log(firebase.database().collection(`rooms/${this.props.match.params.code}`))
+    firebase.database().ref(`rooms/${this.props.match.params.code}`).on('value', snapshoot => {
+      console.log(snapshoot.val())
+      if (!snapshoot.val()) {
+        this.props.history.push('/')
+      }
+      this.setState({ roomName: snapshoot.val().code })
+
+      this.joinRoom();
+    })
     axios.get("/token").then(results => {
       const { identity, token } = results.data;
       this.setState({ identity, token });
@@ -34,20 +46,20 @@ export default class VideoComponent extends Component {
     });
   }
   //Setea el nombred e la room
-  handleRoomNameChange(e) {
-    let roomName = e.target.value;
-    this.setState({ roomName });
-  }
+  // handleRoomNameChange(e) {
+  //   let roomName = e.target.value;
+  //   this.setState({ roomName });
+  // }
 
-  handleClick(){
+  handleClick() {
     console.log(this.state)
   }
   // Se una a la sala
   joinRoom() {
-    if (!this.state.roomName.trim()) {
-      this.setState({ roomNameErr: true });
-      return;
-    }
+    // if (!this.state.roomName.trim()) {
+    //   this.setState({ roomNameErr: true });
+    //   return;
+    // }
 
     console.log("Joining room '" + this.state.roomName + "'...");
     let connectOptions = {
@@ -90,7 +102,7 @@ export default class VideoComponent extends Component {
     });
   }
 
-  
+
 
   //Sales de la sala
   leaveRoom() {
@@ -125,13 +137,13 @@ export default class VideoComponent extends Component {
           <div className="Views">
             {showLocalTrack}
             <div className="flex-item">
-              <TextField
+              {/* <TextField
                 hintText="Room Name"
                 onChange={this.handleRoomNameChange}
                 errorText={
                   this.state.roomNameErr ? "Room Name is required" : undefined
                 }
-              />
+              /> */}
 
               <div>
                 {
@@ -145,14 +157,13 @@ export default class VideoComponent extends Component {
                 <div ref="localMedia" id='local-media' />
                 <div id='totalRemote'>
 
-                    <div ref="remoteMedia" id='remote-media' />
- 
+                  <div ref="remoteMedia" id='remote-media' />
+
                 </div>
 
               </div>
             </div>
             <br />
-            {joinOrLeaveRoomButton}
           </div>
         </CardText>
       </Card>
