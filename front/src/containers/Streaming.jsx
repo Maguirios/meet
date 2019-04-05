@@ -179,7 +179,7 @@ function participantConnected(participant) {
 
   const div = document.createElement('div');
   div.id = participant.sid;
-  div.innerText = participant.identity;
+  // div.innerText = participant.identity;
 
   participant.on('trackSubscribed', track => trackSubscribed(div, track));
   participant.on('trackUnsubscribed', trackUnsubscribed);
