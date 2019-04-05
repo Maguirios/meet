@@ -116,7 +116,6 @@ body{
     margin-left: 90%;
   }
   #totalRemote {
-    background-color: #000;
     width: 100%;
     height: 200px;
   }
@@ -180,4 +179,9 @@ i{
 
 #salir{
   margin-left: 15px;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }

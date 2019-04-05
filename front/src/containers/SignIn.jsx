@@ -112,13 +112,11 @@ class SingUp extends React.Component {
 }
 const mapStateToProps = state => {
   return {
-    user: state.users.LogUser.data
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchUser: user => dispatch(fetchUser(user))
   };
 };
 
