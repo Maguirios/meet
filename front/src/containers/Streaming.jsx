@@ -29,7 +29,6 @@ export default class VideoComponent extends Component {
 
   // Busca el token  creado en el back
   componentDidMount() {
-    // console.log(firebase.database().collection(`rooms/${this.props.match.params.code}`))
     firebase.database().ref(`rooms/${this.props.match.params.code}`).on('value', snapshoot => {
       console.log(snapshoot.val())
       if (!snapshoot.val()) {
