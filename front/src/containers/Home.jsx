@@ -78,13 +78,13 @@ class Main extends Component {
         <div className='home-center'>
           <img className='isologo-horizontal-white' src='/utils/images/logor.png' />
           <div className="components">
-            <Route exact path='/permisos' render={() => <Permisos />} />
-            <Route exact path='/conexion' render={() => <Conexion />} />
-            <Route exact path='/salaespera' render={() => <SalaEspera />} />
-            <Route exact path='/chat' component={Chat} />
-            <Route exact path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
-            <Route exact path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user} />} />
-            <Route exact path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={this.state.user} />} />
+            <Route path='/permisos' render={() => <Permisos />} />
+            <Route path='/conexion' render={() => <Conexion />} />
+            <Route path='/salaespera' render={() => <SalaEspera />} />
+            <Route path='/chat' component={Chat} />
+            <Route path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
+            <Route path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user} />} />
+            <Route path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={this.state.user} />} />
             <Route exact path='/' component={Code} />
           </div>
         </div>

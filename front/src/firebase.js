@@ -7,7 +7,7 @@ var config = {
   authDomain: "meet-e7c7d.firebaseapp.com",
   databaseURL: "https://meet-e7c7d.firebaseio.com",
   projectId: "meet-e7c7d",
-  storageBucket: "",
+  storageBucket: "meet-e7c7d.appspot.com",
   messagingSenderId: "773067057568"
 };
 firebase.initializeApp(config);

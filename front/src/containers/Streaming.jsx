@@ -18,14 +18,15 @@ export default class VideoComponent extends Component {
       localMediaAvailable: false,
       hasJoinedRoom: false,
       activeRoom: null,
-      localId: "",
-      participant: ""
+      participant: '',
+      localId: ''
     };
     this.joinRoom = this.joinRoom.bind(this);
-    this.disconnected2 = this.disconnected2.bind(this);
-    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(
-      this
-    );
+    this.disconnected2 = this.disconnected2.bind(this)
+    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(this)
+    // this.handleRoomNameChange = this.handleRoomNameChange.bind(this);
+
+
   }
 
   componentDidMount() {
@@ -56,15 +57,14 @@ export default class VideoComponent extends Component {
       connectOptions.tracks = this.state.previewTracks;
     }
 
-    Video.connect(this.state.token, connectOptions).then(room => {
-      var previewContainer = this.refs.localMedia;
-      if (!previewContainer.querySelector("video")) {
-        this.attachLocalParticipantTracks(
-          room.localParticipant,
-          previewContainer
-        );
-      }
-
+    Video.connect(this.state.token, connectOptions)
+      .then(room => {
+        // this.roomJoined(room);
+        var previewContainer = this.refs.localMedia;
+        if (!previewContainer.querySelector("video")) {
+          console.log('Local')
+          this.attachLocalParticipantTracks(room.localParticipant, previewContainer);
+        }
       this.setState({
         localId: room.localParticipant,
         activeRoom: room,
@@ -135,7 +135,7 @@ export default class VideoComponent extends Component {
 function participantConnected(participant) {
   const div = document.createElement("div");
   div.id = participant.sid;
-  div.innerText = participant.identity;
+  // div.innerText = participant.identity;
 
   participant.on("trackSubscribed", track => trackSubscribed(div, track));
   participant.on("trackUnsubscribed", trackUnsubscribed);
