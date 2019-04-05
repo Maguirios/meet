@@ -118,8 +118,8 @@ class Code extends React.Component {
                 className={classes.title}
                 onChange={this.handleChangeCode}
                 type='number'
-                error={this.state.code === ""}
-                helperText={this.state.code === "" ? 'campo obligatorio' : ''}
+                // error={this.state.code === ""}
+                // helperText={this.state.code === "" ? 'campo obligatorio' : ''}
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 4)
                 }}
@@ -142,8 +142,8 @@ class Code extends React.Component {
                     margin="normal"
                     className={classes.text2}
                     onChange={this.handleChangeName}
-                    error={this.state.name === ""}
-                    helperText={this.state.name === "" ? 'campo obligatorio' : ''}
+                    // error={this.state.name === ""}
+                    // helperText={this.state.name === "" ? 'campo obligatorio' : ''}
                   >
                   </TextField>
                 </Grid>
