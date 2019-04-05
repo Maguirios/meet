@@ -113,10 +113,10 @@ body{
     border: solid 5px rgba(255, 255, 255, 0.5);
     position: fixed;
     margin-top: 38%;
-    margin-left: 90%;
+    margin-left: 60%;
   }
   #totalRemote {
-    background-color: #000;
+
     width: 100%;
     height: 200px;
   }
