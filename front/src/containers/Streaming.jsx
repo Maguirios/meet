@@ -20,10 +20,13 @@ export default class VideoComponent extends Component {
       hasJoinedRoom: false,
       activeRoom: null,
       participant: '',
+      localId: ''
     };
     this.joinRoom = this.joinRoom.bind(this);
-    this.leaveRoom = this.leaveRoom.bind(this);
+    this.disconnected2 = this.disconnected2.bind(this)
+    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(this)
     // this.handleRoomNameChange = this.handleRoomNameChange.bind(this);
+
 
   }
 
@@ -44,21 +47,13 @@ export default class VideoComponent extends Component {
       console.log(results);
     });
   }
-  //Setea el nombred e la room
-  // handleRoomNameChange(e) {
-  //   let roomName = e.target.value;
-  //   this.setState({ roomName });
-  // }
+
 
   handleClick() {
     console.log(this.state)
   }
   // Se una a la sala
   joinRoom() {
-    // if (!this.state.roomName.trim()) {
-    //   this.setState({ roomNameErr: true });
-    //   return;
-    // }
 
     console.log("Joining room '" + this.state.roomName + "'...");
     let connectOptions = {
@@ -77,7 +72,8 @@ export default class VideoComponent extends Component {
           console.log('Local')
           this.attachLocalParticipantTracks(room.localParticipant, previewContainer);
         }
-
+        this.setState({ activeRoom: room })
+        this.setState({ localId: room.localParticipant })
         room.participants.forEach(participantConnected);
         room.on('participantConnected', participantConnected);
 
@@ -100,15 +96,26 @@ export default class VideoComponent extends Component {
       console.log("holaa", track);
     });
   }
+  detachattachLocalParticipantTracks() {
+    var tracks = Array.from(this.state.localId.tracks.values());
+    tracks.forEach(track => {
+      console.log(track, "TRAAAAAACK");
 
-
-
-  //Sales de la sala
-  leaveRoom() {
-    this.state.activeRoom.disconnect();
-    this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
+      const attachedElements = track.track.detach();
+      attachedElements.forEach(element => element.remove());
+      this.props.history.push("/");
+    });
+  }
+  disconnected2() {
+    this.state.activeRoom.disconnect()
+    document.getElementById("local-media").remove();
+    this.setState({ activeRoom: false, localMediaAvailable: false });
+    this.detachattachLocalParticipantTracks();
+    console.log("Participant disconnected");
   }
 
+
+  
   render() {
     //TERNARIOOOO
     let showLocalTrack = this.state.localMediaAvailable ? (
@@ -120,23 +127,15 @@ export default class VideoComponent extends Component {
         ""
       );
 
-    let joinOrLeaveRoomButton = this.state.hasJoinedRoom ? (
-      <RaisedButton
-        label="Leave Room"
-        secondary={true}
-        onClick={this.leaveRoom}
-      />
-    ) : (
-        <RaisedButton label="Join Room" primary={true} onClick={this.joinRoom} />
-      );
+
+
 
     return (
-      <Card>
-        <CardText>
-          <div className="Views">
-            {showLocalTrack}
-            <div className="flex-item">
-              {/* <TextField
+
+      <div className="Views">
+        {showLocalTrack}
+        <div className="flex-item">
+          {/* <TextField
                 hintText="Room Name"
                 onChange={this.handleRoomNameChange}
                 errorText={
@@ -144,28 +143,33 @@ export default class VideoComponent extends Component {
                 }
               /> */}
 
-              <div>
-                {
-                  // this.props.participants.map((participant) => <div id={} ref="" />)
-                  // Otro metodo para rederear el video de los participantes
-                }
-              </div>
-
-              <div>
-
-                <div ref="localMedia" id='local-media' />
-                <div id='totalRemote'>
-
-                  <div ref="remoteMedia" id='remote-media' />
-
-                </div>
-
-              </div>
-            </div>
-            <br />
+          <div>
+            {
+              // this.props.participants.map((participant) => <div id={} ref="" />)
+              // Otro metodo para rederear el video de los participantes
+            }
           </div>
-        </CardText>
-      </Card>
+
+          <div>
+
+            <div ref="localMedia" id="local-media">
+              <RaisedButton
+                label="Leave Room"
+                secondary={true}
+                onClick={() => this.disconnected2()}
+              />
+            </div>
+            <div id='totalRemote'>
+
+              <div ref="remoteMedia" id='remote-media' />
+
+            </div>
+
+
+          </div>
+        </div>
+        <br />
+      </div>
     );
   }
 }
@@ -190,9 +194,9 @@ function participantConnected(participant) {
   remoteMedias.appendChild(div);
 }
 
-function participantDisconnected(participant) {
-  console.log('Participant "%s" disconnected', participant.identity);
-  document.getElementById(participant.sid).remove();
+function participantDisconnected() {
+  console.log(state.participant)
+  // document.getElementById(participant.sid).remove();
 }
 
 function trackSubscribed(div, track) {
