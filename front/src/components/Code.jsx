@@ -82,9 +82,12 @@ class Code extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     const user = this.state.name
-    console.log('this.props', this.props)
-    this.props.setUser(user)
-    this.props.history.push('/chat')
+    if(this.state.name.replace(/\s/g, "") && this.state.code.replace(/\s/g, "")){
+      this.props.setUser(user)
+      this.props.history.push(`/room/${this.state.code}`)
+    }else{
+      alert('Ambos campos son requeridos')
+    }
   }
 
   handleChangeName(event) {
@@ -105,7 +108,6 @@ class Code extends React.Component {
           container
           direction="row"
           justify="center"
-          alignItems="center"
         >
           <form noValidate autoComplete="off" className={classes.containerInputs} >
             <div>
@@ -149,8 +151,8 @@ class Code extends React.Component {
                   className={classes.centerButton}
                   item sm
                 >
-                  <Button type='submit' variant="contained" size="small" onClick={this.handleSubmit} color="primary" className={classes.buttonSendStyle}>
-                    <Icon>send</Icon>
+                  <Button variant="contained" size="small" color="primary" onClick={this.handleSubmit} className={classes.buttonSendStyle}>
+                    <Icon>keyboard_arrow_right</Icon>
                   </Button>
                 </Grid>
               </Grid>
