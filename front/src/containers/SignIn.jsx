@@ -25,8 +25,13 @@ class SingUp extends React.Component {
   }
 
   componentDidMount() {
-    (this.props.currentUser.email)? this.props.history.push('/') : null 
+    (this.props.currentUser.email)? this.props.history.push('/') : null
   }
+
+  componentDidUpdate(prevProps){
+    (prevProps.currentUser.email !== this.props.currentUser.email)? this.props.history.push('/') : null
+  }
+
 
   handleLogin(e) {
     // e.preventDefault();
@@ -61,6 +66,7 @@ class SingUp extends React.Component {
           margin="normal"
           type='email'
           name="email"
+          autoComplete='email'
           onChange={this.handleLogin}
         />
 
@@ -106,13 +112,11 @@ class SingUp extends React.Component {
 }
 const mapStateToProps = state => {
   return {
-    user: state.users.LogUser.data
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchUser: user => dispatch(fetchUser(user))
   };
 };
 

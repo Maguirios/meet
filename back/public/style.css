@@ -50,7 +50,7 @@ body{
   box-shadow: 0 2px 20px 5px rgba(0, 0, 0, 0.2);
   background-image: linear-gradient(to bottom, #ffffff, #ffffff);
   justify-items: center;
-  padding-top: 25px;
+  padding: 5px 0px;
   align-items: center;
 }
 .inputStyle{
@@ -101,6 +101,39 @@ body{
  margin-left: 10px;
  width: 500px;
 }
+/* .Views{  width: 150px;
+  height: 120px;
+  border-radius: 10px;
+  border: solid 5px rgba(255, 255, 255, 0.5);}
+   */
+ #local-media video{
+    width: 150px;
+    height: 120px;
+    border-radius: 10px;
+    border: solid 5px rgba(255, 255, 255, 0.5);
+    position: fixed;
+    margin-top: 38%;
+    margin-left: 90%;
+  }
+  #totalRemote {
+    width: 100%;
+    height: 200px;
+  }
+  #totalRemote #remote-media div{
+    margin: 10px;
+    width: 150px;
+    height: 120px;
+    float: right;
+    
+  }
+  
+  #remote-media video{
+    width: 150px;
+    height: 120px;
+    border: solid 5px rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+  }
+
 #text-permisos {
   line-height: 1.5;
   font-family: 'Avenir Next';
@@ -146,4 +179,9 @@ i{
 
 #salir{
   margin-left: 15px;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }
