@@ -29,7 +29,8 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-react": "^7.12.4",
     "eslint-plugin-standard": "^4.0.0",
-    "firebase": "^5.9.2",
+    "firebase": "^5.9.3",
+    "material-ui": "^0.20.2",
     "material-ui-pickers": "^2.2.4",
     "moment": "^2.24.0",
     "react": "^16.8.5",
@@ -42,6 +43,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.2.0",
+    "twilio-video": "^2.0.0-beta7",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0"
   }
