@@ -5,14 +5,9 @@ import Button from '@material-ui/core/Button';
 import * as moment from 'moment';
 import RegisterContainer from './Register'
 import Code from '../components/Code';
-<<<<<<< HEAD
 import Chat from '../components/Chat';
 import SignIn from "./SignIn"
-=======
-import SignIn from "./SignIn";
 import firebase from '../firebase';
->>>>>>> 82e54f9cddf8d0f00da1512a41e7c550958b1366
-
 
 class Main extends Component {
   constructor(props) {
@@ -48,13 +43,8 @@ class Main extends Component {
         update()
         , 1);
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> 82e54f9cddf8d0f00da1512a41e7c550958b1366
     newTime()
     const { classes } = this.props;
-    console.log('estadoooo', this.state)
     return (
       <div className='home'>
         <div className='home-top'>
@@ -90,7 +80,7 @@ class Main extends Component {
             <Route exact path='/chat' component={Chat} />
             <Route exact path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
             <Route exact path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user}/>} />
-            <Route exact path='/' component={Code} />
+            <Route exact path='/' render= {({history}) => <Code history = {history} />} />
           </div>
         </div>
         <div className='home-bottom'>

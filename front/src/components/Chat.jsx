@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import { connect } from 'react-redux'
 
 
 const styles = theme => ({
@@ -32,7 +33,7 @@ const styles = theme => ({
         paddingLeft: 15,
         paddingTop: 10,
         paddingBottom: 10,
-        marginBottom: 5
+        marginTop: 5
     },
     text: {
         width: 69,
@@ -105,7 +106,6 @@ class Chat extends React.Component {
         }
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleChangeMessage = this.handleChangeMessage.bind(this)
-        this.handleChangeName = this.handleChangeName.bind(this)
     }
     componentDidMount() {
         firebase.database().ref('messages/').on('value', snapshoot => {
@@ -118,28 +118,28 @@ class Chat extends React.Component {
             }
             var show = document.getElementById('style-1').lastChild
             show.scrollIntoView(false)
-    
+
         })
-      
+
     }
 
     handleSubmit(e) {
         e.preventDefault();
         const newMessage = {
             id: this.state.messages.length,
-            username: this.state.username,
+            username: this.props.userName,
             textMessage: this.state.message,
             time: moment().format('LT')
         }
         firebase.database().ref(`messages/${newMessage.id}`)
             .set(newMessage)
-            .then( () => {
+            .then(() => {
                 this.setState({ message: '' })
                 this.setState({ username: '' })
                 var show = document.getElementById('style-1').lastChild
                 show.scrollIntoView(false)
             })
-       
+
 
 
     }
@@ -148,18 +148,14 @@ class Chat extends React.Component {
         this.setState({ message: value })
 
     }
-    handleChangeName(event) {
-        const value = event.target.value.toUpperCase();
-        this.setState({ username: value })
-
-    }
+   
     render() {
         let time = 0
 
         time = moment().format('LT')
 
+        console.log('this.propssssss', this.props)
         const { classes } = this.props;
-
         return (
             <div>
                 <Grid container >
@@ -176,9 +172,6 @@ class Chat extends React.Component {
                     </div>
                 </Grid>
                 <form onSubmit={this.handleSubmit} >
-                    <div>
-                        <input type='text' onChange={this.handleChangeName} id='nombre' value={this.state.username}></input>
-                    </div>
                     <div className={classes.inputField}>
                         <Grid container>
                             <Grid item sm>
@@ -207,5 +200,16 @@ class Chat extends React.Component {
 Chat.propTypes = {
     classes: PropTypes.object.isRequired,
 };
+const mapStateToProps = (state) => ({
+    userName: state.users.userName,
+});
+const mapDispatchToProps = (dispatch) => ({
 
-export default withStyles(styles)(Chat);
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Chat));
+
+
+
+
+

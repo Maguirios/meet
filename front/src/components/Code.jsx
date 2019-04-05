@@ -6,6 +6,9 @@ import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import Input from '@material-ui/core/Input';
 import Grid from '@material-ui/core/Grid';
+import { connect } from 'react-redux'
+import { setUser } from '../redux/action-creators/usersActions'
+import { Link } from 'react-router-dom'
 
 
 const styles = theme => ({
@@ -64,10 +67,38 @@ const styles = theme => ({
   }
 });
 class Code extends React.Component {
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      name: '',
+      code: ''
+    }
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChangeName = this.handleChangeName.bind(this)
+    this.handleChangeCode = this.handleChangeCode.bind(this)
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const user = this.state.name
+    console.log('this.props', this.props)
+    this.props.setUser(user)
+    this.props.history.push('/chat')
+  }
+
+  handleChangeName(event) {
+    const value = event.target.value.toUpperCase();
+    this.setState({ name: value })
+
+  }
+  handleChangeCode(event) {
+    const value = event.target.value;
+    this.setState({ code: value })
+  }
   render() {
+    console.log('statesss', this.props)
     const { classes } = this.props;
-
     return (
       <div>
         <Grid
@@ -76,13 +107,21 @@ class Code extends React.Component {
           justify="center"
           alignItems="center"
         >
-          <form noValidate autoComplete="off" className={classes.containerInputs}>
+          <form noValidate autoComplete="off" className={classes.containerInputs} >
             <div>
               <TextField
-
+                value={this.state.code}
                 label="Código de Video Conferencia"
                 margin="normal"
                 className={classes.title}
+                onChange={this.handleChangeCode}
+                type='number'
+                error={this.state.code === ""}
+                helperText={this.state.code === "" ? 'campo obligatorio' : ''}
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 4)
+                }}
+
               >
               </TextField>
             </div>
@@ -91,26 +130,26 @@ class Code extends React.Component {
                 container
                 alignItems="center"
 
-
               >
                 <Grid
                   item sm
                 >
-
-
                   <TextField
+                    value={this.state.name}
                     label="Ingrese su nombre"
                     margin="normal"
                     className={classes.text2}
+                    onChange={this.handleChangeName}
+                    error={this.state.name === ""}
+                    helperText={this.state.name === "" ? 'campo obligatorio' : ''}
                   >
                   </TextField>
                 </Grid>
                 <Grid
                   className={classes.centerButton}
                   item sm
-                  alignItems="center"
                 >
-                  <Button variant="contained" size="small" color="primary" className={classes.buttonSendStyle}>
+                  <Button type='submit' variant="contained" size="small" onClick={this.handleSubmit} color="primary" className={classes.buttonSendStyle}>
                     <Icon>send</Icon>
                   </Button>
                 </Grid>
@@ -127,5 +166,13 @@ class Code extends React.Component {
 Code.propTypes = {
   classes: PropTypes.object.isRequired,
 };
+const mapStateToProps = (state) => ({
+  userName: state.users.userName,
 
-export default withStyles(styles)(Code);
+});
+const mapDispatchToProps = (dispatch) => ({
+  setUser: user => dispatch(setUser(user)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Code));
+
