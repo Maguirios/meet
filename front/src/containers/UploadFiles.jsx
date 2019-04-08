@@ -65,17 +65,35 @@ const styles = theme => ({
 class UploadFiles extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      file: {}
+    }
     this.handleChange = this.handleChange.bind(this)
+    this.drop = this.drop.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  handleChange(e){
+  drop(e) {
+    e.preventDefault()
+    const file = e.dataTransfer.files[0]
+    this.setState({ file: file })
+  }
+
+  handleChange(e) {
+    e.preventDefault()
     const file = e.target.files[0]
-    var storageRef = firebase.storage().ref('meet/' + file)
+    this.setState({ file: file })  
+  }
+
+  handleSubmit(e){
+    e.preventDefault()
+    const file = this.state.file
+    var storageRef = firebase.storage().ref('meet/' + file.name)
     storageRef.put(file)
   }
-
   render() {
     const { classes } = this.props
+    console.log('estado', this.state)
     return (
       <div className={classes.uploadContainer} >
         <div className={classes.headerUpload}>
@@ -84,25 +102,45 @@ class UploadFiles extends React.Component {
             <p className={classes.cancel}>X</p>
           </div>
         </div>
-        <div className={classes.contentUploadContainer}>
-          <div className={classes.contentUpload}>
-            <p>Arrastra un archivo para subir</p>
+        <section className={classes.contentUploadContainer}>
+          <div
+            className={classes.contentUpload}
+            onDrop={this.drop}
+            onDragEnter={(e) => e.preventDefault()}
+            onDragOver={(e) => e.preventDefault()}
+          >
+            <div>
+              {(this.state.file.name) ? 
+                <div>
+                  {this.state.file.name} 
+                  <p style={{textAlign: "center"}}>{(this.state.file.size / 1024).toFixed(2) + ' KB'}</p>
+                </div>
+                : 
+                'Arrastra un archivo para subir'}
+            </div>
             <div>
               <input
                 className={classes.input}
                 id="contained-button-file"
                 name='file'
                 type="file"
-                onChange = {this.handleChange}
+                onChange={this.handleChange}
               />
-              <label htmlFor="contained-button-file">
-                <Button variant="contained" color='primary' component="span">
-                  Seleccionar Archivo
+              {(!this.state.file.name) ?
+                <label htmlFor="contained-button-file">
+                  <Button variant="contained" color='primary' component="span">
+                    Seleccionar Archivo
+                  </Button>
+                </label> 
+                :
+                <Button onClick={this.handleSubmit} color='primary' variant="contained" >
+                  Subir
                 </Button>
-              </label>
+              }
+
             </div>
           </div>
-        </div>
+        </section>
       </div>
     )
 
