@@ -111,9 +111,9 @@ body{
     height: 120px;
     border-radius: 10px;
     border: solid 5px rgba(255, 255, 255, 0.5);
-    position: absolute;
-    bottom: 0;
-    right: 10px;
+    position: fixed;
+    margin-top: 38%;
+    margin-left: 70%;
   }
   #totalRemote {
     width: 99%;
