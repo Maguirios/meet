@@ -1,4 +1,5 @@
 import React from 'react';
+import {withRouter} from 'react-router-dom'
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
@@ -71,7 +72,11 @@ class Register extends React.Component {
   }
 
   componentDidMount() {
-    (this.props.currentUser.email)? this.props.history.push('/') : null 
+    (this.props.currentUser.email)? this.props.history.push('/') : null
+  }
+
+  componentDidUpdate(prevProps){
+    (prevProps.currentUser.email !== this.props.currentUser.email)? this.props.history.push('/') : null
   }
 
   handleChange(e) {
@@ -85,7 +90,13 @@ class Register extends React.Component {
         return firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
       })
       .then(create => {
-        this.props.history.push('/')
+        firebase.auth().currentUser.updateProfile({
+          displayName: this.state.userName
+        })
+        .then(() => {
+          // Update successful.
+          this.props.history.push('/')
+        })
       })
       .catch((error) => {
         0.2
@@ -103,9 +114,17 @@ class Register extends React.Component {
     this.setState({ open: false });
   };
   render() {
+    console.log('Props registro', this.props)
     const { classes } = this.props;
     return (
       <form noValidate autoComplete="off" className='containerInputs' onSubmit={this.handleSubmit}>
+        <TextField
+          label="Username"
+          className='inputStyle'
+          margin="dense"
+          name="userName"
+          onChange={this.handleChange}
+        />
         <TextField
           id="standard"
           label="Email"

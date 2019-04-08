@@ -3,12 +3,12 @@ import firebase from 'firebase'
 import 'firebase/auth'
 
 var config = {
-  apiKey: "AIzaSyDvzmSN1D73gtVHrMzFWgjWTbLh__NTS3s",
-  authDomain: "meet-2824a.firebaseapp.com",
-  databaseURL: "https://meet-2824a.firebaseio.com",
-  projectId: "meet-2824a",
-  storageBucket: "meet-2824a.appspot.com",
-  messagingSenderId: "1014077530882"
+  apiKey: "AIzaSyASrUdVkBjdYKp7qYD1aA2ZCiP-iTIOSF8",
+  authDomain: "meet-e7c7d.firebaseapp.com",
+  databaseURL: "https://meet-e7c7d.firebaseio.com",
+  projectId: "meet-e7c7d",
+  storageBucket: "meet-e7c7d.appspot.com",
+  messagingSenderId: "773067057568"
 };
 firebase.initializeApp(config);
 
