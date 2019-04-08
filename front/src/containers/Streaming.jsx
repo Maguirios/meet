@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import Video from "twilio-video";
 import axios from "axios";
 import RaisedButton from "material-ui/RaisedButton";
-import TextField from "material-ui/TextField";
-import { Card, CardHeader, CardText } from "material-ui/Card";
-import firebase from "../firebase";
+import firebase from '../firebase';
+import ButtonBar from './ButtonBar';
+import Chat from '../components/Chat';
+
 
 export default class VideoComponent extends Component {
   constructor(props) {
@@ -122,8 +123,22 @@ export default class VideoComponent extends Component {
               onClick={() => this.disconnected2()}
             />
           </div>
-          <div id="totalRemote">
-            <div ref="remoteMedia" id="remote-media" />
+
+          <div>
+
+            <div ref="localMedia" id="local-media">
+              <ButtonBar disconnect={this.disconnected2}/>
+            </div>
+            <div id='totalRemote'>
+
+              <div ref="remoteMedia" id='remote-media' />
+
+            </div>
+            <div>
+              <Chat room={this.props.match.params.code} />
+            </div>
+
+
           </div>
         </div>
         <br />
