@@ -37,7 +37,6 @@ const styles = theme => ({
     },
     text: {
         width: 69,
-        height: 16,
         fontFamily: 'Avenir',
         fontSize: 12,
         fontWeight: 500,
@@ -49,7 +48,6 @@ const styles = theme => ({
     },
     name: {
         width: 45,
-        height: 12,
         fontFamily: 'Avenir',
         fontSize: 9,
         fontWeight: 900,
@@ -93,6 +91,11 @@ const styles = theme => ({
         color: '#8d9aa3',
         paddingLeft: 55
 
+    },
+    grid:{
+        display: 'grid',
+        'grid-template-rows': '1fr',
+        'grid-template-columns': '2fr 1fr'
     }
 });
 
@@ -154,7 +157,6 @@ class Chat extends React.Component {
 
         time = moment().format('LT')
 
-        console.log('this.propssssss', this.props)
         const { classes } = this.props;
         return (
             <div>
@@ -162,8 +164,12 @@ class Chat extends React.Component {
                     <div className={classes.container} id="style-1" >
                         {this.state.messages.map(txt => {
                             return <div className={classes.Field} key={txt.id}>
+                            {/* <div classname = 'grid'>
+                                    <div className={classes.name} >{txt.username.toUpperCase()}</div>
+                                    <div className={classes.hora}>{txt.time}</div>
+                                </div> */}
                                 <Grid container>
-                                    <Grid item sm className={classes.name} >{txt.username}</Grid>
+                                    <Grid item sm className={classes.name} >{txt.username.toUpperCase()}</Grid>
                                     <Grid item sm className={classes.hora}>{txt.time}</Grid>
                                 </Grid>
                                 <div className={classes.text}>{txt.textMessage}</div>

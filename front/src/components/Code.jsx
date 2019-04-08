@@ -9,7 +9,11 @@ import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux'
 import { setUser } from '../redux/action-creators/usersActions'
 import { Link } from 'react-router-dom'
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const styles = theme => ({
   container: {
@@ -72,26 +76,39 @@ class Code extends React.Component {
 
     this.state = {
       name: '',
-      code: ''
+      code: '',
+      open: false,
+      error: ''
+
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChangeName = this.handleChangeName.bind(this)
     this.handleChangeCode = this.handleChangeCode.bind(this)
+    this.handleClose = this.handleClose.bind(this)
   }
+
+  handleClose() {
+    this.setState({ open: false });
+  };
 
   handleSubmit(e) {
     e.preventDefault();
     const user = this.state.name
-    if(this.state.name.replace(/\s/g, "") && this.state.code.replace(/\s/g, "")){
+    if (this.state.name.replace(/\s/g, "") && this.state.code.replace(/\s/g, "")) {
       this.props.setUser(user)
-      this.props.history.push(`/room/${this.state.code}`)
-    }else{
-      alert('Ambos campos son requeridos')
+      this.props.history.push(`/chat`)
+    } else {
+      try {
+        throw new Error("required inputs");
+      } catch (e) {
+        var errorMessage = Error.message;
+        this.setState({ error: errorMessage, open: true })
+      }
     }
   }
 
   handleChangeName(event) {
-    const value = event.target.value.toUpperCase();
+    const value = event.target.value;
     this.setState({ name: value })
 
   }
@@ -100,7 +117,6 @@ class Code extends React.Component {
     this.setState({ code: value })
   }
   render() {
-    console.log('statesss', this.props)
     const { classes } = this.props;
     return (
       <div>
@@ -118,7 +134,6 @@ class Code extends React.Component {
                 className={classes.title}
                 onChange={this.handleChangeCode}
                 type='number'
-                // error={this.state.code === ""}
                 helperText={this.state.code === "" ? 'campo obligatorio' : ''}
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 4)
@@ -137,19 +152,12 @@ class Code extends React.Component {
                   item sm
                 >
                   <TextField
-                  {...{
-                    text: 'label',
-  
-                    ...(tooltip && { tooltip }),
-                    isRequired: required
-                  }}
-                    // value={this.state.name}
-                    // label="Ingrese su nombre"
-                    // margin="normal"
-                    // className={classes.text2}
-                    // onChange={this.handleChangeName}
-                    // //error={this.state.name === ""}
-                    // helperText={this.state.name === "" ? 'campo obligatorio' : ''}
+                    value={this.state.name}
+                    label="Ingrese su nombre"
+                    margin="normal"
+                    className={classes.text2}
+                    onChange={this.handleChangeName}
+                    helperText={this.state.name === "" ? 'campo obligatorio' : ''}
                   >
                   </TextField>
                 </Grid>
@@ -160,6 +168,25 @@ class Code extends React.Component {
                   <Button variant="contained" size="small" color="primary" onClick={this.handleSubmit} className={classes.buttonSendStyle}>
                     <Icon>keyboard_arrow_right</Icon>
                   </Button>
+                  <Dialog
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                  >
+                    <DialogTitle id="alert-dialog-title">{"Debe completar ambos campos"}</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText id="alert-dialog-description">
+                       Para continuar debe ingresar los 4 digitos del codigo video conferencia y su nombre
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={this.handleClose} color="primary">
+                        Aceptar
+                    </Button>
+                    </DialogActions>
+                  </Dialog>
+
                 </Grid>
               </Grid>
 
