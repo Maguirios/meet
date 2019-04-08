@@ -66,17 +66,14 @@ class UploadFiles extends React.Component {
   constructor(props) {
     super(props)
     this.handleChange = this.handleChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleChange(e){
-    this.setState({ [e.target.name]: e.target.files[0] })
-  }
-
-  handleSubmit (e) {
-    var storageRef = firebase.storage().ref('meet/' + this.state.file.name)
+    const file = e.target.files[0]
+    var storageRef = firebase.storage().ref('meet/' + file)
     storageRef.put(file)
   }
+
   render() {
     const { classes } = this.props
     return (
@@ -99,7 +96,7 @@ class UploadFiles extends React.Component {
                 onChange = {this.handleChange}
               />
               <label htmlFor="contained-button-file">
-                <Button variant="contained" color='primary' component="span" onChange={this.handleSubmit}>
+                <Button variant="contained" color='primary' component="span">
                   Seleccionar Archivo
                 </Button>
               </label>
