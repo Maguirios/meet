@@ -118,7 +118,7 @@ export class createRoom extends Component {
     let newRoom = {
       code: roomCode,
       name: this.state.room,
-      emails: this.state.email.replace(/\s/g, "").split(','),
+      emails: this.state.email.replace(/\s/g, "").split(',').concat(this.props.currentUser.email),
       time: this.state.selectedTime.format('LT'),
       date: this.state.selectedDate.format('LL'),
     }

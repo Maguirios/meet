@@ -100,7 +100,6 @@ class Code extends React.Component {
     this.setState({ code: value })
   }
   render() {
-    console.log('statesss', this.props)
     const { classes } = this.props;
     return (
       <div>

@@ -9,9 +9,21 @@ import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme'
 import Home from '../containers/Home';
 import Streaming from './Streaming'
 import ButtonBar from './ButtonBar';
-
+import firebase from '../firebase';
 
 class Main extends Component {
+
+    componentDidMount(){
+       let db = firebase.database().ref('rooms')
+        
+        db.on('value', snapshoot => {
+            console.log(Object.values(snapshoot.val()).filter((room) => (
+                room.emails.some((user) => user === 'ombaez@gmail.com')
+            )))
+        })
+    }
+
+
     render() {
         return (
             <div>
