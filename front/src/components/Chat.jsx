@@ -108,7 +108,7 @@ class Chat extends React.Component {
         this.handleChangeMessage = this.handleChangeMessage.bind(this)
     }
     componentDidMount() {
-        firebase.database().ref('messages/').on('value', snapshoot => {
+        firebase.database().ref(`rooms/${this.props.room}/messages/`).on('value', snapshoot => {
             const actMsj = snapshoot.val()
             if (actMsj !== null) {
                 this.setState({
@@ -131,7 +131,7 @@ class Chat extends React.Component {
             textMessage: this.state.message,
             time: moment().format('LT')
         }
-        firebase.database().ref(`messages/${newMessage.id}`)
+        firebase.database().ref(`rooms/${this.props.room}/messages/${newMessage.id}`)
             .set(newMessage)
             .then(() => {
                 this.setState({ message: '' })
