@@ -6,6 +6,7 @@ import TextField from "material-ui/TextField";
 import { Card, CardHeader, CardText } from "material-ui/Card";
 import firebase from '../firebase';
 
+import ToggleButtons from './BarraMicroPhone';
 
 export default class VideoComponent extends Component {
   constructor(props) {
@@ -115,25 +116,22 @@ export default class VideoComponent extends Component {
   }
 
 
-  
+
   render() {
     //TERNARIOOOO
     let showLocalTrack = this.state.localMediaAvailable ? (
       <div className="flex-item">
         {" "}
-        <div ref="localMedia" />{" "}
+        <div id='sala-conferencia' ref="localMedia" />{" "}
       </div>
-    ) : (
-        ""
-      );
-
-
-
+    ) : ("");
 
     return (
 
-      <div className="Views">
+      <div id='sala-conferencia' className="Views">
+
         {showLocalTrack}
+
         <div className="flex-item">
           {/* <TextField
                 hintText="Room Name"
@@ -143,32 +141,23 @@ export default class VideoComponent extends Component {
                 }
               /> */}
 
-          <div>
-            {
-              // this.props.participants.map((participant) => <div id={} ref="" />)
-              // Otro metodo para rederear el video de los participantes
-            }
           </div>
 
-          <div>
+        <div id='totalRemote'>
+          <div ref="remoteMedia" id='remote-media' />
+        </div>
 
-            <div ref="localMedia" id="local-media">
-              <RaisedButton
-                label="Leave Room"
-                secondary={true}
-                onClick={() => this.disconnected2()}
-              />
-            </div>
-            <div id='totalRemote'>
-
-              <div ref="remoteMedia" id='remote-media' />
-
-            </div>
-
-
+        <div>
+          <ToggleButtons onClick={ ()=> this.disconnected2() } id='barra-icons' />
+          <div ref="localMedia" id="local-media">
+            {/* <RaisedButton
+              label="Leave Room"
+              secondary={true}
+              onClick={() => this.disconnected2()}
+            /> */}
           </div>
         </div>
-        <br />
+
       </div>
     );
   }

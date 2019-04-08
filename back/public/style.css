@@ -2,9 +2,9 @@ body{
     background-image: url('/utils/images/background.jpg');
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: center center;
-    width: 97vh;
-    height: 97vh;
+    background-position: center ;
+    width: 99%;
+    height: 99%;
 }
 .home{
     display: grid;
@@ -111,12 +111,12 @@ body{
     height: 120px;
     border-radius: 10px;
     border: solid 5px rgba(255, 255, 255, 0.5);
-    position: fixed;
-    margin-top: 38%;
-    margin-left: 90%;
+    position: absolute;
+    bottom: 0;
+    right: 10px;
   }
   #totalRemote {
-    width: 100%;
+    width: 99%;
     height: 200px;
   }
   #totalRemote #remote-media div{
@@ -126,7 +126,6 @@ body{
     float: right;
     
   }
-  
   #remote-media video{
     width: 150px;
     height: 120px;
@@ -184,4 +183,35 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
   margin: 0; 
+}
+html, body, #app, #contenedor-sala-conferencia, #sala-conferencia{
+  width: 100%;
+  height: 100%;
+}
+#footer-icons{
+  width: 100px;
+  height: 64px;
+  background-color: rgba(55, 55, 55, 0.8);
+}
+#footer-icons i{
+  color: #fff;
+  font-size: 38px;
+}
+#footer-icons #upload-icon{
+  transform: rotate(-90deg);
+}
+#barra-icons{
+  position: absolute;
+  bottom:0;
+  right: 50%;
+}
+#hour-icon{
+  color: #fff;
+  width: 100px;
+  height: 64px;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+#footer-phone{
+  font-size: 38px;
+  color: red;
 }

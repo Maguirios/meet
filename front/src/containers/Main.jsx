@@ -13,7 +13,7 @@ import { Switch } from 'react-router-dom';
 class Main extends Component {
     render() {
         return (
-            <div>
+            <div id='sala-conferencia'>
                 <MuiThemeProvider muiTheme={GetMuiTheme(lightBaseTheme)} >
                         <Switch>
                             <Route path='/room/:code' render={({ history, match }) => <Streaming match={match} history={history} />} />
