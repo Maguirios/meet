@@ -134,55 +134,36 @@ export default class VideoComponent extends Component {
 
         {showLocalTrack}
 
-        <div className="flex-item">
-          {/* <TextField
-                hintText="Room Name"
-                onChange={this.handleRoomNameChange}
-                errorText={
-                  this.state.roomNameErr ? "Room Name is required" : undefined
-                }
-              /> */}
-
-          </div>
-
-<<<<<<< HEAD
-        <div id='totalRemote'>
-          <div ref="remoteMedia" id='remote-media' />
-        </div>
-=======
-          <div>
-
-            <div ref="localMedia" id="local-media">
-              {/* <RaisedButton
+      <div ref="localMedia" id="local-media">
+        {/* <RaisedButton
                 label="Leave Room"
                 secondary={true}
                 onClick={() => this.disconnected2()}
               /> */}
-              <ButtonBar disconnect={this.disconnected2}/>
-            </div>
-            <div id='totalRemote'>
+      </div>
+      <div id='totalRemote'>
 
-              <div ref="remoteMedia" id='remote-media' />
+        <div ref="remoteMedia" id='remote-media' />
 
-            </div>
-            <div>
-              <Chat room={this.props.match.params.code} />
-            </div>
+      </div>
 
->>>>>>> 0413f3e9920115cca7fb22a76feb356e44493bb5
+      <div>
+        <Chat room={this.props.match.params.code} />
+      </div>
 
-        <div>
-          <ToggleButtons onClick={ ()=> this.disconnected2() } id='barra-icons' />
-          <div ref="localMedia" id="local-media">
-            {/* <RaisedButton
+
+      
+        <ButtonBar disconnect={this.disconnected2} />
+        <div ref="localMedia" id="local-media">
+          {/* <RaisedButton
               label="Leave Room"
               secondary={true}
               onClick={() => this.disconnected2()}
             /> */}
-          </div>
-        </div>
-
+        
       </div>
+
+      </div >
     );
   }
 }
