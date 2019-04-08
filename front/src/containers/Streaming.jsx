@@ -5,6 +5,8 @@ import RaisedButton from "material-ui/RaisedButton";
 import TextField from "material-ui/TextField";
 import { Card, CardHeader, CardText } from "material-ui/Card";
 import firebase from '../firebase';
+import ButtonBar from './ButtonBar';
+import Chat from '../components/Chat';
 
 
 export default class VideoComponent extends Component {
@@ -150,16 +152,20 @@ export default class VideoComponent extends Component {
           <div>
 
             <div ref="localMedia" id="local-media">
-              <RaisedButton
+              {/* <RaisedButton
                 label="Leave Room"
                 secondary={true}
                 onClick={() => this.disconnected2()}
-              />
+              /> */}
+              <ButtonBar disconnect={this.disconnected2}/>
             </div>
             <div id='totalRemote'>
 
               <div ref="remoteMedia" id='remote-media' />
 
+            </div>
+            <div>
+              <Chat room={this.props.match.params.code} />
             </div>
 
 
@@ -176,7 +182,7 @@ function participantConnected(participant) {
 
   const div = document.createElement('div');
   div.id = participant.sid;
-  div.innerText = participant.identity;
+  // div.innerText = participant.identity;
 
   participant.on('trackSubscribed', track => trackSubscribed(div, track));
   participant.on('trackUnsubscribed', trackUnsubscribed);
