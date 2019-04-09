@@ -13,6 +13,7 @@ import Conexion from './Conexion'
 import SalaEspera from './SalaEspera'
 import firebase from '../firebase';
 import CreateRoom from './createRoom';
+import UploadFiles from './UploadFiles';
 
 class Main extends Component {
   constructor(props) {
@@ -94,6 +95,7 @@ class Main extends Component {
             <Route path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
             <Route path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user} />} />
             <Route path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={this.state.user} />} />
+            <Route path='/probando' render={() => <UploadFiles />} />
             <Route exact path='/' component={Code} />
           </div>
         </div>
