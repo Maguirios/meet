@@ -7,7 +7,8 @@ import { Card, CardHeader, CardText } from "material-ui/Card";
 import firebase from '../firebase';
 import ButtonBar from './ButtonBar';
 import Chat from '../components/Chat';
-
+import UploadFiles from './UploadFiles'
+import Dialog from '@material-ui/core/Dialog';
 
 export default class VideoComponent extends Component {
   constructor(props) {
@@ -22,39 +23,40 @@ export default class VideoComponent extends Component {
       hasJoinedRoom: false,
       activeRoom: null,
       participant: '',
-      localId: ''
+      localId: '',
+      sendFileOpen: false,
     };
+
     this.joinRoom = this.joinRoom.bind(this);
     this.disconnected2 = this.disconnected2.bind(this)
     this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(this)
     // this.handleRoomNameChange = this.handleRoomNameChange.bind(this);
-
-
+    this.handleOpenSendFile = this.handleOpenSendFile.bind(this)
+    this.handleCloseSendFile = this.handleCloseSendFile.bind(this)
   }
 
   // Busca el token  creado en el back
   componentDidMount() {
     firebase.database().ref(`rooms/${this.props.match.params.code}`).on('value', snapshoot => {
-      console.log(snapshoot.val())
       if (!snapshoot.val()) {
         this.props.history.push('/')
       }
       this.setState({ roomName: snapshoot.val().code })
-
       this.joinRoom();
     })
     axios.get("/token").then(results => {
       const { identity, token } = results.data;
       this.setState({ identity, token });
-      console.log(results);
     });
   }
 
+  componentDidUpdate(prevProps, prevState){
+    prevState.identity
+  }
 
   // Se una a la sala
   joinRoom() {
 
-    console.log("Joining room '" + this.state.roomName + "'...");
     let connectOptions = {
       name: this.state.roomName
     };
@@ -68,7 +70,6 @@ export default class VideoComponent extends Component {
         // this.roomJoined(room);
         var previewContainer = this.refs.localMedia;
         if (!previewContainer.querySelector("video")) {
-          console.log('Local')
           this.attachLocalParticipantTracks(room.localParticipant, previewContainer);
         }
         this.setState({ activeRoom: room })
@@ -84,22 +85,15 @@ export default class VideoComponent extends Component {
       });
   }
 
-
   attachLocalParticipantTracks(participant, container) {
-    console.log(participant);
     var tracks = Array.from(participant.tracks.values());
-    console.log(tracks);
     tracks.forEach((track) => {
-      console.log("track invisible?", track);
       container.appendChild(track.track.attach());
-      console.log("holaa", track);
     });
   }
   detachattachLocalParticipantTracks() {
     var tracks = Array.from(this.state.localId.tracks.values());
     tracks.forEach(track => {
-      console.log(track, "TRAAAAAACK");
-
       const attachedElements = track.track.detach();
       attachedElements.forEach(element => element.remove());
       this.props.history.push("/");
@@ -110,30 +104,51 @@ export default class VideoComponent extends Component {
     document.getElementById("local-media").remove();
     this.setState({ activeRoom: false, localMediaAvailable: false });
     this.detachattachLocalParticipantTracks();
-    console.log("Participant disconnected");
   }
 
-
-  
+  handleOpenSendFile() {
+    this.setState({ sendFileOpen: true })
+  }
+  handleCloseSendFile() {
+    this.setState({ sendFileOpen: false });
+  };
   render() {
     //TERNARIOOOO
-    let showLocalTrack = this.state.localMediaAvailable ? (
-      <div className="flex-item">
-        {" "}
-        <div ref="localMedia" />{" "}
-      </div>
-    ) : (
+    let showLocalTrack = this.state.localMediaAvailable ?
+      (
+        <div className="flex-item">
+          {" "}
+          <div ref="localMedia" />{" "}
+        </div>
+      )
+      :
+      (
         ""
       );
-
-
-
-
+    console.log('Estado del componente', this.state)
     return (
 
       <div className="Views">
         {showLocalTrack}
         <div className="flex-item">
+          <div className="logoVideoConferencia">
+            {/* EN ESTE DIV TIENE QUE IR EL LOGO QUE SE MUESTRA EN LA VIDEOCONFERENCIA ARRIBA DE TODO */}
+
+            
+          </div>
+
+          <div className="divDelMedio">
+            {/* EN ESTE DIV SE VA A MOSTRAR LAS OPCIONES DE VISTA DE LA VIDEOCONFERENCIA Y LA LISTA DE PARTICIPANTES */}
+
+            
+          </div>
+
+          <div className="divDeAbajo">
+            {/* EN ESTE DIV SE VA A MOSTRAR EL CHAT, LA BARRA DE OPCIONES DE LA VIDEOCONFERENCIA Y LA CAMARA LOCAL */}
+
+
+
+          </div>
           {/* <TextField
                 hintText="Room Name"
                 onChange={this.handleRoomNameChange}
@@ -141,33 +156,36 @@ export default class VideoComponent extends Component {
                   this.state.roomNameErr ? "Room Name is required" : undefined
                 }
               /> */}
-
           <div>
             {
               // this.props.participants.map((participant) => <div id={} ref="" />)
               // Otro metodo para rederear el video de los participantes
             }
           </div>
-
           <div>
-
             <div ref="localMedia" id="local-media">
               {/* <RaisedButton
                 label="Leave Room"
                 secondary={true}
                 onClick={() => this.disconnected2()}
               /> */}
-              <ButtonBar disconnect={this.disconnected2}/>
+              <ButtonBar disconnect={this.disconnected2} handleOpenSendFile={this.handleOpenSendFile} />
             </div>
             <div id='totalRemote'>
-
               <div ref="remoteMedia" id='remote-media' />
-
             </div>
             <div>
               <Chat room={this.props.match.params.code} />
             </div>
 
+            <Dialog
+              open={this.state.sendFileOpen}
+              onClose={this.handleCloseSendFile}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <UploadFiles handleCloseSendFile={this.handleCloseSendFile} roomCode={this.props.match.params.code}/>
+            </Dialog>
 
           </div>
         </div>
@@ -192,13 +210,13 @@ function participantConnected(participant) {
       trackSubscribed(div, publication.track);
     }
   });
+
   let remoteMedias = document.getElementById('remote-media');
   remoteMedias.style.height = '150px'
   remoteMedias.appendChild(div);
 }
 
 function participantDisconnected() {
-  console.log(state.participant)
   // document.getElementById(participant.sid).remove();
 }
 

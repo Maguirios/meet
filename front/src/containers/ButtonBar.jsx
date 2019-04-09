@@ -55,7 +55,7 @@ export class ButtonBar extends Component {
                 <Button className={classes.timeCall}><p className={classes.timer}>{format(timer)}</p></Button>
                 <Button className={classes.micCam}><img src="/utils/images/video.svg" className={classes.icons} /></Button>
                 <Button className={classes.micCam}><img src="/utils/images/mute.svg" className={classes.icons} /></Button>
-                <Button className={classes.micCam}><img src="/utils/images/share-screen.svg" className={classes.icons} /></Button>
+                <Button className={classes.micCam} onClick={() => this.props.handleOpenSendFile()}><img src="/utils/images/share-screen.svg" className={classes.icons} /></Button>
                 <Button className={classes.timeCall} onClick={this.props.disconnect}><img src="/utils/images/end-call.svg" className={classes.icons} /></Button>
             </div>
         )

@@ -75,6 +75,17 @@ class UploadFiles extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
+  componentDidMount() {
+    firebase.database().ref(`rooms/${this.props.roomCode}/messages/`).on('value', snapshoot => {
+      const actMsj = snapshoot.val()
+      if (actMsj !== null) {
+        this.setState({
+          messages: actMsj,
+        })
+      }
+    })
+  }
+
   drop(e) {
     e.preventDefault()
     const file = e.dataTransfer.files[0]
@@ -90,16 +101,20 @@ class UploadFiles extends React.Component {
   handleSubmit(e){
     e.preventDefault()
     const file = this.state.file
-    var storageRef = firebase.storage().ref('meet/' + file.name)
+    var storageRef = firebase.storage().ref(`meet/${this.props.roomCode}/${file.name}`)
     storageRef.put(file)
     const newMessage = {
+      id: (this.state.messages)? this.state.messages.length : 0,
       username: 'Usuario',
-      textMessage: file.name,
+      fileName: file.name,
+      fileSize: (this.state.file.size / 1024).toFixed(2) + ' KB',
       document: true,
       time: moment().format('LT')
     }
-    firebase.database().ref(`rooms/${this.props.room}/messages/${newMessage.id}`)
+    firebase.database().ref(`rooms/${this.props.roomCode}/messages/${newMessage.id}`)
       .set(newMessage)
+      .then(() => this.props.handleCloseSendFile())
+      .catch(error => console.log('Mi error fue', error))
   }
   render() {
     const { classes } = this.props
@@ -108,7 +123,7 @@ class UploadFiles extends React.Component {
         <div className={classes.headerUpload}>
           <p className={classes.titleUpload}>ENVIAR ARCHIVO</p>
           <div className={classes.cancelContainer}>
-            <p className={classes.cancel}>X</p>
+            <p className={classes.cancel} onClick={() => this.props.handleCloseSendFile()}>X</p>
           </div>
         </div>
         <section className={classes.contentUploadContainer}>

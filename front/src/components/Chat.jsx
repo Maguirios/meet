@@ -7,6 +7,7 @@ import Input from '@material-ui/core/Input';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
+import Axios from 'axios';
 
 
 const styles = theme => ({
@@ -23,10 +24,8 @@ const styles = theme => ({
     width: 200,
     borderRadius: 5,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    paddingLeft: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
-    marginBottom: 5
+    padding: 10,
+    marginBottom: 5,
   },
   inputField: {
     width: 200,
@@ -39,7 +38,7 @@ const styles = theme => ({
   },
   text: {
     width: 180,
-    fontFamily: 'Avenir',
+    fontFamily: 'Roboto',
     fontSize: 12,
     fontWeight: 500,
     fontStyle: 'normal',
@@ -50,9 +49,8 @@ const styles = theme => ({
     'word-break': 'break-all'
   },
   name: {
-    fontFamily: 'Avenir',
+    fontFamily: 'Roboto',
     fontSize: 9,
-    fontWeight: 900,
     fontStyle: 'normal',
     fontStretch: 'normal',
     lineHeight: 'normal',
@@ -61,7 +59,7 @@ const styles = theme => ({
   },
   hora: {
     height: 16,
-    fontFamily: 'Avenir',
+    fontFamily: 'Roboto',
     fontSize: 12,
     fontWeight: 500,
     fontStyle: 'normal',
@@ -73,6 +71,7 @@ const styles = theme => ({
   container: {
     maxHeight: 200,
     width: 235,
+    maxWidth: 500,
     overflowY: 'scroll',
     overflowX: 'hidden'
   },
@@ -80,9 +79,8 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     width: 34,
     height: 12,
-    fontFamily: 'Avenir',
+    fontFamily: 'Roboto',
     fontSize: 9,
-    fontWeight: 900,
     fontStyle: 'normal',
     fontStretch: 'normal',
     lineHeight: 'normal',
@@ -95,6 +93,46 @@ const styles = theme => ({
   columns: {
     display: 'grid',
     'grid-template-columns': '3fr 1fr'
+  },
+  archivo: {
+    display: 'grid',
+    width: 180,
+    height: 44,
+    borderRadius: 2,
+    backgroundColor: '#ffffff',
+    padding: 5,
+    paddingLeft: 10,
+    alignItems: 'center',
+    margin: '0 auto',
+    '&:hover': {
+      cursor: 'pointer'
+    }
+  },
+  fileSize: {
+    fontSize: 12,
+    fontWeight: 500,
+    color: '#8d9aa3',
+  },
+  fileName: {
+    fontFamily: 'Roboto',
+    fontSize: 12,
+    fontWeight: 700,
+    fontStyle: 'normal',
+    fontStretch: 'normal',
+    lineHeight: 'normal',
+    letterSpacing: 'normal',
+    color: '#5c6f7b',
+  },
+  fileAction: {
+    fontFamily: 'Roboto',
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    fontStretch: 'normal',
+    lineHeight: 'normal',
+    letterSpacing: 'normal',
+    color: '#ffffff',
+    marginBottom: 3
   }
 });
 
@@ -117,9 +155,58 @@ class Chat extends React.Component {
           messages: actMsj,
         })
       }
-      var show = document.getElementById('style-1').lastChild
-      show.scrollIntoView(false)
+      else{
+        var show = document.getElementById('style-1').lastChild;
+      }
+      (show)? show.scrollIntoView(false) : null
     })
+  }
+
+  handleDownload(fileName) {
+
+    var storage = firebase.storage();
+
+    // Create a storage reference from our storage service
+    var storageRef = storage.ref();
+
+    //var  pathReference= storage.refFromURL('my url obtained from file properties in firebase storage');
+    var pathReference = storageRef.child(`meet/${fileName}`);
+
+    // Get the download URL
+    pathReference.getDownloadURL().then(function (url) {
+      Axios({
+        url: url,
+        method: 'GET',
+        responseType: 'blob',
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+      });
+    }).catch(function (error) {
+      switch (error.code) {
+        case 'storage/object-not-found':
+          alert(error.message);
+          // File doesn't exist
+          break;
+        case 'storage/unauthorized':
+          alert(error.message);
+          // User doesn't have permission to access the object
+          break;
+        case 'storage/canceled':
+          alert(error.message);
+          // User canceled the upload
+          break;
+        case 'storage/unknown':
+          alert(error.message);
+          // Unknown error occurred, inspect the server response
+          break;
+      }
+    });
   }
 
   handleSubmit(e) {
@@ -142,7 +229,6 @@ class Chat extends React.Component {
   handleChangeMessage(event) {
     const value = event.target.value;
     this.setState({ message: value })
-
   }
 
   render() {
@@ -156,13 +242,26 @@ class Chat extends React.Component {
         <div>
           <div id="style-1" >
             {this.state.messages.map(txt => {
-              return <div className={classes.Field} key={txt.id}>
-                <div className={classes.columns}>
-                  <div className={classes.name} >{txt.username.toUpperCase()}</div>
-                  <div className={classes.hora}>{txt.time}</div>
+              return (txt.document) ?
+                <div className={classes.Field} key={txt.id}>
+                  <div className={classes.columns}>
+                    <div className={classes.name} >{txt.username.toUpperCase()}</div>
+                    <div className={classes.hora}>{txt.time}</div>
+                    <div className={classes.fileAction} >Ha subido un archivo</div>
+                  </div>
+                  <div className={classes.archivo} onClick={() => this.handleDownload(txt.fileName)}>
+                    <div className={classes.fileName}>{txt.fileName}</div>
+                    <div className={classes.fileSize}>{txt.fileSize}</div>
+                  </div>
                 </div>
-                <div className={classes.text}>{txt.textMessage}</div>
-              </div>
+                :
+                <div className={classes.Field} key={txt.id}>
+                  <div className={classes.columns}>
+                    <div className={classes.name} >{txt.username.toUpperCase()}</div>
+                    <div className={classes.hora}>{txt.time}</div>
+                  </div>
+                  <div className={classes.text}>{txt.textMessage}</div>
+                </div>
             })}
           </div>
         </div>
