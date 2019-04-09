@@ -13,6 +13,7 @@ import Conexion from './Conexion'
 import SalaEspera from './SalaEspera'
 import firebase from '../firebase';
 import CreateRoom from './createRoom';
+import UploadFiles from './UploadFiles';
 
 class Main extends Component {
   constructor(props) {
@@ -24,13 +25,23 @@ class Main extends Component {
     this.signOut = this.signOut.bind(this)
     this.update = this.update.bind(this)
   }
-
+  
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.setState({ user })
       }
     });
+
+    let db = firebase.database().ref('rooms')
+     
+     db.on('value', snapshoot => {
+         console.log(Object.values(snapshoot.val()).filter((room) => (
+             room.emails.some((user) => user === this.state.user.email)
+         )))
+     })
+
+    setInterval(this.update, 5000);
   }
 
   signOut() {
@@ -43,7 +54,6 @@ class Main extends Component {
   }
   update() { this.setState({ time: moment().format('LT') }) };
   render() {
-    let newTime = setInterval(this.update, 60000);
 
     const { classes } = this.props;
     return (
@@ -85,6 +95,7 @@ class Main extends Component {
             <Route path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
             <Route path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user} />} />
             <Route path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={this.state.user} />} />
+            <Route path='/probando' render={() => <UploadFiles />} />
             <Route exact path='/' component={Code} />
           </div>
         </div>

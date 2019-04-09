@@ -35,18 +35,21 @@ const styles = theme => ({
 });
 
 export class ButtonBar extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props)
 
-    this.state = {
-      timer: 0
-    };
-  }
+        this.state = {
+            timer: 0,
+        }
+    }
+    componentDidMount(){
+        setInterval(() => {this.setState({timer: this.state.timer += 1})}, 1000);
+    }
 
-  render() {
-    const { classes } = this.props;
-    // const { timer } = this.state
-    // setInterval(() => {this.setState({timer: this.state.timer += 1})}, 1000);
+    render() {
+        const { classes } = this.props
+        const { timer } = this.state
+
 
     return (
       <div>
