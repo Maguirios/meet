@@ -51,9 +51,6 @@ export default class VideoComponent extends Component {
   }
 
 
-  handleClick() {
-    console.log(this.state)
-  }
   // Se una a la sala
   joinRoom() {
 

@@ -1,5 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
+const bodyParser = require('body-parser');
+
 
 const app = express();
 var path = require("path");
@@ -14,14 +16,20 @@ const Twilio = require("twilio");
 const client = new Twilio(ACCOUNT_SID, API_SECRET, { accountSid: ACCOUNT_SID });
 const faker = require("faker");
 
+const apiRoutes = require('./routes/email');
 
 app.set("port", process.env.PORT || 3000);
 
 //middleware
 app.use(morgan("dev"));
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.resolve(__dirname + "/public")));
+
+app.use('/api', apiRoutes);
 
 
 app.get("/token", function(request, response) {

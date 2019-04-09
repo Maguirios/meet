@@ -11,6 +11,8 @@ import { InlineDatePicker, TimePicker, MuiPickersUtilsProvider } from "material-
 import MomentUtils from "@date-io/moment";
 import firebase from '../firebase';
 import "moment/locale/es";
+import axios from 'axios'
+
 
 
 const styles = theme => ({
@@ -118,7 +120,7 @@ export class createRoom extends Component {
     let newRoom = {
       code: roomCode,
       name: this.state.room,
-      emails: this.state.email.replace(/\s/g, "").split(','),
+      emails: this.state.email.replace(/\s/g, "").split(',').concat(this.props.currentUser.email),
       time: this.state.selectedTime.format('LT'),
       date: this.state.selectedDate.format('LL'),
     }
@@ -128,6 +130,35 @@ export class createRoom extends Component {
       })
       this.setState({created:true})
       this.setState({roomCode})
+
+      var data = {
+        data: {
+          'message': {
+            'from_email': 'meet.plataforma5@gmail.com',
+            'to': [],
+            'autotext': 'true',
+            'subject': 'Te invitaron a una video conferencia en meet',
+            'html': 'emailsemails<p>Holaaa</p>'
+          }
+        }
+       }
+      
+       var emails = this.state.email.replace(/\s/g, "").split(',')
+     
+       emails.map( guestEmail => {
+        var guests = {
+           'email': guestEmail,
+           'type': 'to' 
+         }
+         data.data.message.to.push(guests)
+         
+       })
+ 
+      
+      axios.post('/api/sendEmail', data )
+      .then(email => {
+        console.log(email)    
+      })
   }
 
   render() {
