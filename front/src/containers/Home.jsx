@@ -25,13 +25,23 @@ class Main extends Component {
     this.signOut = this.signOut.bind(this)
     this.update = this.update.bind(this)
   }
-
+  
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.setState({ user })
       }
     });
+
+    let db = firebase.database().ref('rooms')
+     
+     db.on('value', snapshoot => {
+         console.log(Object.values(snapshoot.val()).filter((room) => (
+             room.emails.some((user) => user === this.state.user.email)
+         )))
+     })
+
+    setInterval(this.update, 5000);
   }
 
   signOut() {
@@ -44,7 +54,6 @@ class Main extends Component {
   }
   update() { this.setState({ time: moment().format('LT') }) };
   render() {
-    let newTime = setInterval(this.update, 60000);
 
     const { classes } = this.props;
     return (
