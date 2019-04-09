@@ -2,7 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import firebase from '../firebase'
+import firebase from '../firebase';
+import * as moment from 'moment';
+import { connect } from 'react-redux';
 
 const styles = theme => ({
   uploadContainer: {
@@ -90,10 +92,17 @@ class UploadFiles extends React.Component {
     const file = this.state.file
     var storageRef = firebase.storage().ref('meet/' + file.name)
     storageRef.put(file)
+    const newMessage = {
+      username: 'Usuario',
+      textMessage: file.name,
+      document: true,
+      time: moment().format('LT')
+    }
+    firebase.database().ref(`rooms/${this.props.room}/messages/${newMessage.id}`)
+      .set(newMessage)
   }
   render() {
     const { classes } = this.props
-    console.log('estado', this.state)
     return (
       <div className={classes.uploadContainer} >
         <div className={classes.headerUpload}>
@@ -151,4 +160,11 @@ UploadFiles.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(UploadFiles);
+const mapStateToProps = (state) => ({
+  userName: state.users.userName,
+});
+const mapDispatchToProps = (dispatch) => ({
+
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(UploadFiles));
