@@ -18,6 +18,8 @@ const styles = theme => ({
         color: 'white'
     },
     Field: {
+        display: 'grid',
+        'grid-auto-rows': 'minmax(30px, auto) ',
         width: 200,
         borderRadius: 5,
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -36,8 +38,7 @@ const styles = theme => ({
         marginTop: 5
     },
     text: {
-        width: 69,
-        height: 16,
+        width: 180,
         fontFamily: 'Avenir',
         fontSize: 12,
         fontWeight: 500,
@@ -45,11 +46,10 @@ const styles = theme => ({
         fontStretch: 'normal',
         lineHeight: 'normal',
         letterSpacing: 'normal',
-        color: '#ffffff'
+        color: '#ffffff', 
+        'word-break':'break-all'
     },
     name: {
-        width: 45,
-        height: 12,
         fontFamily: 'Avenir',
         fontSize: 9,
         fontWeight: 900,
@@ -60,7 +60,6 @@ const styles = theme => ({
         color: '#8d9aa3'
     },
     hora: {
-        width: 69,
         height: 16,
         fontFamily: 'Avenir',
         fontSize: 12,
@@ -69,8 +68,7 @@ const styles = theme => ({
         fontStretch: 'normal',
         lineHeight: 'normal',
         letterSpacing: 'normal',
-        color: '#ffffff',
-        marginLeft: 75
+        color: '#ffffff'
     },
     container: {
         maxHeight: 200,
@@ -93,6 +91,10 @@ const styles = theme => ({
         color: '#8d9aa3',
         paddingLeft: 55
 
+    },
+    columns:{
+        display: 'grid',
+        'grid-template-columns': '3fr 1fr'
     }
 });
 
@@ -154,23 +156,22 @@ class Chat extends React.Component {
 
         time = moment().format('LT')
 
-        console.log('this.propssssss', this.props)
         const { classes } = this.props;
         return (
             <div>
-                <Grid container >
-                    <div className={classes.container} id="style-1" >
+                <div>
+                    <div id="style-1" >
                         {this.state.messages.map(txt => {
                             return <div className={classes.Field} key={txt.id}>
-                                <Grid container>
-                                    <Grid item sm className={classes.name} >{txt.username}</Grid>
-                                    <Grid item sm className={classes.hora}>{txt.time}</Grid>
-                                </Grid>
+                             <div className = {classes.columns}>
+                                    <div className={classes.name} >{txt.username.toUpperCase()}</div>
+                                    <div className={classes.hora}>{txt.time}</div>
+                                </div>
                                 <div className={classes.text}>{txt.textMessage}</div>
                             </div>
                         })}
                     </div>
-                </Grid>
+                </div>
                 <form onSubmit={this.handleSubmit} >
                     <div className={classes.inputField}>
                         <Grid container>

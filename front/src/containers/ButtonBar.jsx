@@ -46,7 +46,7 @@ export class ButtonBar extends Component {
     render() {
         const { classes } = this.props
         const { timer } = this.state
-        setInterval(() => {this.setState({timer: this.state.timer += 1})}, 1000);
+        // setInterval(() => {this.setState({timer: this.state.timer += 1})}, 1000);
 
         return (
             <div>
