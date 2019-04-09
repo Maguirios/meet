@@ -14,6 +14,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import firebase from '../firebase';
 
 const styles = theme => ({
   container: {
@@ -78,8 +79,7 @@ class Code extends React.Component {
       name: '',
       code: '',
       open: false,
-      error: ''
-
+      error: '',
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChangeName = this.handleChangeName.bind(this)
@@ -95,13 +95,12 @@ class Code extends React.Component {
     e.preventDefault();
     const user = this.state.name
     if(this.state.name.replace(/\s/g, "") && this.state.code.replace(/\s/g, "")){
-      firebase.database().ref(`rooms/${this.props.match.params.code}`).on('value', snapshoot => {
+      firebase.database().ref(`rooms/${this.state.code}`).on('value', snapshoot => {
         if (!snapshoot.val()) {
           try {
           throw new Error("Esta sala no existe");
         } catch (e) {
-          var errorMessage = Error.message;
-          this.setState({ error: errorMessage, open: true })
+          this.setState({ error: "Esta sala no existe", open: true })
         }
         } else{
           this.props.setUser(user)
@@ -109,13 +108,8 @@ class Code extends React.Component {
         }
       })
     } else {
-      try {
-        throw new Error("Debe completar ambos campos");
-      } catch (e) {
-        var errorMessage = Error.message;
-        this.setState({ error: errorMessage, open: true })
+        this.setState({ error: "Debe completar ambos campos", open: true })
       }
-    }
 
   }
 
@@ -130,6 +124,7 @@ class Code extends React.Component {
   }
   render() {
     const { classes } = this.props;
+    const { error } = this.state;
     return (
       <div>
         <Grid
@@ -186,7 +181,7 @@ class Code extends React.Component {
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
                   >
-                    <DialogTitle id="alert-dialog-title">{this.state.error}</DialogTitle>
+                    <DialogTitle >{error}</DialogTitle>
                     <DialogContent>
                       <DialogContentText id="alert-dialog-description">
                        { this.state.error === "Debe completar ambos campos" ? 'Para continuar debe ingresar los 4 digitos del codigo video conferencia y su nombre' : 'Compruebe se código de sala' }
