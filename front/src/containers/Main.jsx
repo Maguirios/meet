@@ -13,16 +13,6 @@ import firebase from '../firebase';
 
 class Main extends Component {
 
-    componentDidMount(){
-       let db = firebase.database().ref('rooms')
-        
-        db.on('value', snapshoot => {
-            console.log(Object.values(snapshoot.val()).filter((room) => (
-                room.emails.some((user) => user === 'ombaez@gmail.com')
-            )))
-        })
-    }
-
 
     render() {
         return (
@@ -30,7 +20,6 @@ class Main extends Component {
                 <MuiThemeProvider muiTheme={GetMuiTheme(lightBaseTheme)} >
                         <Switch>
                             <Route path='/room/:code' render={({ history, match }) => <Streaming match={match} history={history} />} />
-                            <Route path='/buttons' component={ButtonBar} />
                             <Route path='/' component={Home} />
                         </Switch>
                 </MuiThemeProvider>

@@ -31,6 +31,15 @@ class Main extends Component {
         this.setState({ user })
       }
     });
+
+    let db = firebase.database().ref('rooms')
+     
+     db.on('value', snapshoot => {
+         console.log(Object.values(snapshoot.val()).filter((room) => (
+             room.emails.some((user) => user === this.state.user.email)
+         )))
+     })
+
     setInterval(this.update, 5000);
   }
 

@@ -83,11 +83,18 @@ class Code extends React.Component {
     e.preventDefault();
     const user = this.state.name
     if(this.state.name.replace(/\s/g, "") && this.state.code.replace(/\s/g, "")){
-      this.props.setUser(user)
-      this.props.history.push(`/room/${this.state.code}`)
+      firebase.database().ref(`rooms/${this.props.match.params.code}`).on('value', snapshoot => {
+        if (!snapshoot.val()) {
+          alert('Esta sala no existe')
+        } else{
+          this.props.setUser(user)
+          this.props.history.push(`/room/${this.state.code}`)
+        }
+      })
     }else{
       alert('Ambos campos son requeridos')
     }
+
   }
 
   handleChangeName(event) {
