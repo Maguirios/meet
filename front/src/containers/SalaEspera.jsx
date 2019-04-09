@@ -8,8 +8,6 @@ function SalaEspera() {
       </div>
 
       <h4 id='text-permisos'> Esperando otros participantes <br/> Eres el único en esta sala </h4>
-
-     <i  id ='telephone' className="material-icons">local_phone</i>
     </div>
   )
 }
