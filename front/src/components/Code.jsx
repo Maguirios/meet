@@ -96,7 +96,7 @@ class Code extends React.Component {
     const user = this.state.name
     if (this.state.name.replace(/\s/g, "") && this.state.code.replace(/\s/g, "")) {
       this.props.setUser(user)
-      this.props.history.push(`/chat`)
+      this.props.history.push(`/room/${this.state.code}`)
     } else {
       try {
         throw new Error("required inputs");
