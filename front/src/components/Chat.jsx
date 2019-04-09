@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 
 
 const styles = theme => ({
-<<<<<<< HEAD
   container: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -19,6 +18,8 @@ const styles = theme => ({
     color: 'white'
   },
   Field: {
+    display: 'grid',
+    'grid-auto-rows': 'minmax(30px, auto) ',
     width: 200,
     borderRadius: 5,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -37,8 +38,7 @@ const styles = theme => ({
     marginTop: 5
   },
   text: {
-    width: 69,
-    height: 16,
+    width: 180,
     fontFamily: 'Avenir',
     fontSize: 12,
     fontWeight: 500,
@@ -46,11 +46,10 @@ const styles = theme => ({
     fontStretch: 'normal',
     lineHeight: 'normal',
     letterSpacing: 'normal',
-    color: '#ffffff'
+    color: '#ffffff',
+    'word-break': 'break-all'
   },
   name: {
-    width: 45,
-    height: 12,
     fontFamily: 'Avenir',
     fontSize: 9,
     fontWeight: 900,
@@ -61,7 +60,6 @@ const styles = theme => ({
     color: '#8d9aa3'
   },
   hora: {
-    width: 69,
     height: 16,
     fontFamily: 'Avenir',
     fontSize: 12,
@@ -70,8 +68,7 @@ const styles = theme => ({
     fontStretch: 'normal',
     lineHeight: 'normal',
     letterSpacing: 'normal',
-    color: '#ffffff',
-    marginLeft: 75
+    color: '#ffffff'
   },
   container: {
     maxHeight: 200,
@@ -94,95 +91,11 @@ const styles = theme => ({
     color: '#8d9aa3',
     paddingLeft: 55
 
+  },
+  columns: {
+    display: 'grid',
+    'grid-template-columns': '3fr 1fr'
   }
-=======
-    container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    input: {
-        color: 'white'
-    },
-    Field: {
-        display: 'grid',
-        'grid-auto-rows': 'minmax(30px, auto) ',
-        width: 200,
-        borderRadius: 5,
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        paddingLeft: 15,
-        paddingTop: 15,
-        paddingBottom: 15,
-        marginBottom: 5
-    },
-    inputField: {
-        width: 200,
-        borderRadius: 5,
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        paddingLeft: 15,
-        paddingTop: 10,
-        paddingBottom: 10,
-        marginTop: 5
-    },
-    text: {
-        width: 180,
-        fontFamily: 'Avenir',
-        fontSize: 12,
-        fontWeight: 500,
-        fontStyle: 'normal',
-        fontStretch: 'normal',
-        lineHeight: 'normal',
-        letterSpacing: 'normal',
-        color: '#ffffff', 
-        'word-break':'break-all'
-    },
-    name: {
-        fontFamily: 'Avenir',
-        fontSize: 9,
-        fontWeight: 900,
-        fontStyle: 'normal',
-        fontStretch: 'normal',
-        lineHeight: 'normal',
-        letterSpacing: 'normal',
-        color: '#8d9aa3'
-    },
-    hora: {
-        height: 16,
-        fontFamily: 'Avenir',
-        fontSize: 12,
-        fontWeight: 500,
-        fontStyle: 'normal',
-        fontStretch: 'normal',
-        lineHeight: 'normal',
-        letterSpacing: 'normal',
-        color: '#ffffff'
-    },
-    container: {
-        maxHeight: 200,
-        width: 235,
-        overflowY: 'scroll',
-        overflowX: 'hidden'
-    },
-    enviar: {
-        margin: theme.spacing.unit,
-        width: 34,
-        height: 12,
-        fontFamily: 'Avenir',
-        fontSize: 9,
-        fontWeight: 900,
-        fontStyle: 'normal',
-        fontStretch: 'normal',
-        lineHeight: 'normal',
-        letterSpacing: 'normal',
-        textAlign: 'center',
-        color: '#8d9aa3',
-        paddingLeft: 55
-
-    },
-    columns:{
-        display: 'grid',
-        'grid-template-columns': '3fr 1fr'
-    }
->>>>>>> 0e9966cb6311990a0e2c29c21ca59c8aa3e279d1
 });
 
 class Chat extends React.Component {
@@ -226,57 +139,57 @@ class Chat extends React.Component {
         show.scrollIntoView(false)
       })
   }
-    handleChangeMessage(event) {
-        const value = event.target.value;
-        this.setState({ message: value })
+  handleChangeMessage(event) {
+    const value = event.target.value;
+    this.setState({ message: value })
 
-    }
-   
-    render() {
-        let time = 0
+  }
 
-        time = moment().format('LT')
+  render() {
+    let time = 0
 
-        const { classes } = this.props;
-        return (
-            <div>
-                <div>
-                    <div id="style-1" >
-                        {this.state.messages.map(txt => {
-                            return <div className={classes.Field} key={txt.id}>
-                             <div className = {classes.columns}>
-                                    <div className={classes.name} >{txt.username.toUpperCase()}</div>
-                                    <div className={classes.hora}>{txt.time}</div>
-                                </div>
-                                <div className={classes.text}>{txt.textMessage}</div>
-                            </div>
-                        })}
-                    </div>
+    time = moment().format('LT')
+
+    const { classes } = this.props;
+    return (
+      <div>
+        <div>
+          <div id="style-1" >
+            {this.state.messages.map(txt => {
+              return <div className={classes.Field} key={txt.id}>
+                <div className={classes.columns}>
+                  <div className={classes.name} >{txt.username.toUpperCase()}</div>
+                  <div className={classes.hora}>{txt.time}</div>
                 </div>
-                <form onSubmit={this.handleSubmit} >
-                    <div className={classes.inputField}>
-                        <Grid container>
-                            <Grid item sm>
-                                <Input
-                                    placeholder="Escribe algo"
-                                    onChange={this.handleChangeMessage}
-                                    value={this.state.message}
-                                    className={classes.input}
-                                    inputProps={{
-                                        'aria-label': 'Description',
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item sm>
-                                <Button type='submit' className={classes.enviar}>ENVIAR</Button>
-                            </Grid>
-                        </Grid>
-                    </div>
+                <div className={classes.text}>{txt.textMessage}</div>
+              </div>
+            })}
+          </div>
+        </div>
+        <form onSubmit={this.handleSubmit} >
+          <div className={classes.inputField}>
+            <Grid container>
+              <Grid item sm>
+                <Input
+                  placeholder="Escribe algo"
+                  onChange={this.handleChangeMessage}
+                  value={this.state.message}
+                  className={classes.input}
+                  inputProps={{
+                    'aria-label': 'Description',
+                  }}
+                />
+              </Grid>
+              <Grid item sm>
+                <Button type='submit' className={classes.enviar}>ENVIAR</Button>
+              </Grid>
+            </Grid>
+          </div>
 
-                </form>
-            </div>
-        )
-    }
+        </form>
+      </div>
+    )
+  }
 }
 
 Chat.propTypes = {
