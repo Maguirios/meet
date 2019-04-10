@@ -22,7 +22,7 @@ export default class VideoComponent extends Component {
       participant: [],
       localId: "",
       Video: true,
-      audio: true
+      audio: true,
     };
     this.joinRoom = this.joinRoom.bind(this);
     this.disconnected2 = this.disconnected2.bind(this);
@@ -54,6 +54,8 @@ export default class VideoComponent extends Component {
       this.setState({ identity, token });
     });
   }
+
+
 
   joinRoom() {
     let connectOptions = {
@@ -134,6 +136,7 @@ export default class VideoComponent extends Component {
     const div = document.createElement("div");
     div.id = participant.sid;
     div.innerText = participant.identity;
+
     participant.on("trackSubscribed", track =>
       this.trackSubscribed(div, track)
     );
@@ -170,15 +173,14 @@ export default class VideoComponent extends Component {
     ) : (
       ""
     );
-    this.state.participant
-      ? console.log("aqui los tengo", this.state.participant[0])
+    this.state.participant[0]
+      ? console.log("aqui los tengo", this.state.participant)
       : null;
       
     this.state.participant.map(participants=>(
       console.log("holaaa",participants)
       ))
-
-    return (
+      return (
       <div className="Views">
         {showLocalTrack}
         <div className="flex-item">
@@ -190,23 +192,21 @@ export default class VideoComponent extends Component {
                 audioDisable={this.audioDisable}
               />
             </div>
-            {/* {this.state.participant ? (
+            {this.state.participant ? (
               <div id="totalRemote">
-                {this.state.participant.map(participats => {
-                  console.log("adsadasd", participats.sid);
-                 
-                    <div key={participats.sid}>
+                {this.state.participant.map(participants => {
+                  console.log("PAAARTICIPANT", (participants.tracks.values().next().value));
+                    <div key={participants.sid}>
                       <div ref="remoteMedia" id="remote-media" />
                     </div>
                  
                 })}
               </div>
-            ) : null} */}
+            ) : null}
             <div id="totalRemote">
             <div ref={this.state.participant.sid} id="remote-media" />
             </div>
             <div>
-
               <Chat room={this.props.match.params.code} />
             </div>
           </div>

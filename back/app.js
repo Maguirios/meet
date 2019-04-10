@@ -44,22 +44,6 @@ app.get("/token", function(request, response) {
   });
 });
 
-client.video.compositions.
-  create({
-    roomSid: 'RMXXXX',
-    audioSources: '*',
-    videoLayout: {
-      grid : {
-        video_sources: ['*']
-      }
-    },
-    statusCallback: 'http://my.server.org/callbacks',
-    format: 'mp4'
-  })
-  .then(composition =>{
-    console.log('Created Composition with SID=' + composition.sid);
-  });                                                                                                                                        
-
   app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/public/index.html')
   })
