@@ -253,7 +253,8 @@ export class createRoom extends Component {
       <Grid>
         <p className={classes.text}>La sala fue creada exitosamente {'\n'} y las invitaciones fueron enviadas.</p>
 
-        <p className={classes.text}>CODIGO{'\n'} {this.state.roomCode}</p>
+        <p className={classes.text}>CODIGO{this.state.roomCode}</p>
+        <p className={classes.text}>{this.state.roomCode}</p>
       </Grid>
       <Grid className={classes.buttons} container spacing={24}>
           <Grid item>
