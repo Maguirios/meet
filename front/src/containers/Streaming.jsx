@@ -2,8 +2,12 @@ import React, { Component } from "react";
 import Video from "twilio-video";
 import axios from "axios";
 import RaisedButton from "material-ui/RaisedButton";
+import TextField from "material-ui/TextField";
+import UploadFiles from './UploadFiles'
+import Dialog from '@material-ui/core/Dialog';
 import AddParticipant from './AddParticipant'
 import firebase from "../firebase";
+import { Card, CardHeader, CardText } from "material-ui/Card";
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
 import SalaEspera from "./SalaEspera";
@@ -22,16 +26,18 @@ export default class VideoComponent extends Component {
       activeRoom: null,
       participants: [],
       localId: "",
+      sendFileOpen: false,
       Video: true,
       audio: true,
       main: 0
     };
+
     this.joinRoom = this.joinRoom.bind(this);
     this.disconnected2 = this.disconnected2.bind(this);
-    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(
-      this
-    );
+    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(this);
     this.videoDisable = this.videoDisable.bind(this);
+    this.handleOpenSendFile = this.handleOpenSendFile.bind(this)
+    this.handleCloseSendFile = this.handleCloseSendFile.bind(this)
     this.audioDisable = this.audioDisable.bind(this);
     this.participantConnected = this.participantConnected.bind(this);
     this.participantDisconnected = this.participantDisconnected.bind(this);
@@ -58,6 +64,9 @@ export default class VideoComponent extends Component {
     });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    prevState.identity
+  }
 
 
   joinRoom() {
@@ -108,24 +117,24 @@ export default class VideoComponent extends Component {
   videoDisable() {
     this.state.Video == true
       ? this.state.localId.videoTracks.forEach(videoTracks => {
-          videoTracks.track.disable();
-          this.setState({ Video: false });
-        })
+        videoTracks.track.disable();
+        this.setState({ Video: false });
+      })
       : this.state.localId.videoTracks.forEach(videoTracks => {
-          videoTracks.track.enable();
-          this.setState({ Video: true });
-        });
+        videoTracks.track.enable();
+        this.setState({ Video: true });
+      });
   }
   audioDisable() {
     this.state.audio == true
       ? this.state.localId.audioTracks.forEach(audioTracks => {
-          audioTracks.track.disable();
-          this.setState({ audio: false });
-        })
+        audioTracks.track.disable();
+        this.setState({ audio: false });
+      })
       : this.state.localId.audioTracks.forEach(audioTracks => {
-          audioTracks.track.enable();
-          this.setState({ audio: true });
-        });
+        audioTracks.track.enable();
+        this.setState({ audio: true });
+      });
   }
   mainScreen(participant) {
     if (this.state.main == 0) {
@@ -166,7 +175,6 @@ export default class VideoComponent extends Component {
       this.trackSubscribed(div, track);
     });
     participant.on("trackUnsubscribed", this.trackUnsubscribed);
-
     participant.tracks.forEach(publication => {
       if (publication.isSubscribed) {
         trackSubscribed(div, publication.track);
@@ -176,7 +184,6 @@ export default class VideoComponent extends Component {
     let remoteMedias = document.getElementById("remote-media");
     remoteMedias.appendChild(div);
   }
-
   participantDisconnected(participant) {
     document.getElementById(participant.sid).remove();
   }
@@ -188,18 +195,41 @@ export default class VideoComponent extends Component {
   trackUnsubscribed(track) {
     track.detach().forEach(element => element.remove());
   }
+  handleOpenSendFile() {
+    this.setState({ sendFileOpen: true })
+  }
+  handleCloseSendFile() {
+    this.setState({ sendFileOpen: false });
+  };
+
+
+
   render() {
     console.log(this.state.participants);
     // if(this.state.participants.length>0)this.mainScreen(this.state.participants[0])
     return (
       <div>
+        <div className="logoVideoConferencia">
+          {/* EN ESTE DIV TIENE QUE IR EL LOGO QUE SE MUESTRA EN LA VIDEOCONFERENCIA ARRIBA DE TODO */}
+        </div>
+
+        <div className="divDelMedio">
+          {/* EN ESTE DIV SE VA A MOSTRAR LAS OPCIONES DE VISTA DE LA VIDEOCONFERENCIA Y LA LISTA DE PARTICIPANTES */}
+        </div>
+
+        <div className="divDeAbajo">
+          {/* EN ESTE DIV SE VA A MOSTRAR EL CHAT, LA BARRA DE OPCIONES DE LA VIDEOCONFERENCIA Y LA CAMARA LOCAL */}
+        </div>
+        
         <div ref="localMedia" id="local-media" />
         <AddParticipant room={this.props.match.params.code}/>
         <ButtonBar
           disconnect={this.disconnected2}
           videoDisable={this.videoDisable}
           audioDisable={this.audioDisable}
+          handleOpenSendFile={this.handleOpenSendFile}
         />
+
         <div id="totalRemote">
           <div
             onClick={() => console.log("holaaa")}
@@ -207,10 +237,21 @@ export default class VideoComponent extends Component {
             id="remote-media"
           />
         </div>
+
         <div ref="mainmedia" id="main-media" />
+
         <div>
           <Chat room={this.props.match.params.code} />
         </div>
+
+        <Dialog
+          open={this.state.sendFileOpen}
+          onClose={this.handleCloseSendFile}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <UploadFiles handleCloseSendFile={this.handleCloseSendFile} roomCode={this.props.match.params.code} />
+        </Dialog>
       </div>
     );
   }
