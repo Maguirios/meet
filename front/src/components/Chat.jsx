@@ -10,10 +10,6 @@ import { connect } from 'react-redux'
 
 
 const styles = theme => ({
-    container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
     input: {
         color: 'white'
     },
@@ -74,7 +70,10 @@ const styles = theme => ({
         maxHeight: 200,
         width: 235,
         overflowY: 'scroll',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
+        '&::-webkit-scrollbar':{
+            width: '1px'
+        }
     },
     enviar: {
         margin: theme.spacing.unit,
@@ -159,7 +158,7 @@ class Chat extends React.Component {
         const { classes } = this.props;
         return (
             <div>
-                <div>
+                <div className = {classes.container} id = 'style-1'>
                     <div id="style-1" >
                         {this.state.messages.map(txt => {
                             return <div className={classes.Field} key={txt.id}>

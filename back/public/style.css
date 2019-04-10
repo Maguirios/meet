@@ -59,9 +59,6 @@ body{
   border-radius: 5px;
   border: solid 2px #4dc2f1;
 }
-#style-1::-webkit-scrollbar {
-    width: 1px;
-} 
 
 .buttonsStyle {
   width: 110px;
