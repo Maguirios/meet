@@ -1,10 +1,11 @@
 body{
-  background-image: url('/utils/images/background.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  width: 97vh;
-  height: 97vh;
+    background-image: url('/utils/images/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 100vw;
+    height: 100vh;
+    margin: 0px
 }
 .home{
     display: grid;
@@ -101,13 +102,14 @@ body{
  margin-left: 10px;
  width: 500px;
 }
-/* .Views{  width: 150px;
-  height: 120px;
-  border-radius: 10px;
-  border: solid 5px rgba(255, 255, 255, 0.5);}
-   */
- #local-media video{
-    width: 150px;
+
+
+
+
+
+
+#local-media video{
+  width: 150px;
     height: 120px;
     border-radius: 10px;
     border: solid 5px rgba(255, 255, 255, 0.5);
@@ -191,4 +193,29 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0; 
 }
 
+/* ESTA ES LA GRILLA DE LA VIDEO CONFERENCIA, SUPER IMPORTANTE !!!! */
 
+.Views{  
+  width: 99vw;
+  height: 98vh;
+  border-radius: 10px;
+  border: solid 5px rgba(255, 255, 255, 0.5);
+  display: grid;
+  grid-template-rows: 10% 45% 45%
+}
+
+.logoVideoConferencia {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.divDelMedio {
+  display: grid;
+  grid-template-columns: 10% 90%;
+}
+
+.divDeAbajo {
+  display: grid;
+  grid-template-columns: 25% 50% 25%;
+}

@@ -35,20 +35,20 @@ const styles = theme => ({
 });
 
 export class ButtonBar extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.state = {
-            timer: 0,
-        }
+    this.state = {
+      timer: 0,
     }
-    componentDidMount(){
-        setInterval(() => {this.setState({timer: this.state.timer += 1})}, 1000);
-    }
+  }
+  componentDidMount() {
+    setInterval(() => { this.setState({ timer: this.state.timer += 1 }) }, 1000);
+  }
 
-    render() {
-        const { classes } = this.props
-        const { timer } = this.state
+  render() {
+    const { classes } = this.props
+    const { timer } = this.state
 
     return (
       <div>
@@ -67,9 +67,7 @@ export class ButtonBar extends Component {
             className={classes.icons}
           />
         </Button>
-        <Button className={classes.micCam}>
-          <img src="/utils/images/share-screen.svg" className={classes.icons} />
-        </Button>
+        <Button className={classes.micCam} onClick={() => this.props.handleOpenSendFile()}><img src="/utils/images/share-screen.svg" className={classes.icons} /></Button>
         <Button className={classes.timeCall} onClick={this.props.disconnect}>
           <img src="/utils/images/end-call.svg" className={classes.icons} />
         </Button>
