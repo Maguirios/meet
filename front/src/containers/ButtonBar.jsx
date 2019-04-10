@@ -19,7 +19,8 @@ const styles = theme => ({
   icons: {
     height: 30,
     width: 29,
-    objectFit: "contain"
+    objectFit: "contain",
+    float: 'rigth'
   },
   timer: {
     fontFamily: "Roboto",

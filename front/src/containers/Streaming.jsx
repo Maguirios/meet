@@ -11,6 +11,10 @@ import { Card, CardHeader, CardText } from "material-ui/Card";
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
 import SalaEspera from "./SalaEspera";
+import Fab from '@material-ui/core/Fab';
+import Icon from '@material-ui/core/Icon';
+import Button from '@material-ui/core/Button';
+
 
 export default class VideoComponent extends Component {
   constructor(props) {
@@ -32,7 +36,7 @@ export default class VideoComponent extends Component {
       main: 0
     };
 
-    this.joinRoom = this.joinRoom.bind(this);
+    // this.joinRoom = this.joinRoom.bind(this);
     this.disconnected2 = this.disconnected2.bind(this);
     this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(this);
     this.videoDisable = this.videoDisable.bind(this);
@@ -138,9 +142,9 @@ export default class VideoComponent extends Component {
   }
   mainScreen(participant) {
     if (this.state.main == 0) {
-      const div = document.createElement("div");
-      div.id = participant.sid;
-      div.innerText = participant.identity;
+      // const div = document.createElement("div");
+      // div.id = participant.sid;
+      // div.innerText = participant.identity;
 
       participant.on("trackSubscribed", track => {
         this.trackSubscribed(div, track);
@@ -168,7 +172,7 @@ export default class VideoComponent extends Component {
   participantConnected(participant) {
     const div = document.createElement("div");
     div.id = participant.sid;
-    div.innerText = participant.identity;
+    // div.innerText = participant.identity;
     this.state.participants.push(participant);
 
     participant.on("trackSubscribed", track => {
@@ -208,52 +212,66 @@ export default class VideoComponent extends Component {
     console.log(this.state.participants);
     // if(this.state.participants.length>0)this.mainScreen(this.state.participants[0])
     return (
-      <div>
+      <div className='Views'>
         <div className="logoVideoConferencia">
-          {/* EN ESTE DIV TIENE QUE IR EL LOGO QUE SE MUESTRA EN LA VIDEOCONFERENCIA ARRIBA DE TODO */}
+          <div className="logoConferencia">
+            <img className='logoConferencia' src='/utils/images/logor.png' />
+          </div>
         </div>
 
         <div className="divDelMedio">
           {/* EN ESTE DIV SE VA A MOSTRAR LAS OPCIONES DE VISTA DE LA VIDEOCONFERENCIA Y LA LISTA DE PARTICIPANTES */}
+          <div className="opcionesVista">
+            <Button onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
+              <img className='add-participant' src="/utils/images/layout.svg" />
+            </Button>
+            <Button onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
+              <img className='add-participant' src="/utils/images/layout-full.svg" />
+            </Button>
+          </div>
+
+          <div className="participantes">
+            <AddParticipant dataSala={this.state} />
+            <div id="totalRemote">
+              <div
+                onClick={() => console.log("holaaa")}
+                ref="remotmemedia"
+                id="remote-media"
+              />
+            </div>
+            <div ref="mainmedia" id="main-media" />
+          </div>
         </div>
 
         <div className="divDeAbajo">
-          {/* EN ESTE DIV SE VA A MOSTRAR EL CHAT, LA BARRA DE OPCIONES DE LA VIDEOCONFERENCIA Y LA CAMARA LOCAL */}
+          {/* AQUI SE MUESTRA EL CHAT */}
+          <div className="chat">
+            <Chat room={this.props.match.params.code} />
+          </div>
+
+          {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
+          <div className="barraOpciones">
+            <ButtonBar
+              disconnect={this.disconnected2}
+              videoDisable={this.videoDisable}
+              audioDisable={this.audioDisable}
+              handleOpenSendFile={this.handleOpenSendFile}
+            />
+          </div>
+
+          <div className='camaraLocal'>
+            <Dialog
+              open={this.state.sendFileOpen}
+              onClose={this.handleCloseSendFile}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <UploadFiles handleCloseSendFile={this.handleCloseSendFile} roomCode={this.props.match.params.code} />
+            </Dialog>
+            {/* EN ESTE DIV SE VA A MOSTRAR LA CAMARA DEL USUARIO QUE INGRESA A LA VIDEOCONFERENCIA */}
+            <div ref="localMedia" id="local-media" />
+          </div>
         </div>
-        
-        <div ref="localMedia" id="local-media" />
-
-        <AddParticipant dataSala={this.state} />
-
-        <ButtonBar
-          disconnect={this.disconnected2}
-          videoDisable={this.videoDisable}
-          audioDisable={this.audioDisable}
-          handleOpenSendFile={this.handleOpenSendFile}
-        />
-
-        <div id="totalRemote">
-          <div
-            onClick={() => console.log("holaaa")}
-            ref="remotmemedia"
-            id="remote-media"
-          />
-        </div>
-
-        <div ref="mainmedia" id="main-media" />
-
-        <div>
-          <Chat room={this.props.match.params.code} />
-        </div>
-
-        <Dialog
-          open={this.state.sendFileOpen}
-          onClose={this.handleCloseSendFile}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <UploadFiles handleCloseSendFile={this.handleCloseSendFile} roomCode={this.props.match.params.code} />
-        </Dialog>
       </div>
     );
   }

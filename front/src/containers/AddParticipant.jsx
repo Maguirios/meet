@@ -13,121 +13,123 @@ import { withStyles } from '@material-ui/core/styles';
 
 
 const styles = theme => ({
-    icon: {
-        height: 75,
-        width: 75,
-        objectFit: 'contain',
-        roomCode: ''
-    },
+  icon: {
+    height: 75,
+    width: 75,
+    objectFit: 'contain',
+  },
 
 });
 
 export class AddParticipant extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            open: false,
-            roomCode: '',
-            countEmails: []
-        }
-        this.handleClose = this.handleClose.bind(this);
-        this.handleClickOpen = this.handleClickOpen.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-    };
-    
-    componentDidMount(){
-        firebase.database().ref(`rooms/3361/emails/`).on("value", (snapshot) => {
-            console.log('El arreglo de emails', snapshot.val());
-            this.setState({ countEmails: snapshot.val()})
-        })
-        
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+      roomCode: '',
+      countEmails: []
     }
+    this.handleClose = this.handleClose.bind(this);
+    this.handleClickOpen = this.handleClickOpen.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  };
 
-    handleChange(e) {
-        this.setState({ [e.target.name]: e.target.value })
-        
-    }
+  componentDidMount() {
+    firebase.database().ref(`rooms/3361/emails/`).on("value", (snapshot) => {
+      console.log('El arreglo de emails', snapshot.val());
+      this.setState({ countEmails: snapshot.val() })
+    })
 
-    handleSubmit(e) {
-        e.preventDefault();
+  }
 
-        this.state.countEmails.push(this.state.email)
-        console.log('el estado local', this.state)
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value })
 
-        // let addEmail = this.state.countEmails.concat(this.state.email)
-        
-        console.log('HHHHHHH', this.state.countEmails)
-        // firebase.database().ref(`rooms/3361/emails`)
-        //     .set(addEmail)
-           
-        //     this.setState({ open: false })
+  }
 
+  handleSubmit(e) {
+    e.preventDefault();
 
+    this.state.countEmails.push(this.state.email)
+    console.log('el estado local', this.state)
 
-        // console.log('FIREBASE DATA', this.props)
-    }
+    // let addEmail = this.state.countEmails.concat(this.state.email)
 
+    console.log('HHHHHHH', this.state.countEmails)
+    // firebase.database().ref(`rooms/3361/emails`)
+    //     .set(addEmail)
 
-    handleClickOpen() {
-        this.setState({ open: true });
-    };
-
-    handleClose() {
-        this.setState({ open: false });
-    };
+    //     this.setState({ open: false })
 
 
-    render() {
-        const { dataSala } = this.props
-        console.log('El STATE PASADO POR PROPS', dataSala)
-        return (
-            <div>
 
-                <Button id='add-participant' onClick={this.handleClickOpen}>
-                    <img src="/utils/images/add-participant.svg" />
-                </Button>
-                <form autoComplete="off" >
-                    <Dialog
-                        open={this.state.open}
-                        onClose={this.handleClose}
-                        aria-labelledby="form-dialog-title"
-                    >
-                        <DialogTitle id="form-dialog-title">ENVIAR INVITACIÓN</DialogTitle>
-                        <DialogContent>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="name"
-                                label="Nombre"
-                                name='name'
-                                type="name"
-                                fullWidth
-                                onChange={this.handleChange}
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="name"
-                                label="Email Address"
-                                name='email'
-                                type="email"
-                                fullWidth
-                                onChange={this.handleChange}
-                            />
-                        </DialogContent>
-                        <DialogActions >
-                            <Button onClick={this.handleClose} color="primary">CANCEL</Button>
-                            <Button onClick={(e) => this.handleSubmit(e)} color="primary" >ENVIAR INVITACIÓN</Button>
-                        </DialogActions>
-                    </Dialog>
-                </form>
+    // console.log('FIREBASE DATA', this.props)
+  }
 
-            </div>
-        );
-    }
+
+  handleClickOpen() {
+    this.setState({ open: true });
+  };
+
+  handleClose() {
+    this.setState({ open: false });
+  };
+
+
+  render() {
+    const { dataSala } = this.props
+    const { classes } = this.props
+    const hola = this.props
+
+    console.log('Hola', hola)
+    return (
+      <div style={{ display: 'inline' }}>
+
+        <Button id='add-participant' onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
+          <img src="/utils/images/add-participant.svg" className={classes.icon} />
+        </Button>
+        <form autoComplete="off" >
+          <Dialog
+            open={this.state.open}
+            onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogTitle id="form-dialog-title">ENVIAR INVITACIÓN</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Nombre"
+                name='name'
+                type="name"
+                fullWidth
+                onChange={this.handleChange}
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Email Address"
+                name='email'
+                type="email"
+                fullWidth
+                onChange={this.handleChange}
+              />
+            </DialogContent>
+            <DialogActions >
+              <Button onClick={this.handleClose} color="primary">CANCEL</Button>
+              <Button onClick={(e) => this.handleSubmit(e)} color="primary" >ENVIAR INVITACIÓN</Button>
+            </DialogActions>
+          </Dialog>
+        </form>
+
+      </div>
+    );
+  }
 }
 const mapStateToProps = (state) => ({
-    userName: state.users.userName
+  userName: state.users.userName
 });
 
 const mapDispatchToProps = (dispatch) => ({
