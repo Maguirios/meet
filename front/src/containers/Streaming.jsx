@@ -194,7 +194,7 @@ export default class VideoComponent extends Component {
     return (
       <div>
         <div ref="localMedia" id="local-media" />
-        <AddParticipant dataSala={ this.state }/>
+        <AddParticipant room={this.props.match.params.code}/>
         <ButtonBar
           disconnect={this.disconnected2}
           videoDisable={this.videoDisable}
