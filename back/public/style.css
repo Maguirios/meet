@@ -113,9 +113,9 @@ body{
     height: 120px;
     border-radius: 10px;
     border: solid 5px rgba(255, 255, 255, 0.5);
-    position: fixed;
-    margin-top: 38%;
-    margin-left: 70%;
+    position: absolute;
+    bottom: 0;
+    left: 85%;
   }
   #totalRemote {
     width: 100%;
@@ -128,15 +128,20 @@ body{
     float: right;
     
   }
-  
+  #main-media video{
+    width: 300px;
+    height: 300px;
+    border: solid 5px rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+  }
   #remote-media video{
     width: 150px;
     height: 120px;
     border: solid 5px rgba(255, 255, 255, 0.5);
     border-radius: 10px;
   }
-  
-  #text-permisos {
+ 
+#text-permisos {
   line-height: 1.5;
   font-family: 'Avenir Next';
   text-align: center;

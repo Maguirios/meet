@@ -155,10 +155,10 @@ class Chat extends React.Component {
           messages: actMsj,
         })
       }
-      else{
+      else {
         var show = document.getElementById('style-1').lastChild;
       }
-      (show)? show.scrollIntoView(false) : null
+      (show) ? show.scrollIntoView(false) : null
     })
   }
 
@@ -179,14 +179,14 @@ class Chat extends React.Component {
         method: 'GET',
         responseType: 'blob',
       })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', fileName);
-        document.body.appendChild(link);
-        link.click();
-      });
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', fileName);
+          document.body.appendChild(link);
+          link.click();
+        });
     }).catch(function (error) {
       switch (error.code) {
         case 'storage/object-not-found':
