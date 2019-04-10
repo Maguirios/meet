@@ -19,7 +19,7 @@ import UploadFiles from './UploadFiles';
 import Rooms from './UserRooms';
 import { setLogin } from '../redux/action-creators/usersActions';
 
-class Main extends Component {
+class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -88,9 +88,9 @@ class Main extends Component {
             <Route path='/conexion' render={() => <Conexion />} />
             <Route path='/salaespera' render={() => <SalaEspera />} />
             <Route path='/chat' component={Chat} />
-            <Route path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
-            <Route path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user} />} />
-            <Route path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={this.state.user} />} />
+            <Route path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={!userLogin.isEmpty} />} />
+            <Route path='/signIn' render={({ history }) => <SignIn history={history} currentUser={!userLogin.isEmpty} />} />
+            <Route path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={userLogin} />} />
             <Route path='/probando' render={() => <UploadFiles />} />
             {!userLogin.isEmpty ? <Route exact path='/' component={Rooms} /> : <Route exact path='/' component={Code} />}
           </div>
@@ -113,5 +113,5 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default compose(firebaseConnect([
   'rooms']),
-  connect(mapStateToProps, mapDispatchToProps))(Main)
+  connect(mapStateToProps, mapDispatchToProps))(Home)
 

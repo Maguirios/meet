@@ -133,7 +133,6 @@ UserRooms.propTypes = {
 const mapStateToProps = (state) => ({
   userLogin: state.firebase.auth,
   rooms: state.firebase.data.rooms && Object.values(state.firebase.data.rooms).filter((room) => {
-    console.log(room)
     return room.emails.some((user) => user === state.firebase.auth.email)
   })
 })
