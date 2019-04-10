@@ -109,21 +109,7 @@ class Chat extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleChangeMessage = this.handleChangeMessage.bind(this)
     }
-    componentDidMount() {
-        firebase.database().ref(`rooms/${this.props.room}/messages/`).on('value', snapshoot => {
-            const actMsj = snapshoot.val()
-            if (actMsj !== null) {
-                this.setState({
-                    messages: actMsj,
-                })
-
-            }
-            var show = document.getElementById('style-1').lastChild
-            show.scrollIntoView(false)
-
-        })
-
-    }
+  
 
     handleSubmit(e) {
         e.preventDefault();

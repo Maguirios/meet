@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Video from "twilio-video";
 import axios from "axios";
 import RaisedButton from "material-ui/RaisedButton";
+import AddParticipant from './AddParticipant'
 import firebase from "../firebase";
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
@@ -193,6 +194,7 @@ export default class VideoComponent extends Component {
     return (
       <div>
         <div ref="localMedia" id="local-media" />
+        <AddParticipant dataSala={ this.state }/>
         <ButtonBar
           disconnect={this.disconnected2}
           videoDisable={this.videoDisable}

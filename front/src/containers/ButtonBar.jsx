@@ -50,7 +50,6 @@ export class ButtonBar extends Component {
         const { classes } = this.props
         const { timer } = this.state
 
-
     return (
       <div>
         {/* <Button className={classes.timeCall}><p className={classes.timer}>{format(timer)}</p></Button> */}
