@@ -11,10 +11,6 @@ import Axios from 'axios';
 
 
 const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
   input: {
     color: 'white'
   },
@@ -73,7 +69,10 @@ const styles = theme => ({
     width: 235,
     maxWidth: 500,
     overflowY: 'scroll',
-    overflowX: 'hidden'
+    overflowX: 'hidden',
+    '&::-webkit-scrollbar':{
+        width: '1px'
+    }
   },
   enviar: {
     margin: theme.spacing.unit,
@@ -218,14 +217,15 @@ class Chat extends React.Component {
       time: moment().format('LT')
     }
     firebase.database().ref(`rooms/${this.props.room}/messages/${newMessage.id}`)
-      .set(newMessage)
-      .then(() => {
-        this.setState({ message: '' })
-        this.setState({ username: '' })
-        var show = document.getElementById('style-1').lastChild
-        show.scrollIntoView(false)
-      })
-  }
+    .set(newMessage)
+    .then(() => {
+      this.setState({ message: '' })
+      this.setState({ username: '' })
+      var show = document.getElementById('style-1').lastChild
+      show.scrollIntoView(false)
+    })
+}
+    
   handleChangeMessage(event) {
     const value = event.target.value;
     this.setState({ message: value })
@@ -233,13 +233,12 @@ class Chat extends React.Component {
 
   render() {
     let time = 0
-
     time = moment().format('LT')
 
     const { classes } = this.props;
     return (
       <div>
-        <div>
+        <div className = {classes.container}>
           <div id="style-1" >
             {this.state.messages.map(txt => {
               return (txt.document) ?

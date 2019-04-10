@@ -35,7 +35,7 @@ export class AddParticipant extends React.Component {
   };
 
   componentDidMount() {
-    firebase.database().ref(`rooms/3361/emails/`).on("value", (snapshot) => {
+    firebase.database().ref(`rooms/${this.props.room}/emails/`).on("value", (snapshot) => {
       console.log('El arreglo de emails', snapshot.val());
       this.setState({ countEmails: snapshot.val() })
     })
@@ -49,21 +49,11 @@ export class AddParticipant extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    const addEmails = this.state.countEmails.concat(this.state.email.replace(/\s/g, "").split(','))
+    firebase.database().ref(`rooms/${this.props.room}/emails/`)
+      .set(addEmails)
 
-    this.state.countEmails.push(this.state.email)
-    console.log('el estado local', this.state)
-
-    // let addEmail = this.state.countEmails.concat(this.state.email)
-
-    console.log('HHHHHHH', this.state.countEmails)
-    // firebase.database().ref(`rooms/3361/emails`)
-    //     .set(addEmail)
-
-    //     this.setState({ open: false })
-
-
-
-    // console.log('FIREBASE DATA', this.props)
+    this.setState({ open: false })
   }
 
 
@@ -78,15 +68,12 @@ export class AddParticipant extends React.Component {
 
   render() {
     const { dataSala } = this.props
-    const { classes } = this.props
-    const hola = this.props
-
-    console.log('Hola', hola)
+    console.log('El STATE PASADO POR PROPS', dataSala)
     return (
-      <div style={{ display: 'inline' }}>
+      <div>
 
-        <Button id='add-participant' onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
-          <img src="/utils/images/add-participant.svg" className={classes.icon} />
+        <Button id='add-participant' onClick={this.handleClickOpen}>
+          <img src="/utils/images/add-participant.svg" />
         </Button>
         <form autoComplete="off" >
           <Dialog

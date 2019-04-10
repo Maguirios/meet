@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express.Router();
 var mandrill = require('mandrill-api/mandrill');
-var mandrill_client = new mandrill.Mandrill('Tq5v8TWWRB4Z6cwQTfZNMw');
+var mandrill_client = new mandrill.Mandrill('zD0Xb_KXdE2oqQerDZfd7g');
 
 
 
@@ -11,7 +11,8 @@ var send_at = new Date();
 
 
 app.post('/sendEmail', function (req, res) {
-    mandrill_client.messages.send({ "message": req.body.data, "async": async, "ip_pool": ip_pool, "send_at": send_at }, function (result) {
+    console.log(req.body)
+    mandrill_client.messages.sendTemplate({"template_name": req.body.template_name, "template_content": req.body.template_content, "message": req.body.message, "async": async, "ip_pool": ip_pool, "send_at": send_at}, function (result) {
         console.log(result);
         res.send('ok')
     }, function (e) {
