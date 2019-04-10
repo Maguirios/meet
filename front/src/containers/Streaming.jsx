@@ -19,10 +19,11 @@ export default class VideoComponent extends Component {
       localMediaAvailable: false,
       hasJoinedRoom: false,
       activeRoom: null,
-      participant: [],
+      participants: [],
       localId: "",
       Video: true,
-      audio: true
+      audio: true,
+      main: 0
     };
     this.joinRoom = this.joinRoom.bind(this);
     this.disconnected2 = this.disconnected2.bind(this);
@@ -35,6 +36,7 @@ export default class VideoComponent extends Component {
     this.participantDisconnected = this.participantDisconnected.bind(this);
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
+    this.mainScreen = this.mainScreen.bind(this);
   }
 
   componentDidMount() {
@@ -73,13 +75,12 @@ export default class VideoComponent extends Component {
         );
       }
 
-      room.participants.forEach(this.participantConnected);
       room.on("participantConnected", this.participantConnected);
+      room.participants.forEach(this.participantConnected);
       this.setState({
         localId: room.localParticipant,
         activeRoom: room
       });
-
       room.on("participantDisconnected", this.participantDisconnected);
       room.once("disconnected", error =>
         room.participants.forEach(this.participantDisconnected)
@@ -123,6 +124,28 @@ export default class VideoComponent extends Component {
           this.setState({ audio: true });
         });
   }
+  mainScreen(participant) {
+    if (this.state.main == 0) {
+      const div = document.createElement("div");
+      div.id = participant.sid;
+      div.innerText = participant.identity;
+
+      participant.on("trackSubscribed", track => {
+        this.trackSubscribed(div, track);
+      });
+      participant.on("trackUnsubscribed", this.trackUnsubscribed);
+
+      participant.tracks.forEach(publication => {
+        if (publication.isSubscribed) {
+          trackSubscribed(div, publication.track);
+        }
+      });
+
+      let remoteMedias = document.getElementById("main-media");
+      remoteMedias.appendChild(div);
+      this.state.main = 1;
+    }
+  }
 
   disconnected2() {
     this.state.activeRoom.disconnect();
@@ -134,9 +157,11 @@ export default class VideoComponent extends Component {
     const div = document.createElement("div");
     div.id = participant.sid;
     div.innerText = participant.identity;
-    participant.on("trackSubscribed", track =>
-      this.trackSubscribed(div, track)
-    );
+    this.state.participants.push(participant);
+
+    participant.on("trackSubscribed", track => {
+      this.trackSubscribed(div, track);
+    });
     participant.on("trackUnsubscribed", this.trackUnsubscribed);
 
     participant.tracks.forEach(publication => {
@@ -144,8 +169,6 @@ export default class VideoComponent extends Component {
         trackSubscribed(div, publication.track);
       }
     });
-
-    this.state.participant.push(participant);
 
     let remoteMedias = document.getElementById("remote-media");
     remoteMedias.appendChild(div);
@@ -163,55 +186,27 @@ export default class VideoComponent extends Component {
     track.detach().forEach(element => element.remove());
   }
   render() {
-    let showLocalTrack = this.state.localMediaAvailable ? (
-      <div className="flex-item">
-        <div ref="localMedia" />
-      </div>
-    ) : (
-      ""
-    );
-    this.state.participant
-      ? console.log("aqui los tengo", this.state.participant[0])
-      : null;
-      
-    this.state.participant.map(participants=>(
-      console.log("holaaa",participants)
-      ))
-
+    console.log(this.state.participants);
+    // if(this.state.participants.length>0)this.mainScreen(this.state.participants[0])
     return (
-      <div className="Views">
-        {showLocalTrack}
-        <div className="flex-item">
-          <div>
-            <div ref="localMedia" id="local-media">
-              <ButtonBar
-                disconnect={this.disconnected2}
-                videoDisable={this.videoDisable}
-                audioDisable={this.audioDisable}
-              />
-            </div>
-            {/* {this.state.participant ? (
-              <div id="totalRemote">
-                {this.state.participant.map(participats => {
-                  console.log("adsadasd", participats.sid);
-                 
-                    <div key={participats.sid}>
-                      <div ref="remoteMedia" id="remote-media" />
-                    </div>
-                 
-                })}
-              </div>
-            ) : null} */}
-            <div id="totalRemote">
-            <div ref={this.state.participant.sid} id="remote-media" />
-            </div>
-            <div>
-
-              <Chat room={this.props.match.params.code} />
-            </div>
-          </div>
+      <div>
+        <div ref="localMedia" id="local-media" />
+        <ButtonBar
+          disconnect={this.disconnected2}
+          videoDisable={this.videoDisable}
+          audioDisable={this.audioDisable}
+        />
+        <div id="totalRemote">
+          <div
+            onClick={() => console.log("holaaa")}
+            ref="remotmemedia"
+            id="remote-media"
+          />
         </div>
-        <br />
+        <div ref="mainmedia" id="main-media" />
+        <div>
+          <Chat room={this.props.match.params.code} />
+        </div>
       </div>
     );
   }
