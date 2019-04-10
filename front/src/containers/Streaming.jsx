@@ -57,6 +57,8 @@ export default class VideoComponent extends Component {
     });
   }
 
+
+
   joinRoom() {
     let connectOptions = {
       name: this.state.roomName
