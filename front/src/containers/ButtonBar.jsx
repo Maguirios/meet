@@ -18,7 +18,7 @@ const styles = theme => ({
     },
     icons: {
         height: 30,
-        width:29,
+        width: 29,
         objectFit: 'contain',
     },
     timer: {
@@ -46,7 +46,8 @@ export class ButtonBar extends Component {
     render() {
         const { classes } = this.props
         const { timer } = this.state
-        setInterval(() => {this.setState({timer: this.state.timer += 1})}, 1000);
+
+        // setInterval(() => {this.setState({timer: this.state.timer += 1})}, 1000);
 
         return (
             <div>
@@ -62,15 +63,15 @@ export class ButtonBar extends Component {
 
 function format(time) {
     let seg = time / 100 | 0;
-    if (seg>59) seg = seg % 60;
-    if (seg/10 < 1) seg = '0' + seg;
+    if (seg > 59) seg = seg % 60;
+    if (seg / 10 < 1) seg = '0' + seg;
     let min = time / 6000 | 0;
-    if (min/10 < 1) min = '0' + min;
+    if (min / 10 < 1) min = '0' + min;
     return `${min}:${seg}`;
-  }
+}
 
 const mapStateToProps = (state) => ({
-
+    statde: state
 })
 
 const mapDispatchToProps = {

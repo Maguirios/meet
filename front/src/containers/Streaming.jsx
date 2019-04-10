@@ -7,8 +7,8 @@ import { Card, CardHeader, CardText } from "material-ui/Card";
 import firebase from '../firebase';
 import ButtonBar from './ButtonBar';
 import Chat from '../components/Chat';
+import AddParticipant from './AddParticipant'
 
-import ToggleButtons from './BarraMicroPhone';
 
 export default class VideoComponent extends Component {
   constructor(props) {
@@ -23,13 +23,13 @@ export default class VideoComponent extends Component {
       hasJoinedRoom: false,
       activeRoom: null,
       participant: '',
-      localId: ''
+      localId: '',
     };
     this.joinRoom = this.joinRoom.bind(this);
     this.disconnected2 = this.disconnected2.bind(this)
     this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(this)
+  
     // this.handleRoomNameChange = this.handleRoomNameChange.bind(this);
-
 
   }
 
@@ -118,52 +118,63 @@ export default class VideoComponent extends Component {
   }
 
 
-
   render() {
+    console.log('el estado', this.state)
     //TERNARIOOOO
     let showLocalTrack = this.state.localMediaAvailable ? (
       <div className="flex-item">
         {" "}
-        <div id='sala-conferencia' ref="localMedia" />{" "}
+        <div ref="localMedia" />{" "}
       </div>
-    ) : ("");
+    ) : (
+        ""
+      );
 
     return (
 
-      <div id='sala-conferencia' className="Views">
-
+      <div className="Views">
         {showLocalTrack}
+        <AddParticipant dataSala={ this.state }/>
+        <div className="flex-item">
+          {/* <TextField
+                hintText="Room Name"
+                onChange={this.handleRoomNameChange}
+                errorText={
+                  this.state.roomNameErr ? "Room Name is required" : undefined
+                }
+              /> */}
 
-      <div ref="localMedia" id="local-media">
-        {/* <RaisedButton
+          <div>
+            {
+              // this.props.participants.map((participant) => <div id={} ref="" />)
+              // Otro metodo para rederear el video de los participantes
+            }
+          </div>
+
+          <div>
+
+            <div ref="localMedia" id="local-media">
+              {/* <RaisedButton
                 label="Leave Room"
                 secondary={true}
                 onClick={() => this.disconnected2()}
               /> */}
+              <ButtonBar disconnect={this.disconnected2}/>
+            </div>
+            <div id='totalRemote'>
+
+              <div ref="remoteMedia" id='remote-media' />
+
+            </div>
+            <div>
+              <Chat room={this.props.match.params.code} />
+            </div>
+
+
+          </div>
+        </div>
+        <br />
       </div>
-      <div id='totalRemote'>
-
-        <div ref="remoteMedia" id='remote-media' />
-
-      </div>
-
-      <div>
-        <Chat room={this.props.match.params.code} />
-      </div>
-
-
-      
-        <ButtonBar disconnect={this.disconnected2} />
-        <div ref="localMedia" id="local-media">
-          {/* <RaisedButton
-              label="Leave Room"
-              secondary={true}
-              onClick={() => this.disconnected2()}
-            /> */}
-        
-      </div>
-
-      </div >
     );
   }
 }
