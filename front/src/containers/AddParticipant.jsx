@@ -36,7 +36,7 @@ export class AddParticipant extends React.Component {
     };
     
     componentDidMount(){
-        firebase.database().ref(`rooms/3361/emails/`).on("value", (snapshot) => {
+        firebase.database().ref(`rooms/${this.props.room}/emails/`).on("value", (snapshot) => {
             console.log('El arreglo de emails', snapshot.val());
             this.setState({ countEmails: snapshot.val()})
         })
@@ -50,21 +50,11 @@ export class AddParticipant extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-
-        this.state.countEmails.push(this.state.email)
-        console.log('el estado local', this.state)
-
-        // let addEmail = this.state.countEmails.concat(this.state.email)
-        
-        console.log('HHHHHHH', this.state.countEmails)
-        // firebase.database().ref(`rooms/3361/emails`)
-        //     .set(addEmail)
+        const addEmails = this.state.countEmails.concat(this.state.email.replace(/\s/g, "").split(','))
+        firebase.database().ref(`rooms/${this.props.room}/emails/`)
+            .set(addEmails)
            
-        //     this.setState({ open: false })
-
-
-
-        // console.log('FIREBASE DATA', this.props)
+            this.setState({ open: false })
     }
 
 
@@ -127,7 +117,7 @@ export class AddParticipant extends React.Component {
     }
 }
 const mapStateToProps = (state) => ({
-    userName: state.users.userName
+    
 });
 
 const mapDispatchToProps = (dispatch) => ({
