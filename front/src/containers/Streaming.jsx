@@ -3,18 +3,17 @@ import Video from "twilio-video";
 import axios from "axios";
 import RaisedButton from "material-ui/RaisedButton";
 import TextField from "material-ui/TextField";
-import UploadFiles from './UploadFiles'
-import Dialog from '@material-ui/core/Dialog';
-import AddParticipant from './AddParticipant'
+import UploadFiles from "./UploadFiles";
+import Dialog from "@material-ui/core/Dialog";
+import AddParticipant from "./AddParticipant";
 import firebase from "../firebase";
 import { Card, CardHeader, CardText } from "material-ui/Card";
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
 import SalaEspera from "./SalaEspera";
-import Fab from '@material-ui/core/Fab';
-import Icon from '@material-ui/core/Icon';
-import Button from '@material-ui/core/Button';
-
+import Fab from "@material-ui/core/Fab";
+import Icon from "@material-ui/core/Icon";
+import Button from "@material-ui/core/Button";
 
 export default class VideoComponent extends Component {
   constructor(props) {
@@ -33,22 +32,27 @@ export default class VideoComponent extends Component {
       sendFileOpen: false,
       Video: true,
       audio: true,
-      main: 0
+      main: 0,
+      container: "",
+      statusParticipants: []
     };
 
     // this.joinRoom = this.joinRoom.bind(this);
     this.disconnected2 = this.disconnected2.bind(this);
-    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(this);
+    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(
+      this
+    );
     this.videoDisable = this.videoDisable.bind(this);
-    this.handleOpenSendFile = this.handleOpenSendFile.bind(this)
-    this.handleCloseSendFile = this.handleCloseSendFile.bind(this)
+    this.handleOpenSendFile = this.handleOpenSendFile.bind(this);
+    this.handleCloseSendFile = this.handleCloseSendFile.bind(this);
     this.audioDisable = this.audioDisable.bind(this);
     this.participantConnected = this.participantConnected.bind(this);
     this.participantDisconnected = this.participantDisconnected.bind(this);
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
     // this.mainScreen = this.mainScreen.bind(this);
-    this.hardcodeo=this.hardcodeo.bind(this)
+    this.hardcodeo = this.hardcodeo.bind(this);
+
     // this.trash=this.trash.bind(this)
   }
 
@@ -68,15 +72,18 @@ export default class VideoComponent extends Component {
       const { identity, token } = results.data;
       this.setState({ identity, token });
     });
-    axios.get("/participants").then(results=>{
-      console.log(results)
-    })
+    axios.get("/participants").then(results => {
+      console.log(results);
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    prevState.identity
+    prevState.statusParticipants.forEach(participant => {
+      this.state.statusParticipants.forEach(tracks => {
+        console.log(participant, tracks);
+      });
+    });
   }
-
 
   joinRoom() {
     let connectOptions = {
@@ -98,23 +105,35 @@ export default class VideoComponent extends Component {
 
       room.on("participantConnected", this.participantConnected);
       room.participants.forEach(this.participantConnected);
-      room.participants.forEach(this.hardcodeo)
+      room.participants.forEach(this.hardcodeo);
+
       this.setState({
         localId: room.localParticipant,
         activeRoom: room,
-      })
-   
+        container: previewContainer
+      });
+
       room.on("participantDisconnected", this.participantDisconnected);
 
       room.once("disconnected", error =>
         room.participants.forEach(this.participantDisconnected)
       );
+      const newParti = this.state.participants.length
+        ? this.state.participants.map(participant => {
+            const entries = participant.tracks.entries();
+            const status = { name: participant.sid };
+            for (const [k, v] of entries) {
+              status[k] = v.isTrackEnabled;
+            }
+            return status;
+          })
+        : [];
+      this.setState({ statusParticipants: newParti });
     });
   }
 
-
-  hardcodeo(participant){
-    this.state.participants.push(participant)
+  hardcodeo(participant) {
+    this.state.participants.push(participant);
   }
   attachLocalParticipantTracks(participant, container) {
     var tracks = Array.from(participant.tracks.values());
@@ -131,54 +150,37 @@ export default class VideoComponent extends Component {
       this.props.history.push("/");
     });
   }
+
   videoDisable() {
+    let img = new Image();
+    img.src = "/utils/images/video.svg";
+    img.style.position = "absolute";
+    img.id = "local-icon";
     this.state.Video == true
       ? this.state.localId.videoTracks.forEach(videoTracks => {
-        videoTracks.track.disable();
-        this.setState({ Video: false });
-      })
+          videoTracks.track.detach();
+          videoTracks.track.disable();
+          this.state.container.appendChild(videoTracks.track.attach(img));
+          this.setState({ Video: false });
+        })
       : this.state.localId.videoTracks.forEach(videoTracks => {
-        videoTracks.track.enable();
-        this.setState({ Video: true });
-      });
+          document.getElementById(img.id).remove();
+          this.state.container.appendChild(videoTracks.track.attach());
+          videoTracks.track.enable();
+          this.setState({ Video: true });
+        });
   }
   audioDisable() {
     this.state.audio == true
       ? this.state.localId.audioTracks.forEach(audioTracks => {
-        audioTracks.track.disable();
-        this.setState({ audio: false });
-      })
+          audioTracks.track.disable();
+          this.setState({ audio: false });
+        })
       : this.state.localId.audioTracks.forEach(audioTracks => {
-        audioTracks.track.enable();
-        this.setState({ audio: true });
-      });
+          audioTracks.track.enable();
+          this.setState({ audio: true });
+        });
   }
-
-  //experimental
-  // mainScreen(participant,main) {
-  //   if (this.state.main == false) {
-  //     console.log(participant)
-  //     const div = document.createElement("div");
-  //     div.id = participant.sid;
-  //     div.innerText = participant.identity;
-      
-  //     participant.on("trackSubscribed", track => {
-  //       this.trackSubscribed(div, track);
-  //     });
-  //     participant.on("trackUnsubscribed", this.trackUnsubscribed);
-
-  //     participant.tracks.forEach(publication => {
-  //       if (publication.isSubscribed) {
-  //         trackSubscribed(div, publication.track);
-  //       }
-  //     });
-      
-  //     let remoteMedias = document.getElementById("main-media");
-  //     remoteMedias.appendChild(div);
-  //     this.state.main = 1;
-  //   }
-    
-  // }
 
   disconnected2() {
     this.state.activeRoom.disconnect();
@@ -189,71 +191,89 @@ export default class VideoComponent extends Component {
   participantConnected(participant) {
     const div = document.createElement("div");
     div.id = participant.sid;
-    div.innerText = participant.identity;
 
     participant.on("trackSubscribed", track => {
+      console.log("trackchange", track);
       this.trackSubscribed(div, track);
     });
     participant.on("trackUnsubscribed", this.trackUnsubscribed);
     participant.tracks.forEach(publication => {
+      console.log("publication", publication);
+
       if (publication.isSubscribed) {
         trackSubscribed(div, publication.track);
       }
     });
- 
-
-    //experimental
-    // if ((this.state.participants.length = 1)) {
-    //   let remoteMedias = document.getElementById("remote-media");
-    //   remoteMedias.appendChild(div);
-    //   this.mainScreen(participant);
-    // } else {
-      let remoteMedias = document.getElementById("remote-media");
-      remoteMedias.appendChild(div);
-    
+    let remoteMedias = document.getElementById("remote-media");
+    remoteMedias.appendChild(div);
   }
   participantDisconnected(participant) {
     document.getElementById(participant.sid).remove();
   }
 
   trackSubscribed(div, track) {
+    let img = new Image();
+    img.src = "/utils/images/video.svg";
+    img.style.position = "absolute";
+    img.id = "local-icon";
     div.appendChild(track.attach());
+    track.on("disabled", () => {
+      if (track.kind == "video") {
+        if (!track.isEnabled) {
+          this.trackUnsubscribed(track)
+          div.appendChild(track.attach(img));
+        }
+      }
+    });
+    track.on("enabled", () => {
+      
+      if (track.kind == "video") {
+        if (track.isEnabled) {
+          track.detach(img).remove()
+          div.appendChild(track.attach());
+        }
+      }
+    });
+    
+    
   }
 
   trackUnsubscribed(track) {
     track.detach().forEach(element => element.remove());
   }
   handleOpenSendFile() {
-    this.setState({ sendFileOpen: true })
+    this.setState({ sendFileOpen: true });
   }
   handleCloseSendFile() {
     this.setState({ sendFileOpen: false });
-  };
-
-
+  }
 
   render() {
-    
-  
-  this.state.participants.map(participants=>{
-    console.log(participants)
-  })
     return (
-      <div className='Views'>
+      <div className="Views">
         <div className="logoVideoConferencia">
           <div className="logoConferencia">
-            <img className='logoConferencia' src='/utils/images/logor.png' />
+            <img className="logoConferencia" src="/utils/images/logor.png" />
           </div>
         </div>
 
         <div className="divDelMedio">
           {/* EN ESTE DIV SE VA A MOSTRAR LAS OPCIONES DE VISTA DE LA VIDEOCONFERENCIA Y LA LISTA DE PARTICIPANTES */}
           <div className="opcionesVista">
-            <Button onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
-              <img className='add-participant' src="/utils/images/layout.svg" />
+            <Button
+              onClick={this.handleClickOpen}
+              style={{ float: "right", marginTop: "12px" }}
+            >
+              <img className="add-participant" src="/utils/images/layout.svg" />
             </Button>
-            <Button onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
-              <img className='add-participant' src="/utils/images/layout-full.svg" />
+            <Button
+              onClick={this.handleClickOpen}
+              style={{ float: "right", marginTop: "12px" }}
+            >
+              <img
+                className="add-participant"
+                src="/utils/images/layout-full.svg"
+              />
             </Button>
           </div>
 
@@ -286,14 +306,17 @@ export default class VideoComponent extends Component {
             />
           </div>
 
-          <div className='camaraLocal'>
+          <div className="camaraLocal">
             <Dialog
               open={this.state.sendFileOpen}
               onClose={this.handleCloseSendFile}
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <UploadFiles handleCloseSendFile={this.handleCloseSendFile} roomCode={this.props.match.params.code} />
+              <UploadFiles
+                handleCloseSendFile={this.handleCloseSendFile}
+                roomCode={this.props.match.params.code}
+              />
             </Dialog>
             {/* EN ESTE DIV SE VA A MOSTRAR LA CAMARA DEL USUARIO QUE INGRESA A LA VIDEOCONFERENCIA */}
             <div ref="localMedia" id="local-media" />

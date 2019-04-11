@@ -99,6 +99,12 @@ body{
  margin-left: 10px;
  width: 500px;
 }
+#local-icon{
+  width: 150px;
+    height: 120px;
+    border-radius: 10px;
+   background-color:black
+  }
 
 #local-media video{
   width: 150px;
