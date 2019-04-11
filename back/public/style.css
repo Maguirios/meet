@@ -3,8 +3,9 @@ body{
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    width: 97vh;
-    height: 97vh;
+    width: 100vw;
+    height: 100vh;
+    margin: 0px
 }
 .home{
     display: grid;
@@ -59,9 +60,6 @@ body{
   border-radius: 5px;
   border: solid 2px #4dc2f1;
 }
-#style-1::-webkit-scrollbar {
-    width: 1px;
-} 
 
 .buttonsStyle {
   width: 110px;
@@ -101,19 +99,11 @@ body{
  margin-left: 10px;
  width: 500px;
 }
-/* .Views{  width: 150px;
-  height: 120px;
-  border-radius: 10px;
-  border: solid 5px rgba(255, 255, 255, 0.5);}
-   */
- #local-media video{
-    width: 150px;
+
+#local-media video{
+  width: 150px;
     height: 120px;
     border-radius: 10px;
-    border: solid 5px rgba(255, 255, 255, 0.5);
-    position: fixed;
-    margin-top: 38%;
-    margin-left: 70%;
   }
   #totalRemote {
     width: 100%;
@@ -129,16 +119,16 @@ body{
   #main-media video{
     width: 300px;
     height: 300px;
-    border: solid 5px rgba(255, 255, 255, 0.5);
     border-radius: 10px;
   }
   #remote-media video{
-    width: 150px;
-    height: 120px;
-    border: solid 5px rgba(255, 255, 255, 0.5);
+    width: 120px;
+    height: 90px;
     border-radius: 10px;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
+    background-color: #000000;
   }
-
+ 
 #text-permisos {
   line-height: 1.5;
   font-family: 'Avenir Next';
@@ -189,4 +179,74 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
   margin: 0; 
+}
+
+/* ESTA ES LA GRILLA DE LA VIDEO CONFERENCIA, SUPER IMPORTANTE !!!! */
+
+.Views{  
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 2% 49% 49%
+}
+
+.logoVideoConferencia {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.divDelMedio {
+  display: grid;
+  grid-template-columns: 10% 90%;
+  padding-top: 25px
+}
+
+.divDeAbajo {
+  display: grid;
+  grid-template-columns: 25% 50% 25%;
+  padding-bottom: 25px;
+}
+
+.chat{
+  display: grid;
+  justify-items: center;
+  align-items: end;
+}
+
+.barraOpciones{
+  display: grid;
+  justify-items: center;
+  align-items: end;
+}
+.logoConferencia{
+  width: 109px;
+  height: 20px;
+  object-fit: contain;
+  opacity: 0.6;
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.camaraLocal{
+  display: grid;
+  justify-items: center;
+  align-items: end
+}
+
+.participantes{
+  display: grid;
+  grid-template-columns: 1fr auto
+}
+
+.opcionesVista{
+  display: grid;
+  margin-left: 35px;
+  grid-template-rows: 1fr 1fr 1fr 1fr
+}
+
+.add-participant{
+  width: 75px;
+  height: 75px;
+  min-width: 75px;
+  object-fit: contain;
 }

@@ -19,7 +19,8 @@ const styles = theme => ({
   icons: {
     height: 30,
     width: 29,
-    objectFit: "contain"
+    objectFit: "contain",
+    float: 'rigth'
   },
   timer: {
     fontFamily: "Roboto",
@@ -35,25 +36,24 @@ const styles = theme => ({
 });
 
 export class ButtonBar extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.state = {
-            timer: 0,
-        }
+    this.state = {
+      timer: 0,
     }
-    componentDidMount(){
-        setInterval(() => {this.setState({timer: this.state.timer += 1})}, 1000);
-    }
+  }
+  componentDidMount() {
+    setInterval(() => { this.setState({ timer: this.state.timer += 1 }) }, 1000);
+  }
 
-    render() {
-        const { classes } = this.props
-        const { timer } = this.state
-
+  render() {
+    const { classes } = this.props
+    const { timer } = this.state
 
     return (
       <div>
-        {/* <Button className={classes.timeCall}><p className={classes.timer}>{format(timer)}</p></Button> */}
+        <Button className={classes.timeCall}><p className={classes.timer}>{format(timer)}</p></Button>
         <Button className={classes.micCam}>
           <img
             onClick={this.props.videoDisable}
@@ -68,9 +68,7 @@ export class ButtonBar extends Component {
             className={classes.icons}
           />
         </Button>
-        <Button className={classes.micCam}>
-          <img src="/utils/images/share-screen.svg" className={classes.icons} />
-        </Button>
+        <Button className={classes.micCam} onClick={() => this.props.handleOpenSendFile()}><img src="/utils/images/share-screen.svg" className={classes.icons} /></Button>
         <Button className={classes.timeCall} onClick={this.props.disconnect}>
           <img src="/utils/images/end-call.svg" className={classes.icons} />
         </Button>
@@ -79,14 +77,14 @@ export class ButtonBar extends Component {
   }
 }
 
-// function format(time) {s
-//     let seg = time / 100 | 0;
-//     if (seg>59) seg = seg % 60;
-//     if (seg/10 < 1) seg = '0' + seg;
-//     let min = time / 6000 | 0;
-//     if (min/10 < 1) min = '0' + min;
-//     return `${min}:${seg}`;
-//   }
+function format(time) {
+    let seg = time / 100 | 0;
+    if (seg>59) seg = seg % 60;
+    if (seg/10 < 1) seg = '0' + seg;
+    let min = time / 6000 | 0;
+    if (min/10 < 1) min = '0' + min;
+    return `${min}:${seg}`;
+  }
 
 const mapStateToProps = state => ({});
 

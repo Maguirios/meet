@@ -4,6 +4,8 @@ import { Route, Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import * as moment from 'moment';
 import RegisterContainer from './Register'
+import { compose } from 'redux'
+import { firebaseConnect } from 'react-redux-firebase'
 
 import Code from '../components/Code';
 import Chat from '../components/Chat';
@@ -14,6 +16,8 @@ import SalaEspera from './SalaEspera'
 import firebase from '../firebase';
 import CreateRoom from './createRoom';
 import UploadFiles from './UploadFiles';
+import Rooms from './UserRooms';
+import { setLogin } from '../redux/action-creators/usersActions';
 
 class Home extends Component {
   constructor(props) {
@@ -25,22 +29,13 @@ class Home extends Component {
     this.signOut = this.signOut.bind(this)
     this.update = this.update.bind(this)
   }
-  
+
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.setState({ user })
+        this.props.setLogin({ user })
       }
     });
-
-    let db = firebase.database().ref('rooms')
-     
-     db.on('value', snapshoot => {
-         console.log(Object.values(snapshoot.val()).filter((room) => (
-             room.emails.some((user) => user === this.state.user.email)
-         )))
-     })
-
     setInterval(this.update, 5000);
   }
 
@@ -53,12 +48,14 @@ class Home extends Component {
       });
   }
   update() { this.setState({ time: moment().format('LT') }) };
+
   render() {
-    const { classes } = this.props;
+
+    const { classes, userLogin } = this.props;
     return (
       <div className='home'>
         <div className='home-top'>
-          {(this.state.user.email) ?
+          {!userLogin.isEmpty ?
             <div className="withUser">
               <Link to='/createRoom'>
                 <Button variant="contained" color="primary">
@@ -91,11 +88,11 @@ class Home extends Component {
             <Route path='/conexion' render={() => <Conexion />} />
             <Route path='/salaespera' render={() => <SalaEspera />} />
             <Route path='/chat' component={Chat} />
-            <Route path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
-            <Route path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user} />} />
-            <Route path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={this.state.user} />} />
+            <Route path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={!userLogin.isEmpty} />} />
+            <Route path='/signIn' render={({ history }) => <SignIn history={history} currentUser={!userLogin.isEmpty} />} />
+            <Route path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={userLogin} />} />
             <Route path='/probando' render={() => <UploadFiles />} />
-            <Route exact path='/' component={Code} />
+            {!userLogin.isEmpty ? <Route exact path='/' component={Rooms} /> : <Route exact path='/' component={Code} />}
           </div>
         </div>
         <div className='home-bottom'>
@@ -106,5 +103,15 @@ class Home extends Component {
   }
 }
 
-export default connect(null, null)(Home);
+const mapStateToProps = (state) => ({
+  userLogin: state.firebase.auth,
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  setLogin: user => dispatch(setLogin(user)),
+})
+
+export default compose(firebaseConnect([
+  'rooms']),
+  connect(mapStateToProps, mapDispatchToProps))(Home)
 
