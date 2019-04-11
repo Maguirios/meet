@@ -18,6 +18,7 @@ import Button from "@material-ui/core/Button";
 export default class VideoComponent extends Component {
   constructor(props) {
     super(props);
+    this._isMounted = false
 
     this.state = {
       identity: null,
@@ -68,13 +69,11 @@ export default class VideoComponent extends Component {
 
         this.joinRoom();
       });
-    axios.get("/token").then(results => {
+    axios.post("/token").then(results => {
       const { identity, token } = results.data;
       this.setState({ identity, token });
     });
-    axios.get("/participants").then(results => {
-      console.log(results);
-    });
+    
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -112,7 +111,6 @@ export default class VideoComponent extends Component {
         activeRoom: room,
         container: previewContainer
       });
-
       room.on("participantDisconnected", this.participantDisconnected);
 
       room.once("disconnected", error =>
@@ -186,6 +184,15 @@ export default class VideoComponent extends Component {
         });
   }
 
+  avChange() {
+    console.log(this.state.participants)
+    this.state.participants.forEach((track) => {
+      console.log(track.tracks, '-CHECK')
+    })
+  }
+
+
+
   disconnected2() {
     this.state.activeRoom.disconnect();
     document.getElementById("local-media").remove();
@@ -193,6 +200,13 @@ export default class VideoComponent extends Component {
     this.detachattachLocalParticipantTracks();
   }
   participantConnected(participant) {
+    // participant.on('audioDisable', () => { })
+    // var check = Array.from(participant.tracks.values())
+    // console.log(check)
+    // var button = document.createElement('button');
+    // button.onclick = function (e) {
+    // console.log(e)
+    // };
     const div = document.createElement("div");
     div.id = participant.sid;
 

@@ -13,11 +13,11 @@ var API_KEY = "SKee2c7176559ef5cbf1fd5beacfa6e872";
 var API_SECRET ="jpAqNvuLvbLvhgUxSG3vw9Di1TA814Sf";
 const Twilio = require("twilio");
 
-const client = new Twilio(ACCOUNT_SID, API_SECRET, { accountSid: ACCOUNT_SID });
+const client = new Twilio(ACCOUNT_SID, API_SECRET, { ACCOUNT_SID });
 const faker = require("faker");
 
 const apiRoutes = require('./routes/email');
-
+const port = 3000
 app.set("port", process.env.PORT || 3000);
 
 app.use(morgan("dev"));
@@ -31,33 +31,28 @@ app.use(express.static(path.resolve(__dirname + "/public")));
 app.use('/api', apiRoutes);
 
 
-app.get("/token", function(request, response) {
+app.post("/token", function (req, res) {
+  console.log(req.body)
   var identity = faker.name.findName();
   var token = new AccessToken(ACCOUNT_SID, API_KEY, API_SECRET, AUTH_TOKEN);
   token.identity = identity;
   const grant = new VideoGrant();
   token.addGrant(grant);
-  response.send({
+  res.send({
     identity: identity,
     token: token.toJwt()
   });
-});                                                                                                                        
+});
 
-app.get("/participants",function(request,response){
-  // client.video.rooms("RM9e405916d1039adb3293b6dd6f9eedda").participants.list(result=>{
-  //   console.log(result)
+app.post('/participants', (req, res) => {
+  console.log(req.body.sid)
+  console.log(client.video.rooms(req.body.sid))
+})
 
-  // })
-  client.video.rooms("RM8e5b1789ef5dd3ab4e21eaf08fab1b28").participants
-  .each({status: 'connected'}, (participant) => {
-    console.log("asdssadasd",participant)
-
-})})
-
-  app.get('/*', function(req, res) {
-    res.sendFile(__dirname + '/public/index.html')
-  })
+app.get('/*', function (req, res) {
+  res.sendFile(__dirname + '/public/index.html')
+})
 
 app.listen(app.get("port"), () => {
-  console.log("Listening on port 4000");
+  console.log(`Listening on port${port}`);
 });
