@@ -15,7 +15,7 @@ import firebase from '../firebase';
 import CreateRoom from './createRoom';
 import UploadFiles from './UploadFiles';
 
-class Main extends Component {
+class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -54,7 +54,6 @@ class Main extends Component {
   }
   update() { this.setState({ time: moment().format('LT') }) };
   render() {
-
     const { classes } = this.props;
     return (
       <div className='home'>
@@ -107,13 +106,5 @@ class Main extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-
-})
-
-const mapDispatchToProps = {
-
-}
-
-export default connect(mapStateToProps, null)(Main);
+export default connect(null, null)(Home);
 

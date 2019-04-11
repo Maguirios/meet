@@ -28,13 +28,5 @@ class Main extends Component {
     }
 }
 
-const mapStateToProps = (state) => ({
-
-})
-
-const mapDispatchToProps = {
-
-}
-
-export default connect(mapStateToProps, null)(Main);
+export default connect(null, null)(Main);
 
