@@ -19,6 +19,7 @@ import Button from '@material-ui/core/Button';
 export default class VideoComponent extends Component {
   constructor(props) {
     super(props);
+    this._isMounted = false
 
     this.state = {
       identity: null,
@@ -33,7 +34,8 @@ export default class VideoComponent extends Component {
       sendFileOpen: false,
       Video: true,
       audio: true,
-      main: 0
+      main: 0,
+      tracks: ''
     };
 
     // this.joinRoom = this.joinRoom.bind(this);
@@ -48,6 +50,7 @@ export default class VideoComponent extends Component {
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
     this.mainScreen = this.mainScreen.bind(this);
+    this.avChange = this.avChange.bind(this);
   }
 
   componentDidMount() {
@@ -62,10 +65,11 @@ export default class VideoComponent extends Component {
 
         this.joinRoom();
       });
-    axios.get("/token").then(results => {
+    axios.post("/token").then(results => {
       const { identity, token } = results.data;
       this.setState({ identity, token });
     });
+    
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -97,6 +101,13 @@ export default class VideoComponent extends Component {
         localId: room.localParticipant,
         activeRoom: room
       });
+      console.log(this.state.activeRoom.sid)
+      const check = { sid : this.state.activeRoom.sid}
+      axios.post('/participants', check)
+      .then(participants => console.log(participants))
+      room.on('audioDisable', this.audioDisable)
+      room.on('audioVideo', this.videoDisable)
+      room.participants.forEach(this.avChange);
       room.on("participantDisconnected", this.participantDisconnected);
       room.once("disconnected", error =>
         room.participants.forEach(this.participantDisconnected)
@@ -140,6 +151,8 @@ export default class VideoComponent extends Component {
         this.setState({ audio: true });
       });
   }
+
+
   mainScreen(participant) {
     if (this.state.main == 0) {
       // const div = document.createElement("div");
@@ -163,6 +176,15 @@ export default class VideoComponent extends Component {
     }
   }
 
+  avChange() {
+    console.log(this.state.participants)
+    this.state.participants.forEach((track) => {
+      console.log(track.tracks, '-CHECK')
+    })
+  }
+
+
+
   disconnected2() {
     this.state.activeRoom.disconnect();
     document.getElementById("local-media").remove();
@@ -170,6 +192,13 @@ export default class VideoComponent extends Component {
     this.detachattachLocalParticipantTracks();
   }
   participantConnected(participant) {
+    // participant.on('audioDisable', () => { })
+    // var check = Array.from(participant.tracks.values())
+    // console.log(check)
+    // var button = document.createElement('button');
+    // button.onclick = function (e) {
+    // console.log(e)
+    // };
     const div = document.createElement("div");
     div.id = participant.sid;
     // div.innerText = participant.identity;
@@ -209,7 +238,6 @@ export default class VideoComponent extends Component {
 
 
   render() {
-    console.log(this.state.participants);
     // if(this.state.participants.length>0)this.mainScreen(this.state.participants[0])
     return (
       <div className='Views'>
