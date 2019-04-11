@@ -1,48 +1,48 @@
-body{
-    background-image: url('/utils/images/background.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    width: 100vw;
-    height: 100vh;
-    margin: 0px
+body {
+  background-image: url("/utils/images/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 100vw;
+  height: 100vh;
+  margin: 0px;
 }
-.home{
-    display: grid;
-    grid-template-rows: 1fr 12fr 0.7fr;
-    width: 95vw;
-    height: 95vh;
-}
-
-.home-top{
-    display: 'inline'; 
-    margin-left: 100px;
+.home {
+  display: grid;
+  grid-template-rows: 1fr 12fr 0.7fr;
+  width: 95vw;
+  height: 95vh;
 }
 
-#register{
-    margin-left: 30px;
-    text-decoration: none
+.home-top {
+  display: "inline";
+  margin-left: 100px;
+}
+
+#register {
+  margin-left: 30px;
+  text-decoration: none;
 }
 
 /* .button-home{
     margin-left: 20px;
 } */
 
-.hora{
-    float: right;
-    color: white;
+.hora {
+  float: right;
+  color: white;
 }
 
-.home-center{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    justify-items: center
+.home-center {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  justify-items: center;
 }
 .isologo-horizontal-white {
-    width: 364px;
-    height: 76px;
-  }
+  width: 364px;
+  height: 76px;
+}
 .containerInputs {
   display: grid;
   width: 528px;
@@ -54,7 +54,7 @@ body{
   padding: 5px 0px;
   align-items: center;
 }
-.inputStyle{
+.inputStyle {
   width: 448px;
   height: 40px;
   border-radius: 5px;
@@ -68,26 +68,26 @@ body{
   background-color: #4dc2f1;
 }
 
-#containerInputsCode{
+#containerInputsCode {
   width: 600px;
   height: 180px;
   border-radius: 5px;
   box-shadow: 0 2px 20px 5px rgba(0, 0, 0, 0.2);
-  background-image: linear-gradient(to bottom, #ffffff, #ffffff);    
+  background-image: linear-gradient(to bottom, #ffffff, #ffffff);
 }
 
-.code{
+.code {
   display: grid;
   grid-template-rows: 1fr 1fr;
   padding: 30px;
   align-items: center;
 }
-.code2darow{
+.code2darow {
   display: grid;
   grid-template-columns: 5fr 0.6fr;
   align-items: center;
 }
-#buttonSendStyle{
+#buttonSendStyle {
   width: 44px;
   height: 30px;
   margin-left: 10px;
@@ -96,59 +96,73 @@ body{
   background-color: #4dc2f1;
 }
 #title {
- margin-left: 10px;
- width: 500px;
+  margin-left: 10px;
+  width: 500px;
+}
+#micro {
+  width: 40px;
+  height: 25px;
+  top: 61px;
+  position: absolute;
+  right: 25px;
+}
+#local-icon {
+  width: 120px;
+  height: 90px;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
+  background-color: #000000;
 }
 
-#local-media video{
+#local-media video {
   width: 150px;
-    height: 120px;
-    border-radius: 10px;
-  }
-  #totalRemote {
-    width: 100%;
-    height: 200px;
-  }
-  #totalRemote #remote-media div{
-    margin: 10px;
-    width: 150px;
-    height: 120px;
-    float: right;
-    
-  }
-  #main-media video{
-    width: 300px;
-    height: 300px;
-    border-radius: 10px;
-  }
-  #remote-media video{
-    width: 120px;
-    height: 90px;
-    border-radius: 10px;
-    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
-    background-color: #000000;
-  }
- 
+  height: 120px;
+  border-radius: 10px;
+}
+#totalRemote {
+  width: 100%;
+  height: 200px;
+}
+#totalRemote #remote-media div {
+  margin: 10px;
+  width: 150px;
+  height: 120px;
+  float: right;
+}
+#main-media video {
+  width: 300px;
+  height: 300px;
+  border-radius: 10px;
+}
+#remote-media video {
+  width: 120px;
+  height: 90px;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
+  background-color: #000000;
+}
+
 #text-permisos {
   line-height: 1.5;
-  font-family: 'Avenir Next';
+  font-family: "Avenir Next";
   text-align: center;
   color: white;
   font-size: 18px;
   font-weight: 900;
 }
-#video-icon, #micro-icon{
+#video-icon,
+#micro-icon {
   font-size: 55px;
   color: #fff;
   text-align: center;
 }
-i{
+i {
   margin: 0 auto;
   width: 150px;
 }
-.iconos{
+.iconos {
   margin: 0 auto;
-  width: 300px
+  width: 300px;
 }
 .watermark {
   margin: 10px 75px 200px 75px;
@@ -162,32 +176,32 @@ i{
   display: block;
   text-align: center;
   font-size: 45px;
-  width:73px;
+  width: 73px;
   color: red;
   height: 74px;
   margin-top: 500px;
   transform: rotate(135deg);
 }
-.withUser{
+.withUser {
   float: right;
 }
 
-#salir{
+#salir {
   margin-left: 15px;
 }
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* ESTA ES LA GRILLA DE LA VIDEO CONFERENCIA, SUPER IMPORTANTE !!!! */
 
-.Views{  
+.Views {
   width: 100vw;
   height: 100vh;
   display: grid;
-  grid-template-rows: 2% 49% 49%
+  grid-template-rows: 2% 49% 49%;
 }
 
 .logoVideoConferencia {
@@ -199,7 +213,7 @@ input[type=number]::-webkit-outer-spin-button {
 .divDelMedio {
   display: grid;
   grid-template-columns: 10% 90%;
-  padding-top: 25px
+  padding-top: 25px;
 }
 
 .divDeAbajo {
@@ -208,18 +222,18 @@ input[type=number]::-webkit-outer-spin-button {
   padding-bottom: 25px;
 }
 
-.chat{
+.chat {
   display: grid;
   justify-items: center;
   align-items: end;
 }
 
-.barraOpciones{
+.barraOpciones {
   display: grid;
   justify-items: center;
   align-items: end;
 }
-.logoConferencia{
+.logoConferencia {
   width: 109px;
   height: 20px;
   object-fit: contain;
@@ -227,24 +241,24 @@ input[type=number]::-webkit-outer-spin-button {
   box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.5);
 }
 
-.camaraLocal{
+.camaraLocal {
   display: grid;
   justify-items: center;
-  align-items: end
+  align-items: end;
 }
 
-.participantes{
+.participantes {
   display: grid;
-  grid-template-columns: 1fr auto
+  grid-template-columns: 1fr auto;
 }
 
-.opcionesVista{
+.opcionesVista {
   display: grid;
   margin-left: 35px;
-  grid-template-rows: 1fr 1fr 1fr 1fr
+  grid-template-rows: 1fr 1fr 1fr 1fr;
 }
 
-.add-participant{
+.add-participant {
   width: 75px;
   height: 75px;
   min-width: 75px;
