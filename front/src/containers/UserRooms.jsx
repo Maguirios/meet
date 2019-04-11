@@ -4,16 +4,17 @@ import PropTypes from 'prop-types'
 import { firebaseConnect } from 'react-redux-firebase'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
-import { TextField } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import moment from 'moment';
 
 const styles = theme => ({
   container: {
+    width: 600,
     maxHeight: 190,
     borderRadius: 5,
     padding: 30,
@@ -86,12 +87,7 @@ export class UserRooms extends Component {
                     <p
                       className={classes.textDate}
                       margin="normal"
-                    >{room.time}
-                    </p>
-                    <p
-                      className={classes.textDate}
-                      margin="normal"
-                    >{ room.date}
+                    >{room.date}
                     </p>
                   </Grid>
                   <Grid
@@ -133,7 +129,10 @@ UserRooms.propTypes = {
 const mapStateToProps = (state) => ({
   userLogin: state.firebase.auth,
   rooms: state.firebase.data.rooms && Object.values(state.firebase.data.rooms).filter((room) => {
-    return room.emails.some((user) => user === state.firebase.auth.email)
+    return room.emails.some((user) => user === state.firebase.auth.email) 
+    && room.status === 'active'
+    && moment().startOf('date').isSameOrBefore(moment(room.dia ,"DD-MMMM-YYYY"))
+    && Number(room.date.slice(20,22)-2 < Number(moment().format('HH')))
   })
 })
 

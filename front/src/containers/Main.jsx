@@ -8,8 +8,7 @@ import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme'
 
 import Home from '../containers/Home';
 import Streaming from './Streaming'
-import ButtonBar from './ButtonBar';
-import firebase from '../firebase';
+
 
 class Main extends Component {
 
