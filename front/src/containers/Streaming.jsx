@@ -36,7 +36,9 @@ export default class VideoComponent extends Component {
     this.participantDisconnected = this.participantDisconnected.bind(this);
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
-    this.mainScreen = this.mainScreen.bind(this);
+    // this.mainScreen = this.mainScreen.bind(this);
+    this.hardcodeo=this.hardcodeo.bind(this)
+    this.trash=this.trash.bind(this)
   }
 
   componentDidMount() {
@@ -55,6 +57,9 @@ export default class VideoComponent extends Component {
       const { identity, token } = results.data;
       this.setState({ identity, token });
     });
+    axios.get("/participants").then(results=>{
+      console.log(results)
+    })
   }
 
   joinRoom() {
@@ -77,17 +82,24 @@ export default class VideoComponent extends Component {
 
       room.on("participantConnected", this.participantConnected);
       room.participants.forEach(this.participantConnected);
+      room.participants.forEach(this.hardcodeo)
       this.setState({
         localId: room.localParticipant,
-        activeRoom: room
-      });
+        activeRoom: room,
+      })
+   
       room.on("participantDisconnected", this.participantDisconnected);
+
       room.once("disconnected", error =>
         room.participants.forEach(this.participantDisconnected)
       );
     });
   }
 
+
+  hardcodeo(participant){
+    this.state.participants.push(participant)
+  }
   attachLocalParticipantTracks(participant, container) {
     var tracks = Array.from(participant.tracks.values());
     tracks.forEach(track => {
@@ -96,6 +108,7 @@ export default class VideoComponent extends Component {
   }
   detachattachLocalParticipantTracks() {
     var tracks = Array.from(this.state.localId.tracks.values());
+
     tracks.forEach(track => {
       const attachedElements = track.track.detach();
       attachedElements.forEach(element => element.remove());
@@ -124,28 +137,32 @@ export default class VideoComponent extends Component {
           this.setState({ audio: true });
         });
   }
-  mainScreen(participant) {
-    if (this.state.main == 0) {
-      const div = document.createElement("div");
-      div.id = participant.sid;
-      div.innerText = participant.identity;
 
-      participant.on("trackSubscribed", track => {
-        this.trackSubscribed(div, track);
-      });
-      participant.on("trackUnsubscribed", this.trackUnsubscribed);
+  //experimental
+  // mainScreen(participant,main) {
+  //   if (this.state.main == false) {
+  //     console.log(participant)
+  //     const div = document.createElement("div");
+  //     div.id = participant.sid;
+  //     div.innerText = participant.identity;
+      
+  //     participant.on("trackSubscribed", track => {
+  //       this.trackSubscribed(div, track);
+  //     });
+  //     participant.on("trackUnsubscribed", this.trackUnsubscribed);
 
-      participant.tracks.forEach(publication => {
-        if (publication.isSubscribed) {
-          trackSubscribed(div, publication.track);
-        }
-      });
-
-      let remoteMedias = document.getElementById("main-media");
-      remoteMedias.appendChild(div);
-      this.state.main = 1;
-    }
-  }
+  //     participant.tracks.forEach(publication => {
+  //       if (publication.isSubscribed) {
+  //         trackSubscribed(div, publication.track);
+  //       }
+  //     });
+      
+  //     let remoteMedias = document.getElementById("main-media");
+  //     remoteMedias.appendChild(div);
+  //     this.state.main = 1;
+  //   }
+    
+  // }
 
   disconnected2() {
     this.state.activeRoom.disconnect();
@@ -157,7 +174,6 @@ export default class VideoComponent extends Component {
     const div = document.createElement("div");
     div.id = participant.sid;
     div.innerText = participant.identity;
-    this.state.participants.push(participant);
 
     participant.on("trackSubscribed", track => {
       this.trackSubscribed(div, track);
@@ -169,9 +185,17 @@ export default class VideoComponent extends Component {
         trackSubscribed(div, publication.track);
       }
     });
+ 
 
-    let remoteMedias = document.getElementById("remote-media");
-    remoteMedias.appendChild(div);
+    //experimental
+    // if ((this.state.participants.length = 1)) {
+    //   let remoteMedias = document.getElementById("remote-media");
+    //   remoteMedias.appendChild(div);
+    //   this.mainScreen(participant);
+    // } else {
+      let remoteMedias = document.getElementById("remote-media");
+      remoteMedias.appendChild(div);
+    
   }
 
   participantDisconnected(participant) {
@@ -185,9 +209,15 @@ export default class VideoComponent extends Component {
   trackUnsubscribed(track) {
     track.detach().forEach(element => element.remove());
   }
+  trash(participant){
+    console.log(participant)
+  }
   render() {
-    console.log(this.state.participants);
-    // if(this.state.participants.length>0)this.mainScreen(this.state.participants[0])
+    
+  
+  this.state.participants.map(participants=>{
+    console.log(participants)
+  })
     return (
       <div>
         <div ref="localMedia" id="local-media" />
@@ -197,9 +227,10 @@ export default class VideoComponent extends Component {
           audioDisable={this.audioDisable}
         />
         <div id="totalRemote">
+        
           <div
-            onClick={() => console.log("holaaa")}
-            ref="remotmemedia"
+            ref={this.state.participants.sid
+            }
             id="remote-media"
           />
         </div>

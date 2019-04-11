@@ -20,7 +20,6 @@ const apiRoutes = require('./routes/email');
 
 app.set("port", process.env.PORT || 3000);
 
-//middleware
 app.use(morgan("dev"));
 
 app.use(bodyParser.json());
@@ -43,6 +42,17 @@ app.get("/token", function(request, response) {
     token: token.toJwt()
   });
 });                                                                                                                        
+
+app.get("/participants",function(request,response){
+  // client.video.rooms("RM9e405916d1039adb3293b6dd6f9eedda").participants.list(result=>{
+  //   console.log(result)
+
+  // })
+  client.video.rooms("RM8e5b1789ef5dd3ab4e21eaf08fab1b28").participants
+  .each({status: 'connected'}, (participant) => {
+    console.log("asdssadasd",participant)
+
+})})
 
   app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/public/index.html')
