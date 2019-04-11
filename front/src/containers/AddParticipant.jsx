@@ -18,7 +18,10 @@ const styles = theme => ({
     width: 75,
     objectFit: 'contain',
   },
-
+  iconButton: {
+    marginTop: 15,
+    float: 'right'
+  }
 });
 
 export class AddParticipant extends React.Component {
@@ -67,13 +70,11 @@ export class AddParticipant extends React.Component {
 
 
   render() {
-    const { dataSala } = this.props
-    console.log('El STATE PASADO POR PROPS', dataSala)
+    const { dataSala, classes } = this.props
     return (
       <div>
-
-        <Button id='add-participant' onClick={this.handleClickOpen}>
-          <img src="/utils/images/add-participant.svg" />
+        <Button id='add-participant' onClick={this.handleClickOpen} className={classes.iconButton}>
+          <img src="/utils/images/add-participant.svg" className={classes.icon}/>
         </Button>
         <form autoComplete="off" >
           <Dialog
