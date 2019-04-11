@@ -171,8 +171,12 @@ export default class VideoComponent extends Component {
         });
   }
   audioDisable() {
+    let micro=new Image()
+    micro.src="/utils/images/mute.svg"
+    micro.id="micro"
     this.state.audio == true
       ? this.state.localId.audioTracks.forEach(audioTracks => {
+  
           audioTracks.track.disable();
           this.setState({ audio: false });
         })
@@ -193,12 +197,10 @@ export default class VideoComponent extends Component {
     div.id = participant.sid;
 
     participant.on("trackSubscribed", track => {
-      console.log("trackchange", track);
       this.trackSubscribed(div, track);
     });
     participant.on("trackUnsubscribed", this.trackUnsubscribed);
     participant.tracks.forEach(publication => {
-      console.log("publication", publication);
 
       if (publication.isSubscribed) {
         trackSubscribed(div, publication.track);
@@ -216,12 +218,21 @@ export default class VideoComponent extends Component {
     img.src = "/utils/images/video.svg";
     img.style.position = "absolute";
     img.id = "local-icon";
+    let micro=new Image()
+    micro.src="/utils/images/mute.svg"
+    micro.id = "micro"
+    div.style.position = "relative"
     div.appendChild(track.attach());
     track.on("disabled", () => {
       if (track.kind == "video") {
         if (!track.isEnabled) {
           this.trackUnsubscribed(track)
           div.appendChild(track.attach(img));
+        }
+      }
+      else{
+        if(!track.isEnabled){
+          div.appendChild(track.attach(micro))
         }
       }
     });
@@ -231,6 +242,12 @@ export default class VideoComponent extends Component {
         if (track.isEnabled) {
           track.detach(img).remove()
           div.appendChild(track.attach());
+        }
+      }
+      else{
+        if(track.isEnabled){
+          track.detach(micro).remove()
+          
         }
       }
     });
