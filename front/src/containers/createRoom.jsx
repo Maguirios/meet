@@ -131,35 +131,55 @@ export class createRoom extends Component {
       this.setState({created:true})
       this.setState({roomCode})
 
-      var data = {
-        data: {
-          'message': {
-            'from_email': 'meet.plataforma5@gmail.com',
-            'to': [],
-            'autotext': 'true',
-            'subject': 'Te invitaron a una video conferencia en meet',
-            'html': 'emailsemails<p>Holaaa</p>'
-          }
-        }
-       }
-      
-       var emails = this.state.email.replace(/\s/g, "").split(',')
-     
-       emails.map( guestEmail => {
-        var guests = {
-           'email': guestEmail,
-           'type': 'to' 
-         }
-         data.data.message.to.push(guests)
-         
-       })
- 
-      
-      axios.post('/api/sendEmail', data )
-      .then(email => {
-        console.log(email)    
+        var template_content = [
+          { "name": "guestName",  "content": 'Hola' },
+          { "name": "guestEmail", "content": 'plataforma@mail'  },
+          { "name": "roomCode",   "content":  roomCode },
+          { "name": "roomTitle",  "content": this.state.room },
+          { "name": "roomDate",   "content":  this.state.selectedDate.format('LL') + ' ' + this.state.selectedTime.format('LT') + ' hs' },
+          { "name": "ownerName",  "content": this.props.currentUser.displayName },
+          { "name": "ownerEmail", "content": 'owner@gmail.com' }
+        ]
+        
+        var emails = this.state.email.replace(/\s/g, "").split(',')
+        
+        const params = {
+        message : {
+            to: [],
+            from_email: 'no-reply@insideone.com.ar',
+            from_name: 'Meet',
+            subject : `Videollamada`,
+            "global_merge_vars": [
+                {
+                    "name": "LINK",
+                    "content": `http://localhost:3000/room/${roomCode}`
+                },
+                {
+                    "name": "participants",
+                    "content": emails
+                },
+                {
+                    "name": "hasParticipants",
+                    "content": true
+                }
+            ]
+
+        },
+        template_name : 'meeting-invite',
+        template_content
+    }
+
+        emails.map(userEmail => {
+        params.message.to.push({email: userEmail})
+        
       })
-  }
+  
+    axios.post('/api/sendEmail', params )
+   .then(email => {
+     console.log(email)    
+   })
+}
+      
 
   render() {
     const { classes } = this.props
@@ -233,7 +253,8 @@ export class createRoom extends Component {
       <Grid>
         <p className={classes.text}>La sala fue creada exitosamente {'\n'} y las invitaciones fueron enviadas.</p>
 
-        <p className={classes.text}>CODIGO{'\n'} {this.state.roomCode}</p>
+        <p className={classes.text}>CODIGO{this.state.roomCode}</p>
+        <p className={classes.text}>{this.state.roomCode}</p>
       </Grid>
       <Grid className={classes.buttons} container spacing={24}>
           <Grid item>
