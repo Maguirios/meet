@@ -49,7 +49,7 @@ export default class VideoComponent extends Component {
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
     // this.mainScreen = this.mainScreen.bind(this);
     this.hardcodeo=this.hardcodeo.bind(this)
-    this.trash=this.trash.bind(this)
+    // this.trash=this.trash.bind(this)
   }
 
   componentDidMount() {
