@@ -155,6 +155,7 @@ export default class VideoComponent extends Component {
         if (publication.isSubscribed) {
           trackSubscribed(div, publication.track);
         }
+
       });
 
       let remoteMedias = document.getElementById("main-media");
@@ -169,6 +170,7 @@ export default class VideoComponent extends Component {
     this.setState({ activeRoom: false, localMediaAvailable: false });
     this.detachattachLocalParticipantTracks();
   }
+
   participantConnected(participant) {
     const div = document.createElement("div");
     div.id = participant.sid;
@@ -182,6 +184,7 @@ export default class VideoComponent extends Component {
     participant.tracks.forEach(publication => {
       if (publication.isSubscribed) {
         trackSubscribed(div, publication.track);
+
       }
     });
 
@@ -194,11 +197,17 @@ export default class VideoComponent extends Component {
 
   trackSubscribed(div, track) {
     div.appendChild(track.attach());
+    track.on('disabled', () => {
+      console.log('hola')
+    })
   }
 
   trackUnsubscribed(track) {
+    track.on('enabled', (e) => {
+      console.log(e,track)
+    })
     track.detach().forEach(element => element.remove());
-  }
+}
   handleOpenSendFile() {
     this.setState({ sendFileOpen: true })
   }
@@ -207,10 +216,7 @@ export default class VideoComponent extends Component {
   };
 
 
-
   render() {
-    console.log(this.state.participants);
-    // if(this.state.participants.length>0)this.mainScreen(this.state.participants[0])
     return (
       <div className='Views'>
         <div className="logoVideoConferencia">
