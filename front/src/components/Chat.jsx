@@ -237,7 +237,6 @@ class Chat extends React.Component {
   render() {
     let time = 0
     time = moment().format('LT')
-
     const { classes } = this.props;
     return (
       <div>

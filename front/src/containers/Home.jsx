@@ -44,7 +44,7 @@ class Home extends Component {
         <div className='home-top'>
           {!userLogin.isEmpty ?
             <div className="withUser">
-              <Link to='/createRoom'>
+              <Link to='/createRoom' style={{'textDecoration': 'none'}}>
                 <Button variant="contained" color="primary">
                   CREAR SALA
                 </Button>
@@ -55,12 +55,12 @@ class Home extends Component {
             </div>
             :
             <div className='withoutUser'>
-              <Link to='/signIn'>
+              <Link to='/signIn' style={{'textDecoration': 'none'}}>
                 <Button variant="contained" color="primary">
                   INICIAR SESIÓN
                 </Button>
               </Link>
-              <Link to='/register'>
+              <Link to='/register' style={{'textDecoration': 'none'}}>
                 <Button variant="contained" color="primary" id='register'>
                   REGISTRARSE
                 </Button>

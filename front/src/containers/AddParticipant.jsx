@@ -8,6 +8,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import firebase from '../firebase'
+import axios from 'axios'
+
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -17,9 +19,15 @@ const styles = theme => ({
         height: 75,
         width: 75,
         objectFit: 'contain',
-        roomCode: ''
+        roomCode: '', 
+        roomTitle: '',
+        date: '',
+        time: ''
     },
-
+    iconButton: {
+        marginTop: 15,
+        float: 'right'
+    }
 });
 
 export class AddParticipant extends React.Component {
@@ -36,9 +44,9 @@ export class AddParticipant extends React.Component {
     };
     
     componentDidMount(){
-        firebase.database().ref(`rooms/${this.props.room}/emails/`).on("value", (snapshot) => {
+        firebase.database().ref(`rooms/${this.props.room}`).on("value", (snapshot) => {
             console.log('El arreglo de emails', snapshot.val());
-            this.setState({ countEmails: snapshot.val()})
+            this.setState({ countEmails: snapshot.val().emails, roomTitle: snapshot.val().name, date: snapshot.val().date })
         })
         
     }
@@ -55,7 +63,56 @@ export class AddParticipant extends React.Component {
             .set(addEmails)
            
             this.setState({ open: false })
-    }
+
+            var template_content = [
+                { "name": "guestName",  "content": 'Hola' },
+                { "name": "guestEmail", "content": 'plataforma@mail'  },
+                { "name": "roomCode",   "content":  this.props.room },
+                { "name": "roomTitle",  "content": this.state.roomTitle },
+                { "name": "roomDate",   "content":  this.state.date + ' hs' },
+                { "name": "ownerName",  "content": this.state.name },
+                { "name": "ownerEmail", "content": 'owner@gmail.com' }
+              ]
+              
+              var emails = this.state.email.replace(/\s/g, "").split(',')
+              
+              const params = {
+              message : {
+                  to: [],
+                  from_email: 'no-reply@insideone.com.ar',
+                  from_name: 'Meet',
+                  subject : `Videollamada`,
+                  "global_merge_vars": [
+                      {
+                          "name": "LINK",
+                          "content": 'http://localhost:3000/'
+                      },
+                      {
+                          "name": "participants",
+                          "content": emails
+                      },
+                      {
+                          "name": "hasParticipants",
+                          "content": true
+                      }
+                  ]
+      
+              },
+              template_name : 'meeting-invite',
+              template_content
+          }
+      
+              emails.map(userEmail => {
+              params.message.to.push({email: userEmail})
+              
+            })
+        
+          axios.post('/api/sendEmail', params )
+         .then(email => {
+           console.log(email)    
+         })
+      }
+            
 
 
     handleClickOpen() {
@@ -114,10 +171,10 @@ export class AddParticipant extends React.Component {
 
             </div>
         );
-    }
+  }
 }
 const mapStateToProps = (state) => ({
-    
+  userName: state.users.userName
 });
 
 const mapDispatchToProps = (dispatch) => ({
