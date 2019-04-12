@@ -20,14 +20,9 @@ const styles = theme => ({
     width: 560,
     height: 380,
     borderRadius: 5,
-    boxShadow: '0px 2px 20px 5px rgba(0, 0, 0, 0.2)',
-    backgroundColor: 'white',
-    display: 'grid',
-    'grid-template-rows': '1fr 2fr 1fr 2fr 1fr 2fr',
-    justifyItems: 'center',
-    alignItems: 'center',
-    padding: '10px 0px'
-  },
+    boxShadow: '0 2 20 5 rgba(0, 0, 0, 0.2)',
+    backgroundColor: 'white'
+ },
   outlinedSala: {
     width: 245,
     height: 53,
@@ -66,7 +61,7 @@ const styles = theme => ({
     backgroundColor: '#4dc2f1',
   },
   text: {
-    fontFamily: 'Avenir',
+    fontFamily: 'Roboto',
     fontSize: 12,
     fontWeight: 500,
     fontStyle: 'normal',
@@ -78,31 +73,45 @@ const styles = theme => ({
   buttons: {
     justifyContent: "center",
     margin: '0 auto',
+  }, 
+  title: {
+    fontFamily: 'Roboto',
+    fontWeight: 900,
+    fontStyle: 'normal',
+    fontStretch: 'normal',
+    lineHeight: 'normal',
+    letterSpacing: 'normal',
+    textAlign: 'center',
+    color: '#5c6f7b',
+    width: 528
+
   },
-  topContainer: {
-    margin: '0 auto'
+  roomCreated: {
+    textAlign: 'center',
+    fontSize: 18,
+    marginBottom: 0,
+    marginTop: 40
   },
-  top: {
-    display: 'grid',
-    'grid-template-columns': '3fr 1fr 1fr',
-    justifyItems: 'center'
+  invitation:{
+    textAlign: 'center',
+    fontSize: 18,
+    marginTop: 2,
+    marginBottom: 40
   },
-  middle: {
-    display: 'grid',
-    justifyItems: 'center'
+  code:{
+    textAlign: 'center',
+    fontSize: 12,
+    
+
   },
-  buttom: {
-    display: 'grid',
-    'justify-items': 'center',
-    'grid-template-columns': '1fr 1fr',
-    'grid-column-gap': '27px',
-    'margin-bottom': '10px',
+  codeNumber:{
+    textAlign: 'center',
+    fontSize: 28,
+    margin: 0,
+    marginBottom: 20
   },
-  texts: {
-    display: 'grid',
-    justifyItems: 'start',
-    width: '100%',
-    paddingLeft: 120,
+  link:{
+    textDecoration: 'none'
   }
 })
 moment.locale("es");
@@ -168,26 +177,33 @@ export class createRoom extends Component {
 
     var emails = this.state.email.replace(/\s/g, "").split(',')
 
-    const params = {
-      message: {
-        to: [],
-        from_email: 'no-reply@insideone.com.ar',
-        from_name: 'Meet',
-        subject: `Videollamada`,
-        "global_merge_vars": [
-          {
-            "name": "LINK",
-            "content": `http://localhost:3000/room/${roomCode}`
-          },
-          {
-            "name": "participants",
-            "content": emails
-          },
-          {
-            "name": "hasParticipants",
-            "content": true
-          }
-        ]
+        const params = {
+        message : {
+            to: [],
+            from_email: 'no-reply@insideone.com.ar',
+            from_name: 'Meet',
+            subject : `Videollamada`,
+            "global_merge_vars": [
+                {
+                    "name": "LINK",
+                    "content": 'http://localhost:3000/'
+                },
+                {
+                    "name": "participants",
+                    "content": emails
+                },
+                {
+                    "name": "hasParticipants",
+                    "content": true
+                }
+            ]
+          //   "attachments": [
+          //     { 
+          //         "type": "text/calendar",
+          //         "name": "meeting.ics",
+          //         "content": 'ics'
+          //     }
+          // ]
 
       },
       template_name: 'meeting-invite',
@@ -211,12 +227,15 @@ export class createRoom extends Component {
     const { selectedDate, selectedTime } = this.state;
 
     const create = (
-      <form className={classes.createRoom}>
-        <div className={classes.texts}>
-          <p className={classes.text}>SALA</p>
-        </div>
-        <div className={classes.top}>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
+    <Grid
+      container
+      direction='row'
+    >
+      <form className={classes.createRoom} style ={{'paddingLeft': '40px', 'paddingBottom': '20px', 'paddingTop': '28px'}}>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+          <Grid
+            item sm>
+            <p className={classes.text}>SALA</p>
             <TextField
               className={classes.outlinedSala}
               label="Nombre de la Sala"
@@ -242,8 +261,8 @@ export class createRoom extends Component {
               value={selectedTime}
               onChange={time => this.handleTimeChange(time)}
             />
+            </Grid>
           </MuiPickersUtilsProvider>
-        </div>
         <div className={classes.texts}>
           <p className={classes.text}>INVITADOS</p>
         </div>
@@ -263,29 +282,37 @@ export class createRoom extends Component {
         <div className={classes.texts}>
           <p className={classes.text}>Agregar otro invitado</p>
         </div>
-        <div className={classes.buttom}>
-          <Link to='/' ><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>
-          <Button variant="contained" color="primary" onClick={(e) => this.handleSubmit(e)} className={classes.button2}>Crear</Button>
-        </div>
-      </form >
-    )
+        <Grid className={classes.buttons} container spacing={24}>
+          <Grid item>
+            <Link to='/' className={classes.link}><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="primary" onClick={(e) => this.handleSubmit(e)} className={classes.button2}>Crear</Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Grid>)
 
     const created = (
       <div className={classes.createRoom}>
-        <Grid>
-          <p className={classes.text}>La sala fue creada exitosamente {'\n'} y las invitaciones fueron enviadas.</p>
+      <Grid container>
+      <Grid>
+        <p className={classes.title +' '+ classes.roomCreated}>La sala fue creada exitosamente</p>
+        <p className={classes.title +' '+ classes.invitation}> y las invitaciones fueron enviadas.</p>
 
-          <p className={classes.text}>CODIGO{this.state.roomCode}</p>
-          <p className={classes.text}>{this.state.roomCode}</p>
-        </Grid>
-        <Grid className={classes.buttons} container spacing={24}>
+        <p className={classes.title +' '+ classes.code}>CODIGO</p>
+        <p className={classes.title +' '+ classes.codeNumber}>{this.state.roomCode}</p>
+      </Grid>
+      <Grid className={classes.buttons} container spacing={24}>
           <Grid item>
-            <Link to='/' ><Button variant="contained" className={classes.button1}>VOLVER</Button></Link>
+            <Link to='/' className = {classes.link}><Button variant="contained" className={classes.button1}>VOLVER</Button></Link>
           </Grid>
           <Grid item>
-            <Link to={`/room/${this.state.roomCode}`} ><Button variant="contained" color="primary" className={classes.button2}>INGRESAR</Button></Link>
+            <Link to={`/room/${this.state.roomCode}`} className = {classes.link} ><Button variant="contained" color="primary" className={classes.button2}>INGRESAR</Button></Link>
           </Grid>
         </Grid>
+        </Grid>
+
       </div>
     )
 
