@@ -35,7 +35,9 @@ export default class VideoComponent extends Component {
       Video: true,
       audio: true,
       main: 0,
-      tracks: ''
+      tracks: '',
+      statusMedia: {},
+      statusParticipants: []
     };
 
     // this.joinRoom = this.joinRoom.bind(this);
@@ -54,6 +56,8 @@ export default class VideoComponent extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
     firebase
       .database()
       .ref(`rooms/${this.props.match.params.code}`)
@@ -61,21 +65,29 @@ export default class VideoComponent extends Component {
         if (!snapshoot.val()) {
           this.props.history.push("/");
         }
-        this.setState({ roomName: snapshoot.val().code });
-
-        this.joinRoom();
+        if (this._isMounted) {
+          this.setState({ roomName: snapshoot.val().code });
+          this.joinRoom();
+        }
       });
     axios.post("/token").then(results => {
       const { identity, token } = results.data;
-      this.setState({ identity, token });
+      if (this._isMounted) this.setState({ identity, token });
     });
-    
+
   }
 
   componentDidUpdate(prevProps, prevState) {
-    prevState.identity
+    // const entries = (this.state.participants.length > 0)? this.state.participants[0].tracks.entries() : []
+    // for (const [k, v] of entries) {
+    //   if(prevState.statusMedia[k] !== this.state.statusMediaMedia[k]) console.log('hola cambie pero todavia nose je')
+    // }
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.state.activeRoom.disconnect()
+  }
 
   joinRoom() {
     let connectOptions = {
@@ -101,17 +113,26 @@ export default class VideoComponent extends Component {
         localId: room.localParticipant,
         activeRoom: room
       });
-      console.log(this.state.activeRoom.sid)
-      const check = { sid : this.state.activeRoom.sid}
+      const check = { sid: this.state.activeRoom.sid }
       axios.post('/participants', check)
-      .then(participants => console.log(participants))
-      room.on('audioDisable', this.audioDisable)
+        .then(participants => console.log(participants))
       room.on('audioVideo', this.videoDisable)
+      room.on('audioDisable', this.audioDisable)
       room.participants.forEach(this.avChange);
       room.on("participantDisconnected", this.participantDisconnected);
       room.once("disconnected", error =>
         room.participants.forEach(this.participantDisconnected)
       );
+
+      const newParti = (this.state.participants.length) ? this.state.participants.map(participant => {
+        const entries = participant.tracks.entries()
+        const status = {name: participant.sid}
+        for (const [k, v] of entries) {
+          status[k] = v.isTrackEnabled
+        }
+        return status;
+      }) : null
+      this.setState({statusParticipants: newParti})
     });
   }
 
@@ -177,10 +198,10 @@ export default class VideoComponent extends Component {
   }
 
   avChange() {
-    console.log(this.state.participants)
-    this.state.participants.forEach((track) => {
-      console.log(track.tracks, '-CHECK')
-    })
+    // console.log(this.state.participants)
+    // this.state.participants.forEach((track) => {
+    // console.log(track.tracks, '-CHECK')
+    // })
   }
 
 
@@ -239,6 +260,7 @@ export default class VideoComponent extends Component {
 
   render() {
     // if(this.state.participants.length>0)this.mainScreen(this.state.participants[0])
+    console.log('Este es el estado de los participantes', this.state.statusParticipants)
     return (
       <div className='Views'>
         <div className="logoVideoConferencia">
@@ -262,7 +284,11 @@ export default class VideoComponent extends Component {
             <AddParticipant dataSala={this.state} />
             <div id="totalRemote">
               <div
-                onClick={() => console.log("holaaa")}
+                onClick={(e) => {
+                  console.log("holaaa", e.target)
+                  const pantachota = e.target
+                  document.querySelector('body').appendChild(pantachota)
+                }}
                 ref="remotmemedia"
                 id="remote-media"
               />

@@ -84,14 +84,9 @@ class Home extends Component {
         <div className='home-center'>
           <img className='isologo-horizontal-white' src='/utils/images/logor.png' />
           <div className="components">
-            <Route path='/permisos' render={() => <Permisos />} />
-            <Route path='/conexion' render={() => <Conexion />} />
-            <Route path='/salaespera' render={() => <SalaEspera />} />
-            <Route path='/chat' component={Chat} />
             <Route path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={!userLogin.isEmpty} />} />
             <Route path='/signIn' render={({ history }) => <SignIn history={history} currentUser={!userLogin.isEmpty} />} />
             <Route path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={userLogin} />} />
-            <Route path='/probando' render={() => <UploadFiles />} />
             {!userLogin.isEmpty ? <Route exact path='/' component={Rooms} /> : <Route exact path='/' component={Code} />}
           </div>
         </div>
