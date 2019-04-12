@@ -14,6 +14,7 @@ import SalaEspera from "./SalaEspera";
 import Fab from '@material-ui/core/Fab';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
+import Permisos from './Permisos';
 
 
 export default class VideoComponent extends Component {
@@ -31,9 +32,10 @@ export default class VideoComponent extends Component {
       participants: [],
       localId: "",
       sendFileOpen: false,
-      Video: true,
-      audio: true,
-      main: 0
+      Video: false,
+      audio: false,
+      main: 0,
+      permissions: false
     };
 
     // this.joinRoom = this.joinRoom.bind(this);
@@ -48,6 +50,7 @@ export default class VideoComponent extends Component {
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
     this.mainScreen = this.mainScreen.bind(this);
+
   }
 
   componentDidMount() {
@@ -59,19 +62,38 @@ export default class VideoComponent extends Component {
           this.props.history.push("/");
         }
         this.setState({ roomName: snapshoot.val().code });
-
-        this.joinRoom();
       });
     axios.get("/token").then(results => {
       const { identity, token } = results.data;
       this.setState({ identity, token });
     });
-  }
+    navigator.getUserMedia = (navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia);
 
+    navigator.mediaDevices.getUserMedia(
+      // constraints
+      {
+        video: true,
+        audio: true
+      })
+      .then(
+        (mediaStream) => {
+          console.log('mediastream', mediaStream)
+          this.setState({ permissions: true })
+          this.joinRoom()
+        }
+      )
+      .catch((err) => {
+        console.log("Ocurrió el siguiente error: " + err);
+      })
+
+  }
   componentDidUpdate(prevProps, prevState) {
+    console.log('PREVSTATE', prevState)
     prevState.identity
   }
-
 
   joinRoom() {
     let connectOptions = {
@@ -83,6 +105,7 @@ export default class VideoComponent extends Component {
     }
 
     Video.connect(this.state.token, connectOptions).then(room => {
+      console.log('rooooooooom', room)
       var previewContainer = this.refs.localMedia;
       if (!previewContainer.querySelector("video")) {
         this.attachLocalParticipantTracks(
@@ -164,11 +187,37 @@ export default class VideoComponent extends Component {
   }
 
   disconnected2() {
-    this.state.activeRoom.disconnect();
+ 
     document.getElementById("local-media").remove();
-    this.setState({ activeRoom: false, localMediaAvailable: false });
+    this.setState({ activeRoom: false, localMediaAvailable: false, permissions: false });
     this.detachattachLocalParticipantTracks();
+      console.log('omar', this.state.activeRoom)
+    this.state.activeRoom.disconnect();
+    // navigator.getUserMedia = (navigator.getUserMedia ||
+    //   navigator.webkitGetUserMedia ||
+    //   navigator.mozGetUserMedia ||
+    //   navigator.msGetUserMedia);
+    //   console.log('trbajo', navigator)
+    // var promise = navigator.getUserMedia(
+    //   // constraints
+    //   {
+    //     video: true,
+    //     audio: true
+    //   })
+    //   console.log('iahgduagdsd', promise)
+    //   // promise.then(
+    //   //   (mediaStream) => {
+    //   //     mediaStream.active = false
+    //   //     this.setState({ permissions: false })
+    //   //     this.state.activeRoom.disconnect()
+    //   //   }
+    //   // )
+    //   // .catch((err) => {
+    //   //   console.log("Ocurrió el siguiente error: " + err);
+    //   // })
+    //   // console.log('dgavkugavdukgvdukac', navigator)
   }
+
   participantConnected(participant) {
     const div = document.createElement("div");
     div.id = participant.sid;
@@ -206,73 +255,75 @@ export default class VideoComponent extends Component {
     this.setState({ sendFileOpen: false });
   };
 
-
-
   render() {
-    console.log(this.state.participants);
+    // console.log(this.state.participants);
+    console.log('navigator', navigator)
     // if(this.state.participants.length>0)this.mainScreen(this.state.participants[0])
     return (
-      <div className='Views'>
-        <div className="logoVideoConferencia">
-          <div className="logoConferencia">
-            <img className='logoConferencia' src='/utils/images/logor.png' />
-          </div>
-        </div>
+      this.state.permissions ?
 
-        <div className="divDelMedio">
-          {/* EN ESTE DIV SE VA A MOSTRAR LAS OPCIONES DE VISTA DE LA VIDEOCONFERENCIA Y LA LISTA DE PARTICIPANTES */}
-          <div className="opcionesVista">
-            <Button onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
-              <img className='add-participant' src="/utils/images/layout.svg" />
-            </Button>
-            <Button onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
-              <img className='add-participant' src="/utils/images/layout-full.svg" />
-            </Button>
+        <div className='Views'>
+          <div className="logoVideoConferencia">
+            <div className="logoConferencia">
+              <img className='logoConferencia' src='/utils/images/logor.png' />
+            </div>
           </div>
 
-          <div className="participantes">
-            <AddParticipant dataSala={this.state} />
-            <div id="totalRemote">
-              <div
-                onClick={() => console.log("holaaa")}
-                ref="remotmemedia"
-                id="remote-media"
+          <div className="divDelMedio">
+            {/* EN ESTE DIV SE VA A MOSTRAR LAS OPCIONES DE VISTA DE LA VIDEOCONFERENCIA Y LA LISTA DE PARTICIPANTES */}
+            <div className="opcionesVista">
+              <Button onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
+                <img className='add-participant' src="/utils/images/layout.svg" />
+              </Button>
+              <Button onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
+                <img className='add-participant' src="/utils/images/layout-full.svg" />
+              </Button>
+            </div>
+
+            <div className="participantes">
+              <AddParticipant dataSala={this.state} />
+              <div id="totalRemote">
+                <div
+                  onClick={() => console.log("holaaa")}
+                  ref="remotmemedia"
+                  id="remote-media"
+                />
+              </div>
+              <div ref="mainmedia" id="main-media" />
+            </div>
+          </div>
+
+          <div className="divDeAbajo">
+            {/* AQUI SE MUESTRA EL CHAT */}
+            <div className="chat">
+              <Chat room={this.props.match.params.code} />
+            </div>
+
+            {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
+            <div className="barraOpciones">
+              <ButtonBar
+                disconnect={this.disconnected2}
+                videoDisable={this.videoDisable}
+                audioDisable={this.audioDisable}
+                handleOpenSendFile={this.handleOpenSendFile}
               />
             </div>
-            <div ref="mainmedia" id="main-media" />
+
+            <div className='camaraLocal'>
+              <Dialog
+                open={this.state.sendFileOpen}
+                onClose={this.handleCloseSendFile}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <UploadFiles handleCloseSendFile={this.handleCloseSendFile} roomCode={this.props.match.params.code} />
+              </Dialog>
+              {/* EN ESTE DIV SE VA A MOSTRAR LA CAMARA DEL USUARIO QUE INGRESA A LA VIDEOCONFERENCIA */}
+              <div ref="localMedia" id="local-media" />
+            </div>
           </div>
         </div>
-
-        <div className="divDeAbajo">
-          {/* AQUI SE MUESTRA EL CHAT */}
-          <div className="chat">
-            <Chat room={this.props.match.params.code} />
-          </div>
-
-          {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
-          <div className="barraOpciones">
-            <ButtonBar
-              disconnect={this.disconnected2}
-              videoDisable={this.videoDisable}
-              audioDisable={this.audioDisable}
-              handleOpenSendFile={this.handleOpenSendFile}
-            />
-          </div>
-
-          <div className='camaraLocal'>
-            <Dialog
-              open={this.state.sendFileOpen}
-              onClose={this.handleCloseSendFile}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <UploadFiles handleCloseSendFile={this.handleCloseSendFile} roomCode={this.props.match.params.code} />
-            </Dialog>
-            {/* EN ESTE DIV SE VA A MOSTRAR LA CAMARA DEL USUARIO QUE INGRESA A LA VIDEOCONFERENCIA */}
-            <div ref="localMedia" id="local-media" />
-          </div>
-        </div>
-      </div>
+        : <Permisos handleClickVideo={this.handleClickVideo} handleClickAudio={this.handleClickAudio} statePermissions={this.state.permissions} />
     );
   }
 }
