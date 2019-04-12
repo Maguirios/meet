@@ -25,11 +25,11 @@ class SingUp extends React.Component {
   }
 
   componentDidMount() {
-    (this.props.currentUser.email)? this.props.history.push('/') : null
+    (this.props.currentUser)? this.props.history.push('/') : null
   }
 
   componentDidUpdate(prevProps){
-    (prevProps.currentUser.email !== this.props.currentUser.email)? this.props.history.push('/') : null
+    (prevProps.currentUser !== this.props.currentUser)? this.props.history.push('/') : null
   }
 
 

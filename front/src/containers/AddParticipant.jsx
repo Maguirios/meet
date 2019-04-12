@@ -24,7 +24,10 @@ const styles = theme => ({
         date: '',
         time: ''
     },
-
+    iconButton: {
+        marginTop: 15,
+        float: 'right'
+    }
 });
 
 export class AddParticipant extends React.Component {
@@ -168,10 +171,10 @@ export class AddParticipant extends React.Component {
 
             </div>
         );
-    }
+  }
 }
 const mapStateToProps = (state) => ({
-    
+  userName: state.users.userName
 });
 
 const mapDispatchToProps = (dispatch) => ({

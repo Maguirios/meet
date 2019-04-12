@@ -17,24 +17,20 @@ import axios from 'axios'
 
 const styles = theme => ({
   createRoom: {
-    width: 528,
-    height: 290,
+    width: 560,
+    height: 380,
     borderRadius: 5,
     boxShadow: '0 2 20 5 rgba(0, 0, 0, 0.2)',
     backgroundColor: 'white'
  },
   outlinedSala: {
-    padding: 0,
     width: 245,
-    height: 32,
-    marginRight: 10,
-    border: 2,
-    borderRadius: 5,
+    height: 53,
   },
   outlinedFecha: {
     padding: 0,
     width: 92,
-    height: 32,
+    height: 53,
     marginRight: 10,
     border: 2,
     borderRadius: 5,
@@ -42,25 +38,25 @@ const styles = theme => ({
   outlinedHora: {
     padding: 0,
     width: 68,
-    height: 32,
+    height: 53,
     border: 2,
     borderRadius: 5,
   },
   outlinedEmailInput: {
     width: 435,
-    height: 32,
+    height: 53,
     border: 2,
     borderRadius: 5,
   },
   button1: {
     width: 110,
-    height: 32,
+    height: 53,
     borderRadius: 5,
     backgroundColor: '##5c6f7b',
   },
   button2: {
     width: 110,
-    height: 32,
+    height: 53,
     borderRadius: 5,
     backgroundColor: '#4dc2f1',
   },
@@ -166,21 +162,21 @@ export class createRoom extends Component {
       .catch(err => {
         console.log('err', err)
       })
-      this.setState({created:true})
-      this.setState({roomCode})
+    this.setState({ created: true })
+    this.setState({ roomCode })
 
-        var template_content = [
-          { "name": "guestName",  "content": 'Hola' },
-          { "name": "guestEmail", "content": 'plataforma@mail'  },
-          { "name": "roomCode",   "content":  roomCode },
-          { "name": "roomTitle",  "content": this.state.room },
-          { "name": "roomDate",   "content":  this.state.selectedDate.format('LL') + ' ' + this.state.selectedTime.format('LT') + ' hs' },
-          { "name": "ownerName",  "content": this.props.currentUser.displayName },
-          { "name": "ownerEmail", "content": 'owner@gmail.com' }
-        ]
-        
-        var emails = this.state.email.replace(/\s/g, "").split(',')
-        
+    var template_content = [
+      { "name": "guestName", "content": 'Hola' },
+      { "name": "guestEmail", "content": 'plataforma@mail' },
+      { "name": "roomCode", "content": roomCode },
+      { "name": "roomTitle", "content": this.state.room },
+      { "name": "roomDate", "content": this.state.selectedDate.format('LL') + ' ' + this.state.selectedTime.format('LT') + ' hs' },
+      { "name": "ownerName", "content": this.props.currentUser.displayName },
+      { "name": "ownerEmail", "content": 'owner@gmail.com' }
+    ]
+
+    var emails = this.state.email.replace(/\s/g, "").split(',')
+
         const params = {
         message : {
             to: [],
@@ -209,32 +205,33 @@ export class createRoom extends Component {
           //     }
           // ]
 
-        },
-        template_name : 'meeting-invite',
-        template_content
+      },
+      template_name: 'meeting-invite',
+      template_content
     }
 
-        emails.map(userEmail => {
-        params.message.to.push({email: userEmail})
-        
+    emails.map(userEmail => {
+      params.message.to.push({ email: userEmail })
+
+    })
+
+    axios.post('/api/sendEmail', params)
+      .then(email => {
+        console.log(email)
       })
-  
-    axios.post('/api/sendEmail', params )
-   .then(email => {
-     console.log(email)    
-   })
-}
-      
+  }
+
 
   render() {
     const { classes } = this.props
     const { selectedDate, selectedTime } = this.state;
 
-    const create = (<Grid
+    const create = (
+    <Grid
       container
       direction='row'
     >
-      <form className={classes.createRoom} style ={{'padding-left': '40px', 'padding-bottom': '20px', 'padding-top': '28px'}}>
+      <form className={classes.createRoom} style ={{'paddingLeft': '40px', 'paddingBottom': '20px', 'paddingTop': '28px'}}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Grid
             item sm>
@@ -264,11 +261,12 @@ export class createRoom extends Component {
               value={selectedTime}
               onChange={time => this.handleTimeChange(time)}
             />
-          </Grid>
-        </MuiPickersUtilsProvider>
-        <Grid
-          item sm>
+            </Grid>
+          </MuiPickersUtilsProvider>
+        <div className={classes.texts}>
           <p className={classes.text}>INVITADOS</p>
+        </div>
+        <div className={classes.middle}>
           <TextField
             className={classes.outlinedEmailInput}
             label="E-mail"
@@ -280,8 +278,10 @@ export class createRoom extends Component {
             variant="outlined"
             onChange={(e) => this.handleEmail(e)}
           />
+        </div>
+        <div className={classes.texts}>
           <p className={classes.text}>Agregar otro invitado</p>
-        </Grid>
+        </div>
         <Grid className={classes.buttons} container spacing={24}>
           <Grid item>
             <Link to='/' className={classes.link}><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>

@@ -19,7 +19,8 @@ const styles = theme => ({
   icons: {
     height: 30,
     width: 29,
-    objectFit: "contain"
+    objectFit: "contain",
+    float: 'rigth'
   },
   timer: {
     fontFamily: "Roboto",
@@ -52,7 +53,7 @@ export class ButtonBar extends Component {
 
     return (
       <div>
-        {/* <Button className={classes.timeCall}><p className={classes.timer}>{format(timer)}</p></Button> */}
+        <Button className={classes.timeCall}><p className={classes.timer}>{format(timer)}</p></Button>
         <Button className={classes.micCam}>
           <img
             onClick={this.props.videoDisable}
@@ -76,14 +77,14 @@ export class ButtonBar extends Component {
   }
 }
 
-// function format(time) {s
-//     let seg = time / 100 | 0;
-//     if (seg>59) seg = seg % 60;
-//     if (seg/10 < 1) seg = '0' + seg;
-//     let min = time / 6000 | 0;
-//     if (min/10 < 1) min = '0' + min;
-//     return `${min}:${seg}`;
-//   }
+function format(time) {
+    let seg = time / 100 | 0;
+    if (seg>59) seg = seg % 60;
+    if (seg/10 < 1) seg = '0' + seg;
+    let min = time / 6000 | 0;
+    if (min/10 < 1) min = '0' + min;
+    return `${min}:${seg}`;
+  }
 
 const mapStateToProps = state => ({});
 
