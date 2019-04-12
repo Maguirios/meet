@@ -125,7 +125,6 @@ export class AddParticipant extends React.Component {
 
     render() {
         const { dataSala, classes } = this.props
-        console.log('El STATE PASADO POR PROPS', this.state)
         return (
             <div>
 
