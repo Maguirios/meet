@@ -264,3 +264,7 @@ input[type="number"]::-webkit-outer-spin-button {
   min-width: 75px;
   object-fit: contain;
 }
+
+a{
+  text-decoration: none
+}
