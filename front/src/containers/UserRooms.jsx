@@ -57,6 +57,11 @@ const styles = theme => ({
   progress:{
     width: 50,
     heigth: 50,
+  }, 
+  noRooms:{
+    fontFamily: 'Roboto',
+    textAlign: 'center',
+    fontSize: 18
   }
 })
 
@@ -68,6 +73,7 @@ export class UserRooms extends Component {
     return (
       <div>
         {this.props.rooms ?
+         this.props.rooms.length != 0 ? 
         <Grid
           className={classes.container}
           container
@@ -114,6 +120,10 @@ export class UserRooms extends Component {
               </div>
             ))}
         </Grid>
+        : 
+        <div className={classes.container}>
+        <p className = {classes.noRooms} >No tiene ninguna sala activa</p>
+        </div>
           :
           <CircularProgress className={classes.progress} color="secondary" />
       }
@@ -132,7 +142,7 @@ const mapStateToProps = (state) => ({
     return room.emails.some((user) => user === state.firebase.auth.email) 
     && room.status === 'active'
     && moment().startOf('date').isSameOrBefore(moment(room.dia ,"DD-MMMM-YYYY"))
-    && Number(room.date.slice(20,22)-2 < Number(moment().format('HH')))
+    //&& Number(room.date.slice(20,22)-2 < Number(moment().format('HH')))
   })
 })
 

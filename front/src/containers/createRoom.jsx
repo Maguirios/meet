@@ -276,7 +276,7 @@ export class createRoom extends Component {
                 label="Hora"
                 margin="normal"
                 variant="outlined"
-                value={selectedTime}
+                value={selectedDate}
                 onChange={time => this.handleTimeChange(time)}
               />
             </Grid>
