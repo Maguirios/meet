@@ -8,14 +8,9 @@ import { compose } from 'redux'
 import { firebaseConnect } from 'react-redux-firebase'
 
 import Code from '../components/Code';
-import Chat from '../components/Chat';
 import SignIn from "./SignIn"
-import Permisos from './Permisos';
-import Conexion from './Conexion'
-import SalaEspera from './SalaEspera'
 import firebase from '../firebase';
 import CreateRoom from './createRoom';
-import UploadFiles from './UploadFiles';
 import Rooms from './UserRooms';
 import { setLogin } from '../redux/action-creators/usersActions';
 
@@ -23,7 +18,6 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      user: {},
       time: moment().format('LT'),
     }
     this.signOut = this.signOut.bind(this)
@@ -31,19 +25,12 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.props.setLogin({ user })
-      }
-    });
     setInterval(this.update, 5000);
   }
 
   signOut() {
     firebase.auth().signOut()
-      .then(() => {
-        this.setState({ user: {} })
-      }).catch(function (error) {
+    .catch(function (error) {
         console.log('El error fue', error)
       });
   }
@@ -57,7 +44,7 @@ class Home extends Component {
         <div className='home-top'>
           {!userLogin.isEmpty ?
             <div className="withUser">
-              <Link to='/createRoom'>
+              <Link to='/createRoom' style={{'textDecoration': 'none'}}>
                 <Button variant="contained" color="primary">
                   CREAR SALA
                 </Button>
@@ -68,12 +55,12 @@ class Home extends Component {
             </div>
             :
             <div className='withoutUser'>
-              <Link to='/signIn'>
+              <Link to='/signIn' style={{'textDecoration': 'none'}}>
                 <Button variant="contained" color="primary">
                   INICIAR SESIÓN
                 </Button>
               </Link>
-              <Link to='/register'>
+              <Link to='/register' style={{'textDecoration': 'none'}}>
                 <Button variant="contained" color="primary" id='register'>
                   REGISTRARSE
                 </Button>
@@ -84,14 +71,9 @@ class Home extends Component {
         <div className='home-center'>
           <img className='isologo-horizontal-white' src='/utils/images/logor.png' />
           <div className="components">
-            <Route path='/permisos' render={() => <Permisos />} />
-            <Route path='/conexion' render={() => <Conexion />} />
-            <Route path='/salaespera' render={() => <SalaEspera />} />
-            <Route path='/chat' component={Chat} />
             <Route path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={!userLogin.isEmpty} />} />
             <Route path='/signIn' render={({ history }) => <SignIn history={history} currentUser={!userLogin.isEmpty} />} />
             <Route path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={userLogin} />} />
-            <Route path='/probando' render={() => <UploadFiles />} />
             {!userLogin.isEmpty ? <Route exact path='/' component={Rooms} /> : <Route exact path='/' component={Code} />}
           </div>
         </div>

@@ -3,9 +3,9 @@ import Video from "twilio-video";
 import axios from "axios";
 import RaisedButton from "material-ui/RaisedButton";
 import TextField from "material-ui/TextField";
-import UploadFiles from './UploadFiles'
-import Dialog from '@material-ui/core/Dialog';
-import AddParticipant from './AddParticipant'
+import UploadFiles from "./UploadFiles";
+import Dialog from "@material-ui/core/Dialog";
+import AddParticipant from "./AddParticipant";
 import firebase from "../firebase";
 import { Card, CardHeader, CardText } from "material-ui/Card";
 import ButtonBar from "./ButtonBar";
@@ -20,6 +20,7 @@ import Permisos from './Permisos';
 export default class VideoComponent extends Component {
   constructor(props) {
     super(props);
+    this._isMounted = false
 
     this.state = {
       identity: null,
@@ -32,28 +33,36 @@ export default class VideoComponent extends Component {
       participants: [],
       localId: "",
       sendFileOpen: false,
-      Video: false,
-      audio: false,
+      Video: true,
+      audio: true,
       main: 0,
-      permissions: false
+      permissions: false,
+      container: "",
+      statusParticipants: []
     };
 
     // this.joinRoom = this.joinRoom.bind(this);
     this.disconnected2 = this.disconnected2.bind(this);
-    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(this);
+    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(
+      this
+    );
     this.videoDisable = this.videoDisable.bind(this);
-    this.handleOpenSendFile = this.handleOpenSendFile.bind(this)
-    this.handleCloseSendFile = this.handleCloseSendFile.bind(this)
+    this.handleOpenSendFile = this.handleOpenSendFile.bind(this);
+    this.handleCloseSendFile = this.handleCloseSendFile.bind(this);
     this.audioDisable = this.audioDisable.bind(this);
     this.participantConnected = this.participantConnected.bind(this);
     this.participantDisconnected = this.participantDisconnected.bind(this);
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
     this.mainScreen = this.mainScreen.bind(this);
+    this.hardcodeo = this.hardcodeo.bind(this);
 
+    // this.trash=this.trash.bind(this)
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
     firebase
       .database()
       .ref(`rooms/${this.props.match.params.code}`)
@@ -61,11 +70,14 @@ export default class VideoComponent extends Component {
         if (!snapshoot.val()) {
           this.props.history.push("/");
         }
-        this.setState({ roomName: snapshoot.val().code });
+        if (this._isMounted) {
+          this.setState({ roomName: snapshoot.val().code });
+          this.joinRoom();
+        }
       });
-    axios.get("/token").then(results => {
+    axios.post("/token").then(results => {
       const { identity, token } = results.data;
-      this.setState({ identity, token });
+      if (this._isMounted) this.setState({ identity, token });
     });
     navigator.getUserMedia = (navigator.getUserMedia ||
       navigator.webkitGetUserMedia ||
@@ -116,17 +128,35 @@ export default class VideoComponent extends Component {
 
       room.on("participantConnected", this.participantConnected);
       room.participants.forEach(this.participantConnected);
+      room.participants.forEach(this.hardcodeo);
+
       this.setState({
         localId: room.localParticipant,
-        activeRoom: room
+        activeRoom: room,
+        container: previewContainer
       });
       room.on("participantDisconnected", this.participantDisconnected);
+
       room.once("disconnected", error =>
         room.participants.forEach(this.participantDisconnected)
       );
+      const newParti = this.state.participants.length
+        ? this.state.participants.map(participant => {
+          const entries = participant.tracks.entries();
+          const status = { name: participant.sid };
+          for (const [k, v] of entries) {
+            status[k] = v.isTrackEnabled;
+          }
+          return status;
+        })
+        : [];
+      this.setState({ statusParticipants: newParti });
     });
   }
 
+  hardcodeo(participant) {
+    this.state.participants.push(participant);
+  }
   attachLocalParticipantTracks(participant, container) {
     var tracks = Array.from(participant.tracks.values());
     tracks.forEach(track => {
@@ -135,26 +165,40 @@ export default class VideoComponent extends Component {
   }
   detachattachLocalParticipantTracks() {
     var tracks = Array.from(this.state.localId.tracks.values());
+
     tracks.forEach(track => {
       const attachedElements = track.track.detach();
       attachedElements.forEach(element => element.remove());
       this.props.history.push("/");
     });
   }
+
   videoDisable() {
+    let img = new Image();
+    img.src = "/utils/images/video.svg";
+    img.style.position = "absolute";
+    img.id = "local-icon";
     this.state.Video == true
       ? this.state.localId.videoTracks.forEach(videoTracks => {
+        videoTracks.track.detach();
         videoTracks.track.disable();
+        this.state.container.appendChild(videoTracks.track.attach(img));
         this.setState({ Video: false });
       })
       : this.state.localId.videoTracks.forEach(videoTracks => {
+        document.getElementById(img.id).remove();
+        this.state.container.appendChild(videoTracks.track.attach());
         videoTracks.track.enable();
         this.setState({ Video: true });
       });
   }
   audioDisable() {
+    let micro = new Image()
+    micro.src = "/utils/images/mute.svg"
+    micro.id = "micro"
     this.state.audio == true
       ? this.state.localId.audioTracks.forEach(audioTracks => {
+
         audioTracks.track.disable();
         this.setState({ audio: false });
       })
@@ -163,35 +207,22 @@ export default class VideoComponent extends Component {
         this.setState({ audio: true });
       });
   }
-  mainScreen(participant) {
-    if (this.state.main == 0) {
-      // const div = document.createElement("div");
-      // div.id = participant.sid;
-      // div.innerText = participant.identity;
 
-      participant.on("trackSubscribed", track => {
-        this.trackSubscribed(div, track);
-      });
-      participant.on("trackUnsubscribed", this.trackUnsubscribed);
-
-      participant.tracks.forEach(publication => {
-        if (publication.isSubscribed) {
-          trackSubscribed(div, publication.track);
-        }
-      });
-
-      let remoteMedias = document.getElementById("main-media");
-      remoteMedias.appendChild(div);
-      this.state.main = 1;
-    }
+  avChange() {
+    // console.log(this.state.participants)
+    // this.state.participants.forEach((track) => {
+    // console.log(track.tracks, '-CHECK')
+    // })
   }
 
+
+
   disconnected2() {
- 
+
     document.getElementById("local-media").remove();
     this.setState({ activeRoom: false, localMediaAvailable: false, permissions: false });
     this.detachattachLocalParticipantTracks();
-      console.log('omar', this.state.activeRoom)
+    console.log('omar', this.state.activeRoom)
     this.state.activeRoom.disconnect();
     // navigator.getUserMedia = (navigator.getUserMedia ||
     //   navigator.webkitGetUserMedia ||
@@ -219,21 +250,26 @@ export default class VideoComponent extends Component {
   }
 
   participantConnected(participant) {
+    // participant.on('audioDisable', () => { })
+    // var check = Array.from(participant.tracks.values())
+    // console.log(check)
+    // var button = document.createElement('button');
+    // button.onclick = function (e) {
+    // console.log(e)
+    // };
     const div = document.createElement("div");
     div.id = participant.sid;
-    // div.innerText = participant.identity;
-    this.state.participants.push(participant);
 
     participant.on("trackSubscribed", track => {
       this.trackSubscribed(div, track);
     });
     participant.on("trackUnsubscribed", this.trackUnsubscribed);
     participant.tracks.forEach(publication => {
+
       if (publication.isSubscribed) {
         trackSubscribed(div, publication.track);
       }
     });
-
     let remoteMedias = document.getElementById("remote-media");
     remoteMedias.appendChild(div);
   }
@@ -242,23 +278,58 @@ export default class VideoComponent extends Component {
   }
 
   trackSubscribed(div, track) {
+    let img = new Image();
+    img.src = "/utils/images/video.svg";
+    img.style.position = "absolute";
+    img.id = "local-icon";
+    let micro = new Image()
+    micro.src = "/utils/images/mute.svg"
+    micro.id = "micro"
+    div.style.position = "relative"
     div.appendChild(track.attach());
+    track.on("disabled", () => {
+      if (track.kind == "video") {
+        if (!track.isEnabled) {
+          this.trackUnsubscribed(track)
+          div.appendChild(track.attach(img));
+        }
+      }
+      else {
+        if (!track.isEnabled) {
+          div.appendChild(track.attach(micro))
+        }
+      }
+    });
+    track.on("enabled", () => {
+
+      if (track.kind == "video") {
+        if (track.isEnabled) {
+          track.detach(img).remove()
+          div.appendChild(track.attach());
+        }
+      }
+      else {
+        if (track.isEnabled) {
+          track.detach(micro).remove()
+
+        }
+      }
+    });
+
+
   }
 
   trackUnsubscribed(track) {
     track.detach().forEach(element => element.remove());
   }
   handleOpenSendFile() {
-    this.setState({ sendFileOpen: true })
+    this.setState({ sendFileOpen: true });
   }
   handleCloseSendFile() {
     this.setState({ sendFileOpen: false });
   };
 
   render() {
-    // console.log(this.state.participants);
-    console.log('navigator', navigator)
-    // if(this.state.participants.length>0)this.mainScreen(this.state.participants[0])
     return (
       this.state.permissions ?
 
@@ -272,54 +343,81 @@ export default class VideoComponent extends Component {
           <div className="divDelMedio">
             {/* EN ESTE DIV SE VA A MOSTRAR LAS OPCIONES DE VISTA DE LA VIDEOCONFERENCIA Y LA LISTA DE PARTICIPANTES */}
             <div className="opcionesVista">
-              <Button onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
+              <Button
+                onClick={this.handleClickOpen}
+                style={{ float: 'right', marginTop: '12px' }}
+              >
                 <img className='add-participant' src="/utils/images/layout.svg" />
               </Button>
-              <Button onClick={this.handleClickOpen} style={{ float: 'right', marginTop: '12px' }}>
+              <Button onClick={this.handleClickOpen}
+                style={{
+                  float: 'right',
+                  marginTop: '12px'
+                }}
+              >
                 <img className='add-participant' src="/utils/images/layout-full.svg" />
               </Button>
+
             </div>
 
             <div className="participantes">
               <AddParticipant dataSala={this.state} />
               <div id="totalRemote">
                 <div
-                  onClick={() => console.log("holaaa")}
+                  onClick={(e) => {
+                    console.log("holaaa", e.target)
+                    const pantachota = e.target
+                    document.querySelector('body').appendChild(pantachota)
+                  }}
                   ref="remotmemedia"
                   id="remote-media"
                 />
               </div>
-              <div ref="mainmedia" id="main-media" />
-            </div>
-          </div>
 
-          <div className="divDeAbajo">
-            {/* AQUI SE MUESTRA EL CHAT */}
-            <div className="chat">
-              <Chat room={this.props.match.params.code} />
-            </div>
-
-            {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
-            <div className="barraOpciones">
-              <ButtonBar
-                disconnect={this.disconnected2}
-                videoDisable={this.videoDisable}
-                audioDisable={this.audioDisable}
-                handleOpenSendFile={this.handleOpenSendFile}
-              />
+              <div className="participantes">
+                <AddParticipant dataSala={this.state} />
+                <div id="totalRemote">
+                  <div
+                    onClick={() => console.log("holaaa")}
+                    ref="remotmemedia"
+                    id="remote-media"
+                  />
+                </div>
+                <div ref="mainmedia" id="main-media" />
+              </div>
             </div>
 
-            <div className='camaraLocal'>
-              <Dialog
-                open={this.state.sendFileOpen}
-                onClose={this.handleCloseSendFile}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <UploadFiles handleCloseSendFile={this.handleCloseSendFile} roomCode={this.props.match.params.code} />
-              </Dialog>
-              {/* EN ESTE DIV SE VA A MOSTRAR LA CAMARA DEL USUARIO QUE INGRESA A LA VIDEOCONFERENCIA */}
-              <div ref="localMedia" id="local-media" />
+            <div className="divDeAbajo">
+              {/* AQUI SE MUESTRA EL CHAT */}
+              <div className="chat">
+                <Chat room={this.props.match.params.code} />
+              </div>
+
+              {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
+              <div className="barraOpciones">
+                <ButtonBar
+                  disconnect={this.disconnected2}
+                  videoDisable={this.videoDisable}
+                  audioDisable={this.audioDisable}
+                  handleOpenSendFile={this.handleOpenSendFile}
+                />
+              </div>
+
+              <div className="camaraLocal">
+                <Dialog
+                  open={this.state.sendFileOpen}
+                  onClose={this.handleCloseSendFile}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <UploadFiles
+                    handleCloseSendFile={this.handleCloseSendFile}
+                    roomCode={this.props.match.params.code}
+                  />
+                </Dialog>
+                {/* EN ESTE DIV SE VA A MOSTRAR LA CAMARA DEL USUARIO QUE INGRESA A LA VIDEOCONFERENCIA */}
+                <div ref="localMedia" id="local-media" />
+              </div>
             </div>
           </div>
         </div>

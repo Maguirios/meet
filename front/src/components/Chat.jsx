@@ -7,6 +7,8 @@ import Input from '@material-ui/core/Input';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
+import { compose } from 'redux'
+import { firebaseConnect } from 'react-redux-firebase'
 import Axios from 'axios';
 
 
@@ -42,7 +44,8 @@ const styles = theme => ({
     lineHeight: 'normal',
     letterSpacing: 'normal',
     color: '#ffffff',
-    'word-break': 'break-all'
+    'word-break': 'break-all',
+    wordBreak: 'normal',
   },
   name: {
     fontFamily: 'Roboto',
@@ -234,7 +237,6 @@ class Chat extends React.Component {
   render() {
     let time = 0
     time = moment().format('LT')
-
     const { classes } = this.props;
     return (
       <div>
@@ -294,13 +296,15 @@ Chat.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 const mapStateToProps = (state) => ({
-  userName: state.users.userName,
+  userName: state.users.userName ? state.users.userName : state.firebase.auth.displayName,
 });
 const mapDispatchToProps = (dispatch) => ({
 
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Chat));
+export default compose(firebaseConnect([
+  'rooms']),
+ connect(mapStateToProps, mapDispatchToProps))(withStyles(styles)(Chat))
 
 
 
