@@ -46,7 +46,7 @@ export class AddParticipant extends React.Component {
     componentDidMount(){
         firebase.database().ref(`rooms/${this.props.room}`).on("value", (snapshot) => {
             console.log('El arreglo de emails', snapshot.val());
-            this.setState({ countEmails: snapshot.val().emails, roomTitle: snapshot.val().name, time:  snapshot.val().time, date: snapshot.val().date })
+            this.setState({ countEmails: snapshot.val().emails, roomTitle: snapshot.val().name, date: snapshot.val().date })
         })
         
     }
@@ -69,7 +69,7 @@ export class AddParticipant extends React.Component {
                 { "name": "guestEmail", "content": 'plataforma@mail'  },
                 { "name": "roomCode",   "content":  this.props.room },
                 { "name": "roomTitle",  "content": this.state.roomTitle },
-                { "name": "roomDate",   "content":  this.state.date + ' ' + this.state.time + ' hs' },
+                { "name": "roomDate",   "content":  this.state.date + ' hs' },
                 { "name": "ownerName",  "content": this.state.name },
                 { "name": "ownerEmail", "content": 'owner@gmail.com' }
               ]
