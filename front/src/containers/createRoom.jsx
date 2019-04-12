@@ -17,12 +17,12 @@ import axios from 'axios'
 
 const styles = theme => ({
   createRoom: {
-    width: 560,
-    height: 380,
+    width: 528,
+    //height: 380,
     borderRadius: 5,
     boxShadow: '0 2 20 5 rgba(0, 0, 0, 0.2)',
     backgroundColor: 'white'
- },
+  },
   outlinedSala: {
     width: 245,
     height: 53,
@@ -50,13 +50,13 @@ const styles = theme => ({
   },
   button1: {
     width: 110,
-    height: 53,
+    height: 36,
     borderRadius: 5,
     backgroundColor: '##5c6f7b',
   },
   button2: {
     width: 110,
-    height: 53,
+    height: 36,
     borderRadius: 5,
     backgroundColor: '#4dc2f1',
   },
@@ -73,7 +73,8 @@ const styles = theme => ({
   buttons: {
     justifyContent: "center",
     margin: '0 auto',
-  }, 
+    marginBottom: 10
+  },
   title: {
     fontFamily: 'Roboto',
     fontWeight: 900,
@@ -92,25 +93,25 @@ const styles = theme => ({
     marginBottom: 0,
     marginTop: 40
   },
-  invitation:{
+  invitation: {
     textAlign: 'center',
     fontSize: 18,
     marginTop: 2,
     marginBottom: 40
   },
-  code:{
+  code: {
     textAlign: 'center',
     fontSize: 12,
-    
+
 
   },
-  codeNumber:{
+  codeNumber: {
     textAlign: 'center',
     fontSize: 28,
     margin: 0,
     marginBottom: 20
   },
-  link:{
+  link: {
     textDecoration: 'none'
   }
 })
@@ -177,33 +178,33 @@ export class createRoom extends Component {
 
     var emails = this.state.email.replace(/\s/g, "").split(',')
 
-        const params = {
-        message : {
-            to: [],
-            from_email: 'no-reply@insideone.com.ar',
-            from_name: 'Meet',
-            subject : `Videollamada`,
-            "global_merge_vars": [
-                {
-                    "name": "LINK",
-                    "content": 'http://localhost:3000/'
-                },
-                {
-                    "name": "participants",
-                    "content": emails
-                },
-                {
-                    "name": "hasParticipants",
-                    "content": true
-                }
-            ]
-          //   "attachments": [
-          //     { 
-          //         "type": "text/calendar",
-          //         "name": "meeting.ics",
-          //         "content": 'ics'
-          //     }
-          // ]
+    const params = {
+      message: {
+        to: [],
+        from_email: 'no-reply@insideone.com.ar',
+        from_name: 'Meet',
+        subject: `Videollamada`,
+        "global_merge_vars": [
+          {
+            "name": "LINK",
+            "content": 'http://localhost:3000/'
+          },
+          {
+            "name": "participants",
+            "content": emails
+          },
+          {
+            "name": "hasParticipants",
+            "content": true
+          }
+        ]
+        //   "attachments": [
+        //     { 
+        //         "type": "text/calendar",
+        //         "name": "meeting.ics",
+        //         "content": 'ics'
+        //     }
+        // ]
 
       },
       template_name: 'meeting-invite',
@@ -227,90 +228,90 @@ export class createRoom extends Component {
     const { selectedDate, selectedTime } = this.state;
 
     const create = (
-    <Grid
-      container
-      direction='row'
-    >
-      <form className={classes.createRoom} style ={{'paddingLeft': '40px', 'paddingBottom': '20px', 'paddingTop': '28px'}}>
-        <MuiPickersUtilsProvider utils={MomentUtils}>
-          <Grid
-            item sm>
-            <p className={classes.text}>SALA</p>
-            <TextField
-              className={classes.outlinedSala}
-              label="Nombre de la Sala"
-              margin="normal"
-              variant="outlined"
-              onChange={(e) => this.handleRoom(e)}
-            />
-            <InlineDatePicker
-              onlyCalendar
-              className={classes.outlinedFecha}
-              label="Fecha"
-              margin="normal"
-              variant="outlined"
-              value={selectedDate}
-              onChange={date => this.handleDateChange(date)}
-            />
-            <TimePicker
-              autoOk
-              className={classes.outlinedHora}
-              label="Hora"
-              margin="normal"
-              variant="outlined"
-              value={selectedTime}
-              onChange={time => this.handleTimeChange(time)}
-            />
+      <Grid
+        container
+        direction='row'
+      >
+        <form className={classes.createRoom} style={{ 'paddingLeft': '40px', 'paddingBottom': '20px', 'paddingTop': '28px' }}>
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <Grid
+              item sm>
+              <p className={classes.text}>SALA</p>
+              <TextField
+                className={classes.outlinedSala}
+                label="Nombre de la Sala"
+                margin="normal"
+                variant="outlined"
+                onChange={(e) => this.handleRoom(e)}
+              />
+              <InlineDatePicker
+                onlyCalendar
+                className={classes.outlinedFecha}
+                label="Fecha"
+                margin="normal"
+                variant="outlined"
+                value={selectedDate}
+                onChange={date => this.handleDateChange(date)}
+              />
+              <TimePicker
+                autoOk
+                className={classes.outlinedHora}
+                label="Hora"
+                margin="normal"
+                variant="outlined"
+                value={selectedTime}
+                onChange={time => this.handleTimeChange(time)}
+              />
             </Grid>
           </MuiPickersUtilsProvider>
-        <div className={classes.texts}>
-          <p className={classes.text}>INVITADOS</p>
-        </div>
-        <div className={classes.middle}>
-          <TextField
-            className={classes.outlinedEmailInput}
-            label="E-mail"
-            type="email"
-            name="email"
-            autoComplete="email"
-            margin="normal"
-            fullWidth
-            variant="outlined"
-            onChange={(e) => this.handleEmail(e)}
-          />
-        </div>
-        <div className={classes.texts}>
-          <p className={classes.text}>Agregar otro invitado</p>
-        </div>
-        <Grid className={classes.buttons} container spacing={24}>
-          <Grid item>
-            <Link to='/' className={classes.link}><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>
+          <div className={classes.texts}>
+            <p className={classes.text}>INVITADOS</p>
+          </div>
+          <div className={classes.middle}>
+            <TextField
+              className={classes.outlinedEmailInput}
+              label="E-mail"
+              type="email"
+              name="email"
+              autoComplete="email"
+              margin="normal"
+              fullWidth
+              variant="outlined"
+              onChange={(e) => this.handleEmail(e)}
+            />
+          </div>
+          <div className={classes.texts}>
+            <p className={classes.text}>Agregar otro invitado</p>
+          </div>
+          <Grid className={classes.buttons} container spacing={24}>
+            <Grid item>
+              <Link to='/' className={classes.link}><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>
+            </Grid>
+            <Grid item>
+              <Button variant="contained" color="primary" onClick={(e) => this.handleSubmit(e)} className={classes.button2}>Crear</Button>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Button variant="contained" color="primary" onClick={(e) => this.handleSubmit(e)} className={classes.button2}>Crear</Button>
-          </Grid>
-        </Grid>
-      </form>
-    </Grid>)
+        </form>
+      </Grid>)
 
     const created = (
       <div className={classes.createRoom}>
-      <Grid container>
-      <Grid>
-        <p className={classes.title +' '+ classes.roomCreated}>La sala fue creada exitosamente</p>
-        <p className={classes.title +' '+ classes.invitation}> y las invitaciones fueron enviadas.</p>
+        <Grid container>
+          <Grid>
+            <p className={classes.title + ' ' + classes.roomCreated}>La sala fue creada exitosamente</p>
+            <p className={classes.title + ' ' + classes.invitation}> y las invitaciones fueron enviadas.</p>
 
-        <p className={classes.title +' '+ classes.code}>CODIGO</p>
-        <p className={classes.title +' '+ classes.codeNumber}>{this.state.roomCode}</p>
-      </Grid>
-      <Grid className={classes.buttons} container spacing={24}>
-          <Grid item>
-            <Link to='/' className = {classes.link}><Button variant="contained" className={classes.button1}>VOLVER</Button></Link>
+            <p className={classes.title + ' ' + classes.code}>CODIGO</p>
+            <p className={classes.title + ' ' + classes.codeNumber}>{this.state.roomCode}</p>
           </Grid>
-          <Grid item>
-            <Link to={`/room/${this.state.roomCode}`} className = {classes.link} ><Button variant="contained" color="primary" className={classes.button2}>INGRESAR</Button></Link>
+          <Grid className={classes.buttons} container spacing={24}>
+            <Grid item>
+              <Link to='/' className={classes.link}><Button variant="contained" className={classes.button1}>VOLVER</Button></Link>
+            </Grid>
+            <Grid item>
+              <Link to={`/room/${this.state.roomCode}`} className={classes.link} ><Button variant="contained" color="primary" className={classes.button2}>INGRESAR</Button></Link>
+            </Grid>
           </Grid>
-        </Grid>
         </Grid>
 
       </div>
