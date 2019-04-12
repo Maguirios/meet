@@ -8,14 +8,9 @@ import { compose } from 'redux'
 import { firebaseConnect } from 'react-redux-firebase'
 
 import Code from '../components/Code';
-import Chat from '../components/Chat';
 import SignIn from "./SignIn"
-import Permisos from './Permisos';
-import Conexion from './Conexion'
-import SalaEspera from './SalaEspera'
 import firebase from '../firebase';
 import CreateRoom from './createRoom';
-import UploadFiles from './UploadFiles';
 import Rooms from './UserRooms';
 import { setLogin } from '../redux/action-creators/usersActions';
 
@@ -23,7 +18,6 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      user: {},
       time: moment().format('LT'),
     }
     this.signOut = this.signOut.bind(this)
@@ -31,19 +25,12 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.props.setLogin({ user })
-      }
-    });
     setInterval(this.update, 5000);
   }
 
   signOut() {
     firebase.auth().signOut()
-      .then(() => {
-        this.setState({ user: {} })
-      }).catch(function (error) {
+    .catch(function (error) {
         console.log('El error fue', error)
       });
   }

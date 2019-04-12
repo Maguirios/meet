@@ -53,6 +53,7 @@ const styles = theme => ({
     height: 36,
     borderRadius: 5,
     backgroundColor: '##5c6f7b',
+    textDecoration: 'none',
   },
   button2: {
     width: 110,
@@ -125,22 +126,32 @@ export class createRoom extends Component {
     super(props)
     this.state = {
       selectedDate: moment(),
-      selectedTime: moment(),
       room: '',
       email: '',
       created: false,
       roomCode: 0,
+      dia: {},
     };
   }
 
+  componentDidMount() {
+    (this.props.currentUser.isEmpty) ? this.props.history.push('/') :
+      firebase.database().ref(`/rooms/`).on('value', snapshoot => {
+        this.setState({ rooms: Object.keys(snapshoot.val()) })
+      })
+  }
+
   handleDateChange(date) {
-    console.log(date)
-    this.setState({ selectedDate: date });
+    console.log('Time', date.format('LLL'))
+    this.setState({
+      selectedDate: date,
+      dia: date.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-') === ' ' ? '0' + date.format('LL').slice(0, 15).replace(' de ', '-').replace(' de ', '-') : date.format('LL').slice(0, 15).replace(' de ', '-').replace(' de ', '-')
+    });
   };
 
   handleTimeChange(time) {
-    console.log(time)
-    this.setState({ selectedTime: time });
+    console.log('Time', time.format('LLL'))
+    this.setState({ selectedDate: time });
   }
   handleEmail(e) {
     this.setState({ email: e.target.value })
@@ -149,15 +160,26 @@ export class createRoom extends Component {
   handleRoom(e) {
     this.setState({ room: e.target.value })
   }
+
+  genRoomCode() {
+    let roomCode = Math.floor(1000 + Math.random() * 9000);
+    if (this.state.rooms.includes(roomCode)) {
+      return genRoomCode()
+    }
+    return roomCode
+  }
+
   handleSubmit(e) {
     e.preventDefault();
-    let roomCode = Math.floor(1000 + Math.random() * 9000);
+    let roomCode = this.genRoomCode()
+    let fullDate = this.state.selectedDate.format('LLL')[1] === ' ' ? '0' + this.state.selectedDate.format('LLL') : this.state.selectedDate.format('LLL')
     let newRoom = {
       code: roomCode,
       name: this.state.room,
       emails: this.state.email.replace(/\s/g, "").split(',').concat(this.props.currentUser.email),
-      time: this.state.selectedTime.format('LT'),
-      date: this.state.selectedDate.format('LL'),
+      date: fullDate,
+      status: 'active',
+      dia: this.state.dia,
     }
     firebase.database().ref(`rooms/${roomCode}`).set(newRoom)
       .catch(err => {
@@ -165,61 +187,56 @@ export class createRoom extends Component {
       })
     this.setState({ created: true })
     this.setState({ roomCode })
+    
+    if (this.state.email) {
+      var template_content = [
+        { "name": "guestName", "content": 'Hola' },
+        { "name": "guestEmail", "content": 'plataforma@mail' },
+        { "name": "roomCode", "content": roomCode },
+        { "name": "roomTitle", "content": this.state.room },
+        { "name": "roomDate", "content": this.state.selectedDate.format('LLL') + ' hs' },
+        { "name": "ownerName", "content": this.props.currentUser.displayName },
+        { "name": "ownerEmail", "content": 'owner@gmail.com' }
+      ]
 
-    var template_content = [
-      { "name": "guestName", "content": 'Hola' },
-      { "name": "guestEmail", "content": 'plataforma@mail' },
-      { "name": "roomCode", "content": roomCode },
-      { "name": "roomTitle", "content": this.state.room },
-      { "name": "roomDate", "content": this.state.selectedDate.format('LL') + ' ' + this.state.selectedTime.format('LT') + ' hs' },
-      { "name": "ownerName", "content": this.props.currentUser.displayName },
-      { "name": "ownerEmail", "content": 'owner@gmail.com' }
-    ]
+      var emails = this.state.email.replace(/\s/g, "").split(',')
 
-    var emails = this.state.email.replace(/\s/g, "").split(',')
+      const params = {
+        message: {
+          to: [],
+          from_email: 'no-reply@insideone.com.ar',
+          from_name: 'Meet',
+          subject: `Videollamada`,
+          "global_merge_vars": [
+            {
+              "name": "LINK",
+              "content": `http://localhost:3000/room/${roomCode}`
+            },
+            {
+              "name": "participants",
+              "content": emails
+            },
+            {
+              "name": "hasParticipants",
+              "content": true
+            }
+          ]
 
-    const params = {
-      message: {
-        to: [],
-        from_email: 'no-reply@insideone.com.ar',
-        from_name: 'Meet',
-        subject: `Videollamada`,
-        "global_merge_vars": [
-          {
-            "name": "LINK",
-            "content": 'http://localhost:3000/'
-          },
-          {
-            "name": "participants",
-            "content": emails
-          },
-          {
-            "name": "hasParticipants",
-            "content": true
-          }
-        ]
-        //   "attachments": [
-        //     { 
-        //         "type": "text/calendar",
-        //         "name": "meeting.ics",
-        //         "content": 'ics'
-        //     }
-        // ]
+        },
+        template_name: 'meeting-invite',
+        template_content
+      }
 
-      },
-      template_name: 'meeting-invite',
-      template_content
-    }
+      emails.map(userEmail => {
+        params.message.to.push({ email: userEmail })
 
-    emails.map(userEmail => {
-      params.message.to.push({ email: userEmail })
-
-    })
-
-    axios.post('/api/sendEmail', params)
-      .then(email => {
-        console.log(email)
       })
+
+      axios.post('/api/sendEmail', params)
+        .then(email => {
+          console.log(email)
+        })
+    }
   }
 
 
