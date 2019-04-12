@@ -306,7 +306,7 @@ export default class VideoComponent extends Component {
           </div>
 
           <div className="participantes">
-            <AddParticipant dataSala={this.state} />
+            <AddParticipant dataSala={this.props.match.params.code} />
             <div id="totalRemote">
               <div
                 onClick={(e) => {

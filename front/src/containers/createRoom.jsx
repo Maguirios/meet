@@ -32,8 +32,8 @@ const styles = theme => ({
     padding: '10px 0px'
   },
   createRoom: {
-    width: 560,
-    height: 380,
+    width: 528,
+    //height: 380,
     borderRadius: 5,
     boxShadow: '0 2 20 5 rgba(0, 0, 0, 0.2)',
     backgroundColor: 'white'
@@ -65,14 +65,14 @@ const styles = theme => ({
   },
   button1: {
     width: 110,
-    height: 53,
+    height: 36,
     borderRadius: 5,
     backgroundColor: '##5c6f7b',
     textDecoration: 'none',
   },
   button2: {
     width: 110,
-    height: 53,
+    height: 36,
     borderRadius: 5,
     backgroundColor: '#4dc2f1',
   },
@@ -89,6 +89,7 @@ const styles = theme => ({
   buttons: {
     justifyContent: "center",
     margin: '0 auto',
+    marginBottom: 10
   },
   title: {
     fontFamily: 'Roboto',
@@ -302,6 +303,7 @@ export class createRoom extends Component {
               className={classes.outlinedFecha}
               label="Fecha"
               margin="normal"
+              fullWidth
               variant="outlined"
               value={selectedDate}
               onChange={date => this.handleDateChange(date)}
