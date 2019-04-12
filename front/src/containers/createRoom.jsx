@@ -21,9 +21,8 @@ const styles = theme => ({
     height: 290,
     borderRadius: 5,
     boxShadow: '0 2 20 5 rgba(0, 0, 0, 0.2)',
-    backgroundColor: 'white',
-    paddingLeft: 40,
-  },
+    backgroundColor: 'white'
+ },
   outlinedSala: {
     padding: 0,
     width: 245,
@@ -66,7 +65,7 @@ const styles = theme => ({
     backgroundColor: '#4dc2f1',
   },
   text: {
-    fontFamily: 'Avenir',
+    fontFamily: 'Roboto',
     fontSize: 12,
     fontWeight: 500,
     fontStyle: 'normal',
@@ -78,6 +77,45 @@ const styles = theme => ({
   buttons: {
     justifyContent: "center",
     margin: '0 auto',
+  }, 
+  title: {
+    fontFamily: 'Roboto',
+    fontWeight: 900,
+    fontStyle: 'normal',
+    fontStretch: 'normal',
+    lineHeight: 'normal',
+    letterSpacing: 'normal',
+    textAlign: 'center',
+    color: '#5c6f7b',
+    width: 528
+
+  },
+  roomCreated: {
+    textAlign: 'center',
+    fontSize: 18,
+    marginBottom: 0,
+    marginTop: 40
+  },
+  invitation:{
+    textAlign: 'center',
+    fontSize: 18,
+    marginTop: 2,
+    marginBottom: 40
+  },
+  code:{
+    textAlign: 'center',
+    fontSize: 12,
+    
+
+  },
+  codeNumber:{
+    textAlign: 'center',
+    fontSize: 28,
+    margin: 0,
+    marginBottom: 20
+  },
+  link:{
+    textDecoration: 'none'
   }
 })
 moment.locale("es");
@@ -152,7 +190,7 @@ export class createRoom extends Component {
             "global_merge_vars": [
                 {
                     "name": "LINK",
-                    "content": `http://localhost:3000/room/${roomCode}`
+                    "content": 'http://localhost:3000/'
                 },
                 {
                     "name": "participants",
@@ -163,6 +201,13 @@ export class createRoom extends Component {
                     "content": true
                 }
             ]
+          //   "attachments": [
+          //     { 
+          //         "type": "text/calendar",
+          //         "name": "meeting.ics",
+          //         "content": 'ics'
+          //     }
+          // ]
 
         },
         template_name : 'meeting-invite',
@@ -189,7 +234,7 @@ export class createRoom extends Component {
       container
       direction='row'
     >
-      <form className={classes.createRoom}>
+      <form className={classes.createRoom} style ={{'padding-left': '40px', 'padding-bottom': '20px', 'padding-top': '28px'}}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Grid
             item sm>
@@ -239,7 +284,7 @@ export class createRoom extends Component {
         </Grid>
         <Grid className={classes.buttons} container spacing={24}>
           <Grid item>
-            <Link to='/' ><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>
+            <Link to='/' className={classes.link}><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>
           </Grid>
           <Grid item>
             <Button variant="contained" color="primary" onClick={(e) => this.handleSubmit(e)} className={classes.button2}>Crear</Button>
@@ -250,19 +295,24 @@ export class createRoom extends Component {
 
     const created = (
       <div className={classes.createRoom}>
+      <Grid container>
       <Grid>
-        <p className={classes.text}>La sala fue creada exitosamente {'\n'} y las invitaciones fueron enviadas.</p>
+        <p className={classes.title +' '+ classes.roomCreated}>La sala fue creada exitosamente</p>
+        <p className={classes.title +' '+ classes.invitation}> y las invitaciones fueron enviadas.</p>
 
-        <p className={classes.text}>CODIGO{'\n'} {this.state.roomCode}</p>
+        <p className={classes.title +' '+ classes.code}>CODIGO</p>
+        <p className={classes.title +' '+ classes.codeNumber}>{this.state.roomCode}</p>
       </Grid>
       <Grid className={classes.buttons} container spacing={24}>
           <Grid item>
-            <Link to='/' ><Button variant="contained" className={classes.button1}>VOLVER</Button></Link>
+            <Link to='/' className = {classes.link}><Button variant="contained" className={classes.button1}>VOLVER</Button></Link>
           </Grid>
           <Grid item>
-            <Link to={`/room/${this.state.roomCode}`} ><Button variant="contained" color="primary" className={classes.button2}>INGRESAR</Button></Link>
+            <Link to={`/room/${this.state.roomCode}`} className = {classes.link} ><Button variant="contained" color="primary" className={classes.button2}>INGRESAR</Button></Link>
           </Grid>
         </Grid>
+        </Grid>
+
       </div>
     )
 

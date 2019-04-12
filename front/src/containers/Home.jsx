@@ -61,7 +61,7 @@ class Main extends Component {
         <div className='home-top'>
           {(this.state.user.email) ?
             <div className="withUser">
-              <Link to='/createRoom'>
+              <Link to='/createRoom' style={{'text-decoration': 'none'}}>
                 <Button variant="contained" color="primary">
                   CREAR SALA
                 </Button>
@@ -72,12 +72,12 @@ class Main extends Component {
             </div>
             :
             <div className='withoutUser'>
-              <Link to='/signIn'>
+              <Link to='/signIn' style={{'text-decoration': 'none'}}>
                 <Button variant="contained" color="primary">
                   INICIAR SESIÓN
                 </Button>
               </Link>
-              <Link to='/register'>
+              <Link to='/register' style={{'text-decoration': 'none'}}>
                 <Button variant="contained" color="primary" id='register'>
                   REGISTRARSE
                 </Button>
@@ -88,14 +88,9 @@ class Main extends Component {
         <div className='home-center'>
           <img className='isologo-horizontal-white' src='/utils/images/logor.png' />
           <div className="components">
-            <Route path='/permisos' render={() => <Permisos />} />
-            <Route path='/conexion' render={() => <Conexion />} />
-            <Route path='/salaespera' render={() => <SalaEspera />} />
-            <Route path='/chat' component={Chat} />
             <Route path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={this.state.user} />} />
             <Route path='/signIn' render={({ history }) => <SignIn history={history} currentUser={this.state.user} />} />
             <Route path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={this.state.user} />} />
-            <Route path='/probando' render={() => <UploadFiles />} />
             <Route exact path='/' component={Code} />
           </div>
         </div>
