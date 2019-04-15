@@ -54,7 +54,7 @@ export default class VideoComponent extends Component {
     this.participantDisconnected = this.participantDisconnected.bind(this);
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
-    this.mainScreen = this.mainScreen.bind(this);
+    // this.mainScreen = this.mainScreen.bind(this);
     this.hardcodeo = this.hardcodeo.bind(this);
 
     // this.trash=this.trash.bind(this)
@@ -357,7 +357,6 @@ export default class VideoComponent extends Component {
               >
                 <img className='add-participant' src="/utils/images/layout-full.svg" />
               </Button>
-
             </div>
 
             <div className="participantes">
@@ -372,19 +371,9 @@ export default class VideoComponent extends Component {
                   ref="remotmemedia"
                   id="remote-media"
                 />
-              </div>
-
-              <div className="participantes">
-                <AddParticipant dataSala={this.state} />
-                <div id="totalRemote">
-                  <div
-                    onClick={() => console.log("holaaa")}
-                    ref="remotmemedia"
-                    id="remote-media"
-                  />
-                </div>
                 <div ref="mainmedia" id="main-media" />
               </div>
+
             </div>
 
             <div className="divDeAbajo">
