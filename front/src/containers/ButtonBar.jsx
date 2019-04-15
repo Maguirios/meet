@@ -43,17 +43,30 @@ export class ButtonBar extends Component {
       timer: 0,
     }
   }
+
   componentDidMount() {
-    setInterval(() => { this.setState({ timer: this.state.timer += 1 }) }, 10);
+    this.intervalID = setInterval(() => this.setState({timer: this.state.timer + 1}), 1000)
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.intervalID)
+  }
+
+  format(time) {
+    let seg = time / 1 | 0;
+    if (seg>59) seg = seg % 60;
+    if (seg/10 < 1) seg = '0' + seg;
+    let min = time / 60 | 0;
+    if (min/10 < 1) min = '0' + min;
+    return `${min}:${seg}`;
   }
 
   render() {
     const { classes } = this.props
     const { timer } = this.state
-
     return (
       <div>
-        <Button className={classes.timeCall}><p className={classes.timer}>{format(timer)}</p></Button>
+        <Button className={classes.timeCall}><p className={classes.timer}>{this.format(timer)}</p></Button>
         <Button className={classes.micCam}>
           <img
             onClick={this.props.videoDisable}
@@ -77,14 +90,7 @@ export class ButtonBar extends Component {
   }
 }
 
-function format(time) {
-    let seg = time / 100 | 0;
-    if (seg>59) seg = seg % 60;
-    if (seg/10 < 1) seg = '0' + seg;
-    let min = time / 6000 | 0;
-    if (min/10 < 1) min = '0' + min;
-    return `${min}:${seg}`;
-  }
+
 
 const mapStateToProps = state => ({});
 

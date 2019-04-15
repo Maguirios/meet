@@ -1,18 +1,15 @@
 import React, { Component } from "react";
 import Video from "twilio-video";
 import axios from "axios";
-import RaisedButton from "material-ui/RaisedButton";
-import TextField from "material-ui/TextField";
+import { Route } from 'react-router-dom';
 import UploadFiles from "./UploadFiles";
 import Dialog from "@material-ui/core/Dialog";
 import AddParticipant from "./AddParticipant";
 import firebase from "../firebase";
-import { Card, CardHeader, CardText } from "material-ui/Card";
+
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
-import SalaEspera from "./SalaEspera";
-import Fab from "@material-ui/core/Fab";
-import Icon from "@material-ui/core/Icon";
+
 import Button from "@material-ui/core/Button";
 
 export default class VideoComponent extends Component {
@@ -22,7 +19,7 @@ export default class VideoComponent extends Component {
 
     this.state = {
       identity: null,
-      roomName: "",
+      roomName: this.props.match.params.code,
       roomNameErr: false,
       previewTracks: null,
       localMediaAvailable: false,
@@ -35,10 +32,8 @@ export default class VideoComponent extends Component {
       audio: true,
       main: 0,
       container: "",
-      statusParticipants: []
     };
 
-    // this.joinRoom = this.joinRoom.bind(this);
     this.disconnected2 = this.disconnected2.bind(this);
     this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(
       this
@@ -51,13 +46,11 @@ export default class VideoComponent extends Component {
     this.participantDisconnected = this.participantDisconnected.bind(this);
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
-    // this.mainScreen = this.mainScreen.bind(this);
     this.hardcodeo = this.hardcodeo.bind(this);
-
-    // this.trash=this.trash.bind(this)
   }
 
   componentDidMount() {
+    console.log('object', this.props)
     this._isMounted = true;
 
     firebase
@@ -67,18 +60,18 @@ export default class VideoComponent extends Component {
         if (!snapshoot.val()) {
           this.props.history.push("/");
         }
-        if (this._isMounted) {
-          this.setState({ roomName: snapshoot.val().code });
-          this.joinRoom();
-        }
       });
-    axios.post("/token").then(results => {
-      const { identity, token } = results.data;
-      if (this._isMounted) this.setState({ identity, token });
-    });
+      axios.post("/token", { name: this.props.userName }).then(results => {
+        const { identity, token } = results.data;
+        console.log('RESULT', results)
+        if (this._isMounted) this.setState({ identity, token }, () => this.joinRoom());
+      });
 
   }
 
+  componentWillUnmount() {
+
+  }
 
 
   joinRoom() {
@@ -181,29 +174,13 @@ export default class VideoComponent extends Component {
       });
   }
 
-  avChange() {
-    // console.log(this.state.participants)
-    // this.state.participants.forEach((track) => {
-    // console.log(track.tracks, '-CHECK')
-    // })
-  }
-
-
-
   disconnected2() {
-    this.state.activeRoom.disconnect();
-    document.getElementById("local-media").remove();
-    this.setState({ activeRoom: false, localMediaAvailable: false });
-    this.detachattachLocalParticipantTracks();
+    this.detachattachLocalParticipantTracks()
+    document.getElementById("local-media").remove()
+    this.state.activeRoom.disconnect()
+    this.setState({ activeRoom: false, localMediaAvailable: false })
   }
   participantConnected(participant) {
-    // participant.on('audioDisable', () => { })
-    // var check = Array.from(participant.tracks.values())
-    // console.log(check)
-    // var button = document.createElement('button');
-    // button.onclick = function (e) {
-    // console.log(e)
-    // };
     const div = document.createElement("div");
     div.id = participant.sid;
 
@@ -248,7 +225,6 @@ export default class VideoComponent extends Component {
       }
     });
     track.on("enabled", () => {
-
       if (track.kind == "video") {
         if (track.isEnabled) {
           track.detach(img).remove()
@@ -262,8 +238,6 @@ export default class VideoComponent extends Component {
         }
       }
     });
-
-
   }
 
   trackUnsubscribed(track) {
@@ -325,7 +299,7 @@ export default class VideoComponent extends Component {
         <div className="divDeAbajo">
           {/* AQUI SE MUESTRA EL CHAT */}
           <div className="chat">
-            <Chat room={this.props.match.params.code} />
+            <Route path={`/room/${this.props.match.params.code}`} render={() => <Chat room={this.props.match.params.code} />} />
           </div>
 
           {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
@@ -358,3 +332,4 @@ export default class VideoComponent extends Component {
     );
   }
 }
+

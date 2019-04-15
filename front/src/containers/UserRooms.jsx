@@ -69,7 +69,7 @@ export class UserRooms extends Component {
 
 
   render() {
-    const { classes } = this.props
+    const { classes} = this.props
     return (
       <div>
         {this.props.rooms ?
