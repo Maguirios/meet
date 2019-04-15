@@ -17,6 +17,7 @@ body {
 .home-top {
   display: "inline";
   margin-left: 100px;
+  margin-top: 15px
 }
 
 #register {
@@ -105,6 +106,7 @@ body {
   top: 61px;
   position: absolute;
   right: 25px;
+  z-index: 99;
 }
 #local-icon {
   width: 120px;
@@ -267,4 +269,27 @@ input[type="number"]::-webkit-outer-spin-button {
 
 a{
   text-decoration: none
+}
+
+#add-participant{
+  float: right;
+  margin-right: 15px;
+  margin-top: 10px
+}
+
+#local-icon {
+  width: 150px;
+  height: 120px;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
+  background-color: #000000;
+}
+
+#remote-icon{
+  width: 120px;
+  height: 90px;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
+  background-color: #000000;
+  z-index: 0;
 }

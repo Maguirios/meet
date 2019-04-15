@@ -142,21 +142,22 @@ export default class VideoComponent extends Component {
   videoDisable() {
     let img = new Image();
     img.src = "/utils/images/video.svg";
-    img.style.position = "absolute";
+    img.style.position = "relative";
     img.id = "local-icon";
     this.state.Video == true
       ? this.state.localId.videoTracks.forEach(videoTracks => {
-        videoTracks.track.detach();
-        videoTracks.track.disable();
-        this.state.container.appendChild(videoTracks.track.attach(img));
-        this.setState({ Video: false });
-      })
+          videoTracks.track.disable();
+          this.trackUnsubscribed(videoTracks.track)
+          console.log(this.state.container)
+          this.state.container.appendChild(videoTracks.track.attach(img));
+          this.setState({ Video: false });
+        })
       : this.state.localId.videoTracks.forEach(videoTracks => {
-        document.getElementById(img.id).remove();
-        this.state.container.appendChild(videoTracks.track.attach());
-        videoTracks.track.enable();
-        this.setState({ Video: true });
-      });
+          document.getElementById(img.id).remove();
+          this.state.container.appendChild(videoTracks.track.attach());
+          videoTracks.track.enable();
+          this.setState({ Video: true });
+        });
   }
   audioDisable() {
     let micro = new Image()
@@ -205,36 +206,41 @@ export default class VideoComponent extends Component {
     let img = new Image();
     img.src = "/utils/images/video.svg";
     img.style.position = "absolute";
-    img.id = "local-icon";
-    let micro = new Image()
-    micro.src = "/utils/images/mute.svg"
-    micro.id = "micro"
-    div.style.position = "relative"
-    div.appendChild(track.attach());
+    
+    img.id = "remote-icon";
+    let micro = new Image();
+    micro.src = "/utils/images/mute.svg";
+    micro.id = "micro";
+    micro.style.zIndex = "initial"
+    div.style.position = "relative";
+    if(track.kind == "audio"){
+      (track.isEnabled)? div.appendChild(track.attach()): div.appendChild(track.attach(micro))}
+    if(track.kind == "video"){
+      (track.isEnabled)? div.appendChild(track.attach()): div.appendChild(track.attach(img))
+
+
+    }
     track.on("disabled", () => {
       if (track.kind == "video") {
         if (!track.isEnabled) {
-          this.trackUnsubscribed(track)
+          this.trackUnsubscribed(track);
           div.appendChild(track.attach(img));
         }
-      }
-      else {
+      } else {
         if (!track.isEnabled) {
-          div.appendChild(track.attach(micro))
+          div.appendChild(track.attach(micro));
         }
       }
     });
     track.on("enabled", () => {
       if (track.kind == "video") {
         if (track.isEnabled) {
-          track.detach(img).remove()
+          track.detach(img).remove();
           div.appendChild(track.attach());
         }
-      }
-      else {
+      } else {
         if (track.isEnabled) {
-          track.detach(micro).remove()
-
+          track.detach(micro).remove();
         }
       }
     });

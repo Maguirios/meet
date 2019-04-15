@@ -16,6 +16,21 @@ import axios from 'axios'
 
 
 const styles = theme => ({
+  createRoom2: {
+    width: 528,
+    height: 290,
+    width: 560,
+    height: 380,
+    borderRadius: 5,
+    boxShadow: '0 2 20 5 rgba(0, 0, 0, 0.2)',
+    boxShadow: '0px 2px 20px 5px rgba(0, 0, 0, 0.2)',
+    backgroundColor: 'white',
+    display: 'grid',
+    'grid-template-rows': '1fr 2fr 1fr 2fr 1fr 2fr',
+    justifyItems: 'center',
+    alignItems: 'center',
+    padding: '10px 0px'
+  },
   createRoom: {
     width: 528,
     //height: 380,
@@ -114,6 +129,31 @@ const styles = theme => ({
   },
   link: {
     textDecoration: 'none'
+  },
+  topContainer: {
+    margin: '0 auto'
+  },
+  top: {
+    display: 'grid',
+    'grid-template-columns': '3fr 1fr 1fr',
+    justifyItems: 'center'
+  },
+  middle: {
+    display: 'grid',
+    justifyItems: 'center'
+  },
+  buttom: {
+    display: 'grid',
+    'justify-items': 'center',
+    'grid-template-columns': '1fr 1fr',
+    'grid-column-gap': '27px',
+    'margin-bottom': '10px',
+  },
+  texts: {
+    display: 'grid',
+    justifyItems: 'start',
+    width: '100%',
+    paddingLeft: 120,
   }
 })
 moment.locale("es");
@@ -147,7 +187,7 @@ export class createRoom extends Component {
       dia: date.format('LL')[1] === ' ' ? '0' + date.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-') : date.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-')
     });
   };
-
+ 
   handleTimeChange(time) {
     this.setState({ selectedDate: time,
       dia: time.format('LL')[1] === ' ' ? '0' + time.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-') : time.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-')
@@ -187,7 +227,7 @@ export class createRoom extends Component {
       })
     this.setState({ created: true })
     this.setState({ roomCode })
-    
+
     if (this.state.email) {
       var template_content = [
         { "name": "guestName", "content": 'Hola' },
@@ -245,71 +285,65 @@ export class createRoom extends Component {
     const { selectedDate, selectedTime } = this.state;
 
     const create = (
-      <Grid
-        container
-        direction='row'
-      >
-        <form className={classes.createRoom} style={{ 'paddingLeft': '40px', 'paddingBottom': '20px', 'paddingTop': '28px' }}>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <Grid
-              item sm>
-              <p className={classes.text}>SALA</p>
-              <TextField
-                className={classes.outlinedSala}
-                label="Nombre de la Sala"
-                margin="normal"
-                variant="outlined"
-                onChange={(e) => this.handleRoom(e)}
-              />
-              <InlineDatePicker
-                onlyCalendar
-                className={classes.outlinedFecha}
-                label="Fecha"
-                margin="normal"
-                variant="outlined"
-                value={selectedDate}
-                onChange={date => this.handleDateChange(date)}
-              />
-              <TimePicker
-                autoOk
-                className={classes.outlinedHora}
-                label="Hora"
-                margin="normal"
-                variant="outlined"
-                value={selectedDate}
-                onChange={time => this.handleTimeChange(time)}
-              />
-            </Grid>
-          </MuiPickersUtilsProvider>
+      < MuiPickersUtilsProvider utils={MomentUtils} >
+        <form className={classes.createRoom2} >
+          <div className={classes.texts}>
+            <p className={classes.text}>SALA</p>
+          </div>
+          <div className={classes.top}>
+          <TextField
+              className={classes.outlinedSala}
+              label="Nombre de la Sala"
+              margin="normal"
+              variant="outlined"
+              onChange={(e) => this.handleRoom(e)}
+            />
+            <InlineDatePicker
+              onlyCalendar
+              className={classes.outlinedFecha}
+              label="Fecha"
+              margin="normal"
+              fullWidth
+              variant="outlined"
+              value={selectedDate}
+              onChange={date => this.handleDateChange(date)}
+            />
+            <TimePicker
+              autoOk
+              className={classes.outlinedHora}
+              label="Hora"
+              margin="normal"
+              variant="outlined"
+              value={selectedDate}
+              onChange={time => this.handleTimeChange(time)}
+            />
+          </div >
           <div className={classes.texts}>
             <p className={classes.text}>INVITADOS</p>
           </div>
           <div className={classes.middle}>
-            <TextField
-              className={classes.outlinedEmailInput}
-              label="E-mail"
-              type="email"
-              name="email"
-              autoComplete="email"
-              margin="normal"
-              fullWidth
-              variant="outlined"
-              onChange={(e) => this.handleEmail(e)}
-            />
+          <TextField
+            className={classes.outlinedEmailInput}
+            label="E-mail"
+            type="email"
+            name="email"
+            autoComplete="email"
+            margin="normal"
+            fullWidth
+            variant="outlined"
+            onChange={(e) => this.handleEmail(e)}
+          />
           </div>
           <div className={classes.texts}>
             <p className={classes.text}>Agregar otro invitado</p>
           </div>
-          <Grid className={classes.buttons} container spacing={24}>
-            <Grid item>
-              <Link to='/' className={classes.link}><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>
-            </Grid>
-            <Grid item>
-              <Button variant="contained" color="primary" onClick={(e) => this.handleSubmit(e)} className={classes.button2}>Crear</Button>
-            </Grid>
-          </Grid>
-        </form>
-      </Grid>)
+          <div className={classes.buttom}>
+            <Link to='/' ><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>
+            <Button variant="contained" color="primary" onClick={(e) => this.handleSubmit(e)} className={classes.button2}>Crear</Button>
+          </div>
+        </form >
+      </MuiPickersUtilsProvider >
+    )
 
     const created = (
       <div className={classes.createRoom}>
@@ -355,3 +389,9 @@ const mapDispatchToProps = {
 }
 
 export default withStyles(styles)(createRoom)
+
+
+  //
+
+
+//
