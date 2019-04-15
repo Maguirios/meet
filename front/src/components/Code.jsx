@@ -102,7 +102,7 @@ class Code extends React.Component {
           this.setState({ error: "Esta sala no existe", description: 'Compruebe su código de sala' , open: true })
         }
         } else{
-          if(moment(snapshoot.val().dia ,"DD-MMMM-YYYY").isBetween(moment().startOf('date').subtract(1, 'days'), moment().add(1, 'days')) && Number(snapshoot.val().date.slice(20,22)-2 < Number(moment().format('HH'))) && snapshoot.val().status === 'active'){
+          if(moment(snapshoot.val().dia ,"DD-MMMM-YYYY").isBetween(moment().startOf('date').subtract(1, 'days'), moment().add(1, 'days')) && Number(snapshoot.val().date.slice(20,22)-4 < Number(moment().format('HH'))) && snapshoot.val().status === 'active'){
           this.props.setUser(user)
           this.props.history.push(`/room/${this.state.code}`)}
           else {
