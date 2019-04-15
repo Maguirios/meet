@@ -160,7 +160,7 @@ class Chat extends React.Component {
       else {
         var show = document.getElementById('style-1').lastChild;
       }
-      (show) ? show.scrollIntoView(false) : null
+      show && show.scrollIntoView(false)
     })
   }
 

@@ -129,7 +129,7 @@ export class createRoom extends Component {
       email: '',
       created: false,
       roomCode: 0,
-      dia: {},
+      dia: moment().format('LL')[1] === ' ' ? '0' + moment().format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-') : moment().format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-')
     };
   }
 
@@ -141,16 +141,16 @@ export class createRoom extends Component {
   }
 
   handleDateChange(date) {
-    console.log('Time', date.format('LLL'))
     this.setState({
       selectedDate: date,
-      dia: date.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-') === ' ' ? '0' + date.format('LL').slice(0, 15).replace(' de ', '-').replace(' de ', '-') : date.format('LL').slice(0, 15).replace(' de ', '-').replace(' de ', '-')
+      dia: date.format('LL')[1] === ' ' ? '0' + date.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-') : date.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-')
     });
   };
 
   handleTimeChange(time) {
-    console.log('Time', time.format('LLL'))
-    this.setState({ selectedDate: time });
+    this.setState({ selectedDate: time,
+      dia: time.format('LL')[1] === ' ' ? '0' + time.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-') : time.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-')
+     });
   }
   handleEmail(e) {
     this.setState({ email: e.target.value })

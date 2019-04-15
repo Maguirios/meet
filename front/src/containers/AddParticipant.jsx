@@ -44,7 +44,7 @@ export class AddParticipant extends React.Component {
     };
     
     componentDidMount(){
-        firebase.database().ref(`rooms/${this.props.room}`).on("value", (snapshot) => {
+        firebase.database().ref(`rooms/${this.props.dataSala}`).on("value", (snapshot) => {
             console.log('El arreglo de emails', snapshot.val());
             this.setState({ countEmails: snapshot.val().emails, roomTitle: snapshot.val().name, date: snapshot.val().date })
         })
