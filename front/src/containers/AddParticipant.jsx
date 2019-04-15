@@ -44,9 +44,8 @@ export class AddParticipant extends React.Component {
     };
     
     componentDidMount(){
-        firebase.database().ref(`rooms/${this.props.dataSala}`).on("value", (snapshot) => {
-            console.log('El arreglo de emails', snapshot.val());
-            this.setState({ countEmails: snapshot.val().emails, roomTitle: snapshot.val().name, date: snapshot.val().date })
+        firebase.database().ref(`/rooms/${this.props.dataSala}`).on("value", (snapshot) => {
+            this.setState({ countEmails: snapshot.val().emails, roomTitle: snapshot.val().name, date: snapshot.val().date, roomCode: snapshot.val().code })
         })
         
     }
@@ -59,7 +58,7 @@ export class AddParticipant extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const addEmails = this.state.countEmails.concat(this.state.email.replace(/\s/g, "").split(','))
-        firebase.database().ref(`rooms/${this.props.room}/emails/`)
+        firebase.database().ref(`rooms/${this.props.dataSala.roomName}/emails/`)
             .set(addEmails)
            
             this.setState({ open: false })
@@ -67,9 +66,9 @@ export class AddParticipant extends React.Component {
             var template_content = [
                 { "name": "guestName",  "content": 'Hola' },
                 { "name": "guestEmail", "content": 'plataforma@mail'  },
-                { "name": "roomCode",   "content":  this.props.room },
+                { "name": "roomCode",   "content":  this.state.roomCode },
                 { "name": "roomTitle",  "content": this.state.roomTitle },
-                { "name": "roomDate",   "content":  this.state.date + ' hs' },
+                { "name": "roomDate",   "content":  this.state.date + ' ' + ' hs' },
                 { "name": "ownerName",  "content": this.state.name },
                 { "name": "ownerEmail", "content": 'owner@gmail.com' }
               ]
@@ -125,8 +124,8 @@ export class AddParticipant extends React.Component {
 
 
     render() {
-        const { dataSala } = this.props
-        console.log('El STATE PASADO POR PROPS', dataSala)
+        const { dataSala, classes } = this.props
+        console.log('El STATE PASADO POR PROPS', this.state)
         return (
             <div>
 
