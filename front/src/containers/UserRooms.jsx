@@ -132,7 +132,7 @@ const mapStateToProps = (state) => ({
     return room.emails.some((user) => user === state.firebase.auth.email) 
     && room.status === 'active'
     && moment().startOf('date').isSameOrBefore(moment(room.dia ,"DD-MMMM-YYYY"))
-    && Number(room.date.slice(20,22)-2 < Number(moment().format('HH')))
+    // && Number(room.date.slice(20,22)-2 < Number(moment().format('HH')))
   })
 })
 

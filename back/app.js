@@ -32,7 +32,7 @@ app.use('/api', apiRoutes);
 
 
 app.post("/token", function (req, res) {
-  console.log(req.body)
+  console.log(req.body,'-----------------------')
   var identity = faker.name.findName();
   var token = new AccessToken(ACCOUNT_SID, API_KEY, API_SECRET, AUTH_TOKEN);
   token.identity = identity;

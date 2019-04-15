@@ -1,21 +1,18 @@
 import React, { Component } from "react";
 import Video from "twilio-video";
 import axios from "axios";
-import RaisedButton from "material-ui/RaisedButton";
-import TextField from "material-ui/TextField";
 import UploadFiles from "./UploadFiles";
 import Dialog from "@material-ui/core/Dialog";
 import AddParticipant from "./AddParticipant";
 import firebase from "../firebase";
-import { Card, CardHeader, CardText } from "material-ui/Card";
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
-import SalaEspera from "./SalaEspera";
-import Fab from "@material-ui/core/Fab";
-import Icon from "@material-ui/core/Icon";
 import Button from "@material-ui/core/Button";
+import { compose } from 'redux'
+import { firebaseConnect } from 'react-redux-firebase'
+import { connect } from 'react-redux';
 
-export default class VideoComponent extends Component {
+class VideoComponent extends Component {
   constructor(props) {
     super(props);
     this._isMounted = false
@@ -38,7 +35,6 @@ export default class VideoComponent extends Component {
       statusParticipants: []
     };
 
-    // this.joinRoom = this.joinRoom.bind(this);
     this.disconnected2 = this.disconnected2.bind(this);
     this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(
       this
@@ -51,15 +47,12 @@ export default class VideoComponent extends Component {
     this.participantDisconnected = this.participantDisconnected.bind(this);
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
-    // this.mainScreen = this.mainScreen.bind(this);
     this.hardcodeo = this.hardcodeo.bind(this);
-
-    // this.trash=this.trash.bind(this)
   }
 
   componentDidMount() {
     this._isMounted = true;
-
+    if (this._isMounted) 
     firebase
       .database()
       .ref(`rooms/${this.props.match.params.code}`)
@@ -72,14 +65,19 @@ export default class VideoComponent extends Component {
           this.joinRoom();
         }
       });
-    axios.post("/token").then(results => {
-      const { identity, token } = results.data;
-      if (this._isMounted) this.setState({ identity, token });
+
+    console.log(this.props.userLogin, '----------------------------------------------------')
+
+    axios.post("/token", { data: this.props.firebase.auth.displayName }).then(results => {
+      const { token } = results.data;
+      if (this._isMounted) this.setState({ token });
     });
 
   }
 
-
+  componentWillUnmount() {
+    this._isMounted = false
+  }
 
   joinRoom() {
     let connectOptions = {
@@ -181,16 +179,10 @@ export default class VideoComponent extends Component {
       });
   }
 
-      
-    
-  
-
-
-
   disconnected2() {
     this.state.activeRoom.disconnect();
     document.getElementById("local-media").remove();
-    this.setState({ activeRoom: false, localMediaAvailable: false });
+    // this.setState({ localMediaAvailable: false });
     this.detachattachLocalParticipantTracks();
   }
 
@@ -260,10 +252,10 @@ export default class VideoComponent extends Component {
 
   trackUnsubscribed(track) {
     track.on('enabled', (e) => {
-      console.log(e,track)
+      console.log(e, track)
     })
     track.detach().forEach(element => element.remove());
-}
+  }
   handleOpenSendFile() {
     this.setState({ sendFileOpen: true });
   }
@@ -353,3 +345,14 @@ export default class VideoComponent extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  userLogin: state.firebase.auth,
+})
+
+const mapDispatchToProps = (dispatch) => ({
+})
+
+export default compose(firebaseConnect([
+  'rooms']),
+  connect(mapStateToProps, mapDispatchToProps))(VideoComponent)
