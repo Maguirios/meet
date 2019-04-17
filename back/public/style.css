@@ -99,9 +99,9 @@ body {
 #micro {
   width: 40px;
   height: 25px;
-  top: 61px;
   position: absolute;
-  right: 25px;
+  right: 5px;
+  top: 87px;
   z-index: 99;
 }
 #local-icon {
@@ -113,9 +113,13 @@ body {
 }
 
 #local-media video {
+  position: relative;
   width: 150px;
   height: 120px;
   border-radius: 10px;
+}
+#local-media {
+  position: relative;
 }
 #totalRemote {
   width: 100%;
@@ -280,6 +284,13 @@ input[type="number"]::-webkit-outer-spin-button {
 
 a{
   text-decoration: none
+}
+.material-icons{
+  color: rgba(255, 255, 255, 1);
+  font-size: 30px;
+}
+.show {
+  color: rgba(255, 255, 255, 0.3);
 }
 
 #add-participant{

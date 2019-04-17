@@ -9,6 +9,7 @@ import firebase from "../firebase";
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
 import Button from "@material-ui/core/Button";
+import { Icon } from "@material-ui/core";
 
 export default class VideoComponent extends Component {
   constructor(props) {
@@ -132,7 +133,7 @@ export default class VideoComponent extends Component {
     });
   }
 
-  videoDisable() {
+  videoDisable(e) {
     let img = new Image();
     img.src = "/utils/images/video.svg";
     img.style.position = "relative";
@@ -146,11 +147,12 @@ export default class VideoComponent extends Component {
         this.setState({ Video: false });
       })
       : this.state.localId.videoTracks.forEach(videoTracks => {
-        document.getElementById(img.id).remove();
-        this.state.container.appendChild(videoTracks.track.attach());
-        videoTracks.track.enable();
-        this.setState({ Video: true });
-      });
+          document.getElementById(img.id).remove();
+          this.state.container.appendChild(videoTracks.track.attach());
+          videoTracks.track.enable();
+          this.setState({ Video: true });
+        });
+        document.getElementById('videocam').classList.toggle('show')
   }
   audioDisable() {
     let micro = new Image()
@@ -160,12 +162,15 @@ export default class VideoComponent extends Component {
       ? this.state.localId.audioTracks.forEach(audioTracks => {
 
         audioTracks.track.disable();
+        this.state.container.appendChild(micro)
         this.setState({ audio: false });
       })
       : this.state.localId.audioTracks.forEach(audioTracks => {
         audioTracks.track.enable();
+        document.getElementById('micro').remove()
         this.setState({ audio: true });
       });
+      document.getElementById('mic').classList.toggle('show')
   }
 
   disconnected2() {

@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 
+
 const styles = theme => ({
   timeCall: {
     width: 100,
@@ -38,6 +39,8 @@ const styles = theme => ({
 export class ButtonBar extends Component {
   constructor(props) {
     super(props)
+    
+    this.handleFormat = this.handleFormat.bind(this)
 
     this.state = {
       timer: 0,
@@ -61,27 +64,27 @@ export class ButtonBar extends Component {
     return `${min}:${seg}`;
   }
 
+  handleFormat() {
+    var color = document.getElementById('videocam')
+    color.style.color = 'rgba(255, 255, 255, 0.3)'
+    
+  }
+
   render() {
     const { classes } = this.props
     const { timer } = this.state
     return (
       <div>
         <Button className={classes.timeCall}><p className={classes.timer}>{this.format(timer)}</p></Button>
-        <Button className={classes.micCam}>
-          <img
-            onClick={this.props.videoDisable}
-            src="/utils/images/video.svg"
-            className={classes.icons}
-          />
+          <Button className={classes.micCam} onClick={(e) => this.props.videoDisable(e)}>
+          <i className="material-icons" id='videocam'>videocam</i>
+          </Button>
+          <Button className={classes.micCam} onClick={this.props.audioDisable}>
+          <i className="material-icons" id='mic'>mic_none</i>
+          </Button>
+        <Button className={classes.micCam} onClick={() => this.props.handleOpenSendFile()}>
+        <img src="/utils/images/share-screen.svg" className={classes.icons} />
         </Button>
-        <Button className={classes.micCam}>
-          <img
-            onClick={this.props.audioDisable}
-            src="/utils/images/mute.svg"
-            className={classes.icons}
-          />
-        </Button>
-        <Button className={classes.micCam} onClick={() => this.props.handleOpenSendFile()}><img src="/utils/images/share-screen.svg" className={classes.icons} /></Button>
         <Button className={classes.timeCall} onClick={this.props.disconnect}>
           <img src="/utils/images/end-call.svg" className={classes.icons} />
         </Button>
@@ -90,7 +93,14 @@ export class ButtonBar extends Component {
   }
 }
 
-
+function format(time) {
+  let seg = time / 100 | 0;
+  if (seg > 59) seg = seg % 60;
+  if (seg / 10 < 1) seg = '0' + seg;
+  let min = time / 6000 | 0;
+  if (min / 10 < 1) min = '0' + min;
+  return `${min}:${seg}`;
+}
 
 const mapStateToProps = state => ({});
 
