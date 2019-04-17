@@ -17,6 +17,7 @@ body {
 .home-top {
   display: "inline";
   margin-left: 100px;
+  margin-top: 15px
 }
 
 #register {
@@ -102,9 +103,10 @@ body {
 #micro {
   width: 40px;
   height: 25px;
-  top: 61px;
   position: absolute;
-  right: 25px;
+  right: 5px;
+  top: 87px;
+  z-index: 99;
 }
 #local-icon {
   width: 120px;
@@ -115,9 +117,13 @@ body {
 }
 
 #local-media video {
+  position: relative;
   width: 150px;
   height: 120px;
   border-radius: 10px;
+}
+#local-media {
+  position: relative;
 }
 #totalRemote {
   width: 100%;
@@ -270,6 +276,31 @@ a{
 }
 .material-icons{
   color: rgba(255, 255, 255, 1);
-  /* color: rgba(255, 255, 255, 0.3); */
   font-size: 30px;
+}
+.show {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+#add-participant{
+  float: right;
+  margin-right: 15px;
+  margin-top: 10px
+}
+
+#local-icon {
+  width: 150px;
+  height: 120px;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
+  background-color: #000000;
+}
+
+#remote-icon{
+  width: 120px;
+  height: 90px;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
+  background-color: #000000;
+  z-index: 0;
 }

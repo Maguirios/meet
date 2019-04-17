@@ -21,11 +21,14 @@ class Home extends Component {
       time: moment().format('LT'),
     }
     this.signOut = this.signOut.bind(this)
-    this.update = this.update.bind(this)
   }
 
   componentDidMount() {
-    setInterval(this.update, 5000);
+    this.intervalID = setInterval(() => this.setState({ time: moment().format('LT') }), 1000)
+  }
+ 
+  componentWillUnmount(){
+    clearInterval(this.intervalID)
   }
 
   signOut() {
@@ -34,7 +37,6 @@ class Home extends Component {
         console.log('El error fue', error)
       });
   }
-  update() { this.setState({ time: moment().format('LT') }) };
 
   render() {
 

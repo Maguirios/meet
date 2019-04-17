@@ -5,6 +5,8 @@ import { Switch } from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import GetMuiTheme from 'material-ui/styles/getMuiTheme'
 import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme'
+import { compose } from 'redux'
+import { firebaseConnect } from 'react-redux-firebase'
 
 import Home from '../containers/Home';
 import Streaming from './Streaming'
@@ -18,7 +20,7 @@ class Main extends Component {
             <div id='sala-conferencia'>
                 <MuiThemeProvider muiTheme={GetMuiTheme(lightBaseTheme)} >
                         <Switch>
-                            <Route path='/room/:code' render={({ history, match }) => <Streaming match={match} history={history} />} />
+                            <Route path='/room/:code' render={({ history, match }) => <Streaming match={match} history={history} userName={this.props.userName} />} />
                             <Route path='/' component={Home} />
                         </Switch>
                 </MuiThemeProvider>
@@ -28,13 +30,14 @@ class Main extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  state: state
-
-})
-
-const mapDispatchToProps = {
-
-}
-
-export default connect(mapStateToProps, null)(Main);
+    userName: state.users.userName ? state.users.userName : state.firebase.auth.displayName,
+  });
+  const mapDispatchToProps = (dispatch) => ({
+  
+  })
+  
+  export default compose(firebaseConnect([
+    'rooms']),
+    connect(mapStateToProps, mapDispatchToProps))(Main)
+  
 

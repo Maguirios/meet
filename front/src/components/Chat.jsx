@@ -160,7 +160,7 @@ class Chat extends React.Component {
       else {
         var show = document.getElementById('style-1').lastChild;
       }
-      (show) ? show.scrollIntoView(false) : null
+      show && show.scrollIntoView(false)
     })
   }
 
@@ -172,7 +172,7 @@ class Chat extends React.Component {
     var storageRef = storage.ref();
 
     //var  pathReference= storage.refFromURL('my url obtained from file properties in firebase storage');
-    var pathReference = storageRef.child(`meet/${fileName}`);
+    var pathReference = storageRef.child(`meet/${this.props.room}/${fileName}`);
 
     // Get the download URL
     pathReference.getDownloadURL().then(function (url) {

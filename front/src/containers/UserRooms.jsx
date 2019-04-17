@@ -15,9 +15,9 @@ import moment from 'moment';
 const styles = theme => ({
   container: {
     width: 600,
-    maxHeight: 190,
+    maxHeight: 300,
     borderRadius: 5,
-    padding: 30,
+    padding: 15,
     boxShadow: '0px 2px 20px 5px rgba(0, 0, 0, 0.2)',
     backgroundColor: 'white',
     overflowY: 'scroll',
@@ -40,6 +40,7 @@ const styles = theme => ({
     color: '#5c6f7b',
   },
   textDate: {
+    textAlign: 'start',
     fontSize: 12,
     fontWeight: 900,
     fontStyle: 'normal',
@@ -69,7 +70,7 @@ export class UserRooms extends Component {
 
 
   render() {
-    const { classes } = this.props
+    const { classes} = this.props
     return (
       <div>
         {this.props.rooms ?
@@ -106,11 +107,11 @@ export class UserRooms extends Component {
                     </p>
                   </Grid>
                   <Grid
-                    className={classes.centerButton}
+                    
                     item sm
                   >
                     <Link to={`/room/${room.code}`}>
-                      <Button variant="contained" size="small" color="primary" >
+                      <Button variant="contained" size="small" className={classes.centerButton} color="primary" >
                         <Icon>keyboard_arrow_right</Icon>
                       </Button>
                     </Link>
@@ -142,7 +143,7 @@ const mapStateToProps = (state) => ({
     return room.emails.some((user) => user === state.firebase.auth.email) 
     && room.status === 'active'
     && moment().startOf('date').isSameOrBefore(moment(room.dia ,"DD-MMMM-YYYY"))
-    //&& Number(room.date.slice(20,22)-2 < Number(moment().format('HH')))
+    // && Number(room.date.slice(20,22)-2 < Number(moment().format('HH')))
   })
 })
 

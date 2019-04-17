@@ -46,36 +46,41 @@ export class ButtonBar extends Component {
       timer: 0,
     }
   }
+
   componentDidMount() {
-    setInterval(() => { this.setState({ timer: this.state.timer += 1 }) }, 10);
+    this.intervalID = setInterval(() => this.setState({timer: this.state.timer + 1}), 1000)
   }
 
-  handleFormat(e) {
+  componentWillUnmount(){
+    clearInterval(this.intervalID)
+  }
+
+  format(time) {
+    let seg = time / 1 | 0;
+    if (seg>59) seg = seg % 60;
+    if (seg/10 < 1) seg = '0' + seg;
+    let min = time / 60 | 0;
+    if (min/10 < 1) min = '0' + min;
+    return `${min}:${seg}`;
+  }
+
+  handleFormat() {
+    var color = document.getElementById('videocam')
+    color.style.color = 'rgba(255, 255, 255, 0.3)'
+    
   }
 
   render() {
     const { classes } = this.props
     const { timer } = this.state
-
     return (
       <div>
-        <Button className={classes.timeCall}><p className={classes.timer}>{format(timer)}</p></Button>
-          <Button className={classes.micCam} onClick={this.props.videoDisable}>
+        <Button className={classes.timeCall}><p className={classes.timer}>{this.format(timer)}</p></Button>
+          <Button className={classes.micCam} onClick={(e) => this.props.videoDisable(e)}>
           <i className="material-icons" id='videocam'>videocam</i>
-            {/* <img
-              onClick={this.props.videoDisable}
-              src="/utils/images/video.svg"
-              className={classes.icons}
-            /> */}
           </Button>
-          <Button className={classes.micCam}>
-          <i className="material-icons" onClick={this.props.audioDisable}>mic_none</i>
-
-            {/* <img
-              onClick={this.props.audioDisable}
-              src="/utils/images/mute.svg"
-              className={classes.icons}
-            /> */}
+          <Button className={classes.micCam} onClick={this.props.audioDisable}>
+          <i className="material-icons" id='mic'>mic_none</i>
           </Button>
         <Button className={classes.micCam} onClick={() => this.props.handleOpenSendFile()}>
         <img src="/utils/images/share-screen.svg" className={classes.icons} />

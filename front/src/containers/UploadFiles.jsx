@@ -100,6 +100,7 @@ class UploadFiles extends React.Component {
 
   handleSubmit(e){
     e.preventDefault()
+    console.log('Hola soy el codigo', this.props.roomCode)
     const file = this.state.file
     var storageRef = firebase.storage().ref(`meet/${this.props.roomCode}/${file.name}`)
     storageRef.put(file)
