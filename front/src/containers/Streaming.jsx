@@ -1,24 +1,20 @@
 import React, { Component } from "react";
 import Video from "twilio-video";
 import axios from "axios";
-import RaisedButton from "material-ui/RaisedButton";
-import TextField from "material-ui/TextField";
+
 import UploadFiles from "./UploadFiles";
 import Dialog from "@material-ui/core/Dialog";
 import AddParticipant from "./AddParticipant";
 import firebase from "../firebase";
-import { Card, CardHeader, CardText } from "material-ui/Card";
+
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
-import SalaEspera from "./SalaEspera";
-import Fab from "@material-ui/core/Fab";
-import Icon from "@material-ui/core/Icon";
 import Button from "@material-ui/core/Button";
 
 export default class VideoComponent extends Component {
   constructor(props) {
     super(props);
-    this._isMounted = false
+    this._isMounted = false;
 
     this.state = {
       identity: null,
@@ -33,12 +29,11 @@ export default class VideoComponent extends Component {
       sendFileOpen: false,
       Video: true,
       audio: true,
-      main: 0,
+      main: false,
       container: "",
-      statusParticipants: []
+      statusParticipants: [],
+      track: ""
     };
-
-    // this.joinRoom = this.joinRoom.bind(this);
     this.disconnected2 = this.disconnected2.bind(this);
     this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(
       this
@@ -51,10 +46,8 @@ export default class VideoComponent extends Component {
     this.participantDisconnected = this.participantDisconnected.bind(this);
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
-    // this.mainScreen = this.mainScreen.bind(this);
-    this.hardcodeo = this.hardcodeo.bind(this);
-
-    // this.trash=this.trash.bind(this)
+    this.Main = this.Main.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   componentDidMount() {
@@ -73,22 +66,12 @@ export default class VideoComponent extends Component {
       const { identity, token } = results.data;
       this.setState({ identity, token });
     });
-    
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    prevState.statusParticipants.forEach(participant => {
-      this.state.statusParticipants.forEach(tracks => {
-        console.log(participant, tracks);
-      });
-    });
   }
 
   joinRoom() {
     let connectOptions = {
       name: this.state.roomName
     };
-
     if (this.state.previewTracks) {
       connectOptions.tracks = this.state.previewTracks;
     }
@@ -102,9 +85,11 @@ export default class VideoComponent extends Component {
         );
       }
 
+      room.on("participantConnected", participant => {
+        console.log(participant);
+      });
       room.on("participantConnected", this.participantConnected);
       room.participants.forEach(this.participantConnected);
-      room.participants.forEach(this.hardcodeo);
 
       this.setState({
         localId: room.localParticipant,
@@ -116,23 +101,9 @@ export default class VideoComponent extends Component {
       room.once("disconnected", error =>
         room.participants.forEach(this.participantDisconnected)
       );
-      const newParti = this.state.participants.length
-        ? this.state.participants.map(participant => {
-            const entries = participant.tracks.entries();
-            const status = { name: participant.sid };
-            for (const [k, v] of entries) {
-              status[k] = v.isTrackEnabled;
-            }
-            return status;
-          })
-        : [];
-      this.setState({ statusParticipants: newParti });
     });
   }
 
-  hardcodeo(participant) {
-    this.state.participants.push(participant);
-  }
   attachLocalParticipantTracks(participant, container) {
     var tracks = Array.from(participant.tracks.values());
     tracks.forEach(track => {
@@ -141,23 +112,22 @@ export default class VideoComponent extends Component {
   }
   detachattachLocalParticipantTracks() {
     var tracks = Array.from(this.state.localId.tracks.values());
-
     tracks.forEach(track => {
       const attachedElements = track.track.detach();
       attachedElements.forEach(element => element.remove());
       this.props.history.push("/");
     });
   }
-
   videoDisable() {
     let img = new Image();
     img.src = "/utils/images/video.svg";
-    img.style.position = "absolute";
+    img.style.position = "relative";
     img.id = "local-icon";
     this.state.Video == true
       ? this.state.localId.videoTracks.forEach(videoTracks => {
-          videoTracks.track.detach();
           videoTracks.track.disable();
+          this.trackUnsubscribed(videoTracks.track);
+          console.log(this.state.container);
           this.state.container.appendChild(videoTracks.track.attach(img));
           this.setState({ Video: false });
         })
@@ -169,29 +139,21 @@ export default class VideoComponent extends Component {
         });
   }
   audioDisable() {
-    let micro=new Image()
-    micro.src="/utils/images/mute.svg"
-    micro.id="micro"
+    let micro = new Image();
+    micro.src = "/utils/images/mute.svg";
+    micro.id = "micro-local";
+    micro.position = "absolute";
     this.state.audio == true
       ? this.state.localId.audioTracks.forEach(audioTracks => {
-  
           audioTracks.track.disable();
           this.setState({ audio: false });
         })
       : this.state.localId.audioTracks.forEach(audioTracks => {
           audioTracks.track.enable();
+
           this.setState({ audio: true });
         });
   }
-
-  avChange() {
-    console.log(this.state.participants)
-    this.state.participants.forEach((track) => {
-      console.log(track.tracks, '-CHECK')
-    })
-  }
-
-
 
   disconnected2() {
     this.state.activeRoom.disconnect();
@@ -199,31 +161,54 @@ export default class VideoComponent extends Component {
     this.setState({ activeRoom: false, localMediaAvailable: false });
     this.detachattachLocalParticipantTracks();
   }
-  participantConnected(participant) {
-    // participant.on('audioDisable', () => { })
-    // var check = Array.from(participant.tracks.values())
-    // console.log(check)
-    // var button = document.createElement('button');
-    // button.onclick = function (e) {
-    // console.log(e)
-    // };
+  Main(participant) {
+    this.state.main = true;
     const div = document.createElement("div");
     div.id = participant.sid;
 
+    participant.on("trackSubscribed", track => {
+      this.setState({ track: track });
+      this.trackSubscribed(div, track);
+    });
+    participant.on("trackUnsubscribed", this.trackUnsubscribed);
+    participant.tracks.forEach(publication => {
+      if (publication.isSubscribed) {
+        trackSubscribed(div, publication.track);
+      }
+    });
+
+    let remoteMedias = document.getElementById("main-media");
+    remoteMedias.appendChild(div);
+  }
+  onClick(track) {
+    let main = document.getElementById("main-media");
+    main.appendChild(track);
+  }
+
+  participantConnected(participant) {
+    const div = document.createElement("div");
+    div.id = participant.sid
+    this.state.participants.push(participant);
     participant.on("trackSubscribed", track => {
       this.trackSubscribed(div, track);
     });
     participant.on("trackUnsubscribed", this.trackUnsubscribed);
     participant.tracks.forEach(publication => {
-
       if (publication.isSubscribed) {
         trackSubscribed(div, publication.track);
       }
     });
+
+    if (this.state.main == false) {
+      this.Main(participant)
+      
+    }
+    
     let remoteMedias = document.getElementById("remote-media");
     remoteMedias.appendChild(div);
   }
   participantDisconnected(participant) {
+    this.state.main = false;
     document.getElementById(participant.sid).remove();
   }
 
@@ -231,42 +216,48 @@ export default class VideoComponent extends Component {
     let img = new Image();
     img.src = "/utils/images/video.svg";
     img.style.position = "absolute";
-    img.id = "local-icon";
-    let micro=new Image()
-    micro.src="/utils/images/mute.svg"
-    micro.id = "micro"
-    div.style.position = "relative"
-    div.appendChild(track.attach());
+    img.id = "remote-icon";
+    let micro = new Image();
+    micro.src = "/utils/images/mute.svg";
+    micro.id = "micro";
+    micro.style.zIndex = "initial";
+    div.style.position = "relative";
+    if (track.kind == "audio") {
+      track.isEnabled
+        ? div.appendChild(track.attach())
+        : div.appendChild(track.attach(micro));
+    }
+    if (track.kind == "video") {
+      track.isEnabled
+        ? div.appendChild(track.attach())
+        : div.appendChild(track.attach(img));
+    }
+ 
     track.on("disabled", () => {
       if (track.kind == "video") {
-        if (!track.isEnabled) {
+        if (!track.isEnabled ) {
           this.trackUnsubscribed(track)
           div.appendChild(track.attach(img));
         }
-      }
-      else{
-        if(!track.isEnabled){
-          div.appendChild(track.attach(micro))
+      } else {
+        if (!track.isEnabled) {
+          div.appendChild(track.attach(micro));
         }
       }
     });
     track.on("enabled", () => {
-      
       if (track.kind == "video") {
         if (track.isEnabled) {
-          track.detach(img).remove()
+          track.detach(img).remove();
           div.appendChild(track.attach());
         }
-      }
-      else{
-        if(track.isEnabled){
-          track.detach(micro).remove()
-          
+      } else {
+        if (track.isEnabled) {
+          track.detach(micro).remove();
         }
       }
     });
-    
-    
+  
   }
 
   trackUnsubscribed(track) {
@@ -278,7 +269,6 @@ export default class VideoComponent extends Component {
   handleCloseSendFile() {
     this.setState({ sendFileOpen: false });
   }
-
   render() {
     return (
       <div className="Views">
@@ -312,7 +302,7 @@ export default class VideoComponent extends Component {
             <AddParticipant dataSala={this.state} />
             <div id="totalRemote">
               <div
-                onClick={() => console.log("holaaa")}
+                onClick={e => this.onClick(e.target)}
                 ref="remotmemedia"
                 id="remote-media"
               />
