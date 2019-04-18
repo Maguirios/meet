@@ -14,7 +14,7 @@ import { Icon } from "@material-ui/core";
 export default class VideoComponent extends Component {
   constructor(props) {
     super(props);
-    this._isMounted = false
+    this._isMounted = false;
 
     this.state = {
       identity: null,
@@ -28,7 +28,7 @@ export default class VideoComponent extends Component {
       sendFileOpen: false,
       Video: true,
       audio: true,
-      main: 0,
+      main: false,
       container: "",
     };
 
@@ -44,11 +44,15 @@ export default class VideoComponent extends Component {
     this.participantDisconnected = this.participantDisconnected.bind(this);
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
-    this.hardcodeo = this.hardcodeo.bind(this);
+    this.Main = this.Main.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   componentDidMount() {
-    console.log('object', this.props)
+    if (!this.props.userName) {
+      this.props.history.push("/");
+    }
+
     this._isMounted = true;
 
     firebase
@@ -64,14 +68,12 @@ export default class VideoComponent extends Component {
       console.log('RESULT', results)
       if (this._isMounted) this.setState({ identity, token }, () => this.joinRoom());
     });
-
   }
 
   joinRoom() {
     let connectOptions = {
       name: this.state.roomName
     };
-
     if (this.state.previewTracks) {
       connectOptions.tracks = this.state.previewTracks;
     }
@@ -85,9 +87,11 @@ export default class VideoComponent extends Component {
         );
       }
 
+      room.on("participantConnected", participant => {
+        console.log(participant);
+      });
       room.on("participantConnected", this.participantConnected);
       room.participants.forEach(this.participantConnected);
-      room.participants.forEach(this.hardcodeo);
 
       this.setState({
         localId: room.localParticipant,
@@ -99,22 +103,7 @@ export default class VideoComponent extends Component {
       room.once("disconnected", error =>
         room.participants.forEach(this.participantDisconnected)
       );
-      const newParti = this.state.participants.length
-        ? this.state.participants.map(participant => {
-          const entries = participant.tracks.entries();
-          const status = { name: participant.sid };
-          for (const [k, v] of entries) {
-            status[k] = v.isTrackEnabled;
-          }
-          return status;
-        })
-        : [];
-      this.setState({ statusParticipants: newParti });
     });
-  }
-
-  hardcodeo(participant) {
-    this.state.participants.push(participant);
   }
 
   attachLocalParticipantTracks(participant, container) {
@@ -125,7 +114,6 @@ export default class VideoComponent extends Component {
   }
   detachattachLocalParticipantTracks() {
     var tracks = Array.from(this.state.localId.tracks.values());
-
     tracks.forEach(track => {
       const attachedElements = track.track.detach();
       attachedElements.forEach(element => element.remove());
@@ -179,6 +167,26 @@ export default class VideoComponent extends Component {
     this.state.activeRoom.disconnect()
     this.setState({ activeRoom: false })
   }
+  Main(participant) {
+    this.state.main = true;
+    const div = document.createElement("div");
+    div.id = participant.sid;
+
+    participant.on("trackSubscribed", track => {
+      this.setState({ track: track });
+      this.trackSubscribed(div, track);
+    });
+    participant.on("trackUnsubscribed", this.trackUnsubscribed);
+    participant.tracks.forEach(publication => {
+      if (publication.isSubscribed) {
+        trackSubscribed(div, publication.track);
+      }
+    });
+
+    let remoteMedias = document.getElementById("main-media");
+    remoteMedias.appendChild(div);
+  }
+
   participantConnected(participant) {
     const div = document.createElement("div");
     const div2 = document.createElement("h6");
@@ -194,13 +202,20 @@ export default class VideoComponent extends Component {
         trackSubscribed(div, publication.track);
       }
     });
+    if (this.state.main == false) {
+      this.Main(participant)
+      
+    }
     let remoteMedias = document.getElementById("remote-media");
     remoteMedias.appendChild(div);
-
     div.appendChild(div2)
-
+  }
+  onClick(track) {
+    let main = document.getElementById("main-media");
+    main.appendChild(track);
   }
   participantDisconnected(participant) {
+    this.state.main = false;
     document.getElementById(participant.sid).remove();
   }
 
@@ -212,20 +227,23 @@ export default class VideoComponent extends Component {
     let micro = new Image();
     micro.src = "/utils/images/mute.svg";
     micro.id = "micro";
-    micro.style.zIndex = "initial"
+    micro.style.zIndex = "initial";
     div.style.position = "relative";
     if (track.kind == "audio") {
-      (track.isEnabled) ? div.appendChild(track.attach()) : div.appendChild(track.attach(micro))
+      track.isEnabled
+        ? div.appendChild(track.attach())
+        : div.appendChild(track.attach(micro));
     }
     if (track.kind == "video") {
-      (track.isEnabled) ? div.appendChild(track.attach()) : div.appendChild(track.attach(img))
-
-
+      track.isEnabled
+        ? div.appendChild(track.attach())
+        : div.appendChild(track.attach(img));
     }
+ 
     track.on("disabled", () => {
       if (track.kind == "video") {
-        if (!track.isEnabled) {
-          this.trackUnsubscribed(track);
+        if (!track.isEnabled ) {
+          this.trackUnsubscribed(track)
           div.appendChild(track.attach(img));
         }
       } else {
@@ -246,6 +264,7 @@ export default class VideoComponent extends Component {
         }
       }
     });
+  
   }
 
   trackUnsubscribed(track) {
@@ -257,7 +276,6 @@ export default class VideoComponent extends Component {
   handleCloseSendFile() {
     this.setState({ sendFileOpen: false });
   }
-
   render() {
     console.log(this.props)
     return (
@@ -292,10 +310,7 @@ export default class VideoComponent extends Component {
             <AddParticipant dataSala={this.props.match.params.code} />
             <div id="totalRemote">
               <div
-                onClick={(e) => {
-                  console.log("holaaa", e.target)
-                  const pantachota = e.target
-                }}
+                onClick={e => this.onClick(e.target)}
                 ref="remotmemedia"
                 id="remote-media"
               />

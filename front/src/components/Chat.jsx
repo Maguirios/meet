@@ -160,9 +160,16 @@ class Chat extends React.Component {
       }
       else {
         var show = document.getElementById('style-1').lastChild;
+        show && show.scrollIntoView(false)
       }
-      show && show.scrollIntoView(false)
     })
+  }
+
+  componentDidUpdate(prevState){
+    if(prevState.messages != this.state.messages){
+      var show = document.getElementById('style-1').lastChild;
+      show && show.scrollIntoView(false)
+    }
   }
 
   handleDownload(fileName) {

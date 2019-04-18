@@ -85,39 +85,21 @@ export class UserRooms extends Component {
             >
               {this.props.rooms.map(room => (
                 <div key={room.code} className={classes.rooms}>
-                  <Grid
-                    container
-                    alignItems="center"
-                  >
-                    <Grid
-                      item sm
-                    >
-                      <p
-                        className={classes.textDate}
-                        margin="normal"
-                      >{room.date}
-                      </p>
+                  <Grid container alignItems="center">
+                    <Grid item sm>
+                      <p className={classes.textDate} margin="normal">{room.date} </p>
                     </Grid>
-                    <Grid
-                      item sm
-                    >
-                      <p
-                        className={classes.textRoom}
-                        margin="normal"
-                      >{room.name}
-                      </p>
+                    <Grid item sm>
+                      <p className={classes.textRoom} margin="normal">{room.name} </p>
                     </Grid>
-                    <Grid
-                    item sm
-                  >
-                    <Link to={`/room/${room.code}`}>
-                      <Button variant="contained" size="small" className={classes.centerButton} color="primary" >
-                        <Icon>keyboard_arrow_right</Icon>
-                      </Button>
-                    </Link>
-
-                  </Grid>
-                  <Divider />
+                    <Grid item sm >
+                      <Link to={`/room/${room.code}`}>
+                        <Button variant="contained" size="small" className={classes.centerButton} color="primary" >
+                          <Icon>keyboard_arrow_right</Icon>
+                        </Button>
+                      </Link>
+                    <Divider />
+                    </Grid>
                   </Grid>
                 </div>
               ))}

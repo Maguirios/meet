@@ -71,7 +71,6 @@ export class ButtonBar extends Component {
     this.props.disconnect()
     this.props.history.push('/endcall')
   }
-
   handleFormat() {
     var color = document.getElementById('videocam')
     color.style.color = 'rgba(255, 255, 255, 0.3)'
