@@ -6,6 +6,7 @@ body {
   width: 97vw;
   height: 97vh;
   margin: 0px;
+  background-color: #000;
 }
 .home {
   display: grid;
@@ -13,7 +14,6 @@ body {
   width: 95vw;
   height: 95vh;
 }
-
 .home-top {
   display: "inline";
   margin-left: 100px;
@@ -197,14 +197,30 @@ i {
 .iconos {
   margin: 0 auto;
   width: 300px;
+  display: grid;
+  grid-template-columns: 50% 50%
 }
 .watermark {
-  margin: 10px 75px 200px 75px;
+  margin: 0px auto;
+  display: block;
+  padding-top: 30px;
   width: 150px;
-  height: 26px;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
   background-image: contain;
   opacity: 0.4;
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+}
+#video-camera {
+  height: 40px;
+  margin: 0px auto;
+  margin-top: 15px;
+  object-fit: contain;
+  width: 57px;
+}
+#microphone{
+  height: 58px;
+  margin: 0px auto;
+  object-fit: contain;
+  width: 32px;
 }
 #telephone {
   display: block;
@@ -297,6 +313,14 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 75px;
   min-width: 75px;
   object-fit: contain;
+}
+#permisos{
+  background-color: #000;
+  height: 600px;
+  width: 100%;
+}
+#centrando-permiso{
+  height: 50%;;
 }
 
 a{
