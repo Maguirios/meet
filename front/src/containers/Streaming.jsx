@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Video from "twilio-video";
 import axios from "axios";
+import { Route } from 'react-router-dom';
 import UploadFiles from "./UploadFiles";
 import Dialog from "@material-ui/core/Dialog";
 import AddParticipant from "./AddParticipant";
@@ -12,6 +13,8 @@ import { compose } from 'redux';
 import { firebaseConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import Permisos from './Permisos';
+import Conexion from './Conexion';
+import SalaEspera from './SalaEspera';
 
 class VideoComponent extends Component {
   constructor(props) {
@@ -20,7 +23,7 @@ class VideoComponent extends Component {
 
     this.state = {
       identity: null,
-      roomName: "",
+      roomName: this.props.match.params.code,
       roomNameErr: false,
       previewTracks: null,
       localMediaAvailable: false,
@@ -29,12 +32,13 @@ class VideoComponent extends Component {
       participants: [],
       localId: "",
       sendFileOpen: false,
-      Video: true,
-      audio: true,
+      Video: false,
+      audio: false,
       main: 0,
       container: "",
       statusParticipants: [],
       permissions: false,
+      conexion: false,
     };
 
     this.disconnected2 = this.disconnected2.bind(this);
@@ -46,11 +50,10 @@ class VideoComponent extends Component {
     this.participantConnected = this.participantConnected.bind(this);
     this.participantDisconnected = this.participantDisconnected.bind(this);
     this.trackSubscribed = this.trackSubscribed.bind(this);
-    this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
-    this.hardcodeo = this.hardcodeo.bind(this);
   }
 
   componentDidMount() {
+    console.log('object', this.props)
     this._isMounted = true;
     if (this._isMounted)
       firebase
@@ -60,42 +63,25 @@ class VideoComponent extends Component {
           if (!snapshoot.val()) {
             this.props.history.push("/");
           }
-          if (this._isMounted) {
-            this.setState({ roomName: snapshoot.val().code });
-            this.joinRoom();
-          }
         });
-    console.log('-----------', this.props.userLogin)
-    axios.post("/token", { data: this.props.firebase.auth.displayName }).then(results => {
+    axios.post("/token", { name: this.props.userName }).then(results => {
       const { identity, token } = results.data;
-      if (this._isMounted) this.setState({ identity, token });
-    });
-    navigator.getUserMedia = (navigator.getUserMedia ||
-      navigator.webkitGetUserMedia ||
-      navigator.mozGetUserMedia ||
-      navigator.msGetUserMedia);
-
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then(
-        (mediaStream) => {
-          console.log('mediastream', mediaStream)
-          this.setState({ permissions: true })
-          this.joinRoom()
-        }
-      )
-      .catch((err) => {
-        console.log("Ocurrió el siguiente error: " + err);
-      })
-
+      console.log('RESULT', results)
+      if (this._isMounted) this.setState({ identity, token }, () => this.joinRoom());
+    })
+    .then(() => 
+    this.setState({ permissions: true })
+    )
   }
 
   componentDidUpdate(prevProps, prevState) {
+    console.log('PREVPROPS', prevProps)
     console.log('PREVSTATE', prevState)
     prevState.identity
   }
-
   componentWillUnmount() {
     this._isMounted = false;
+    this.state.conexion = true;
   }
   joinRoom() {
     let connectOptions = {
@@ -104,48 +90,37 @@ class VideoComponent extends Component {
     if (this.state.previewTracks) {
       connectOptions.tracks = this.state.previewTracks;
     }
-
     Video.connect(this.state.token, connectOptions).then(room => {
-      console.log('rooooooooom', room)
+      // this.setState({ canCamera: room.localParticipant.tracks.length })
+      console.log('room', room)
       var previewContainer = this.refs.localMedia;
-      if (!previewContainer.querySelector("video")) {
+      console.log(previewContainer)
+      if (previewContainer.querySelector("video")) {
         this.attachLocalParticipantTracks(
           room.localParticipant,
           previewContainer
-        );
+          );
       }
-
+      
       room.on("participantConnected", this.participantConnected);
       room.participants.forEach(this.participantConnected);
-      room.participants.forEach(this.hardcodeo);
-
+      
+      
       this.setState({
         localId: room.localParticipant,
         activeRoom: room,
-        container: previewContainer
+        container: previewContainer,
       });
       room.on("participantDisconnected", this.participantDisconnected);
 
       room.once("disconnected", error =>
         room.participants.forEach(this.participantDisconnected)
       );
-      const newParti = this.state.participants.length
-        ? this.state.participants.map(participant => {
-          const entries = participant.tracks.entries();
-          const status = { name: participant.sid };
-          for (const [k, v] of entries) {
-            status[k] = v.isTrackEnabled;
-          }
-          return status;
-        })
-        : [];
-      this.setState({ statusParticipants: newParti });
-    });
+      
+    })
+    
   }
 
-  hardcodeo(participant) {
-    this.state.participants.push(participant);
-  }
   attachLocalParticipantTracks(participant, container) {
     var tracks = Array.from(participant.tracks.values());
     tracks.forEach(track => {
@@ -161,7 +136,6 @@ class VideoComponent extends Component {
       this.props.history.push("/");
     });
   }
-
   videoDisable() {
     let img = new Image();
     img.src = "/utils/images/video.svg";
@@ -198,39 +172,16 @@ class VideoComponent extends Component {
   }
 
   disconnected2() {
-    this.state.activeRoom.disconnect();
-    document.getElementById("local-media").remove();
-    this.setState({ activeRoom: false, localMediaAvailable: false, permissions: false });
-    // this.detachattachLocalParticipantTracks();
-    console.log('omar', this.state.activeRoom)
-    // navigator.getUserMedia = (navigator.getUserMedia ||
-    //   navigator.webkitGetUserMedia ||
-    //   navigator.mozGetUserMedia ||
-    //   navigator.msGetUserMedia);
-    //   console.log('trbajo', navigator)
-    // var promise = navigator.getUserMedia(
-    //   // constraints
-    //   {
-    //     video: true,
-    //     audio: true
-    //   })
-    //   console.log('iahgduagdsd', promise)
-    //   // promise.then(
-    //   //   (mediaStream) => {
-    //   //     mediaStream.active = false
-    //   //     this.setState({ permissions: false })
-    //   //     this.state.activeRoom.disconnect()
-    //   //   }
-    //   // )
-    //   // .catch((err) => {
-    //   //   console.log("Ocurrió el siguiente error: " + err);
-    //   // })
-    //   // console.log('dgavkugavdukgvdukac', navigator)
+    this.detachattachLocalParticipantTracks()
+    document.getElementById("local-media").remove()
+    this.state.activeRoom.disconnect()
+    this.setState({ activeRoom: false, localMediaAvailable: false })
   }
 
   participantConnected(participant) {
     const div = document.createElement("div");
     div.id = participant.sid;
+    this.state.participants.push(participants)
 
     participant.on("trackSubscribed", track => {
       this.trackSubscribed(div, track);
@@ -273,7 +224,6 @@ class VideoComponent extends Component {
       }
     });
     track.on("enabled", () => {
-
       if (track.kind == "video") {
         if (track.isEnabled) {
           track.detach(img).remove()
@@ -287,8 +237,6 @@ class VideoComponent extends Component {
         }
       }
     });
-
-
   }
 
   trackUnsubscribed(track) {
@@ -305,9 +253,18 @@ class VideoComponent extends Component {
   };
 
   render() {
-    return (
-      this.state.permissions ?
+    console.log('estado local STREAMING', this.state)
 
+    if (this.state.Video && this.state.audio) {
+      // if (this.state.participants.length < 1) {
+      //   return (
+      //     <React.Fragment>
+      //       <SalaEspera />
+      //       <div ref="localMedia" id="local-media" />
+      //     </React.Fragment>
+      //   )
+      // } else {
+      return (
         <div className='Views'>
           <div className="logoVideoConferencia">
             <div className="logoConferencia">
@@ -335,8 +292,8 @@ class VideoComponent extends Component {
                 <div
                   onClick={(e) => {
                     console.log("holaaa", e.target)
-                    const pantachota = e.target
-                    document.querySelector('body').appendChild(pantachota)
+
+
                   }}
                   ref="remotmemedia"
                   id="remote-media"
@@ -345,11 +302,11 @@ class VideoComponent extends Component {
               <div ref="mainmedia" id="main-media" />
             </div>
           </div>
-
           <div className="divDeAbajo">
             {/* AQUI SE MUESTRA EL CHAT */}
             <div className="chat">
-              <Chat room={this.props.match.params.code} />
+              <Route path={`/room/${this.props.match.params.code}`} render={() => <Chat room={this.props.match.params.code} />} />
+
             </div>
 
             {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
@@ -378,12 +335,15 @@ class VideoComponent extends Component {
               <div ref="localMedia" id="local-media" />
             </div>
           </div>
-        </div>
-        : <Permisos handleClickVideo={this.handleClickVideo} handleClickAudio={this.handleClickAudio} statePermissions={this.state.permissions} />
-    );
+        </div >
+      )
+      // }
+
+    } else {
+      return <Permisos handleClickVideo={this.handleClickVideo} handleClickAudio={this.handleClickAudio} statePermissions={this.state.permissions} />
+    }
   }
 }
-
 const mapStateToprops = (state) => ({
   userLogin: state.firebase.auth
 });
