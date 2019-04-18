@@ -22,7 +22,6 @@ export default class VideoComponent extends Component {
       roomName: this.props.match.params.code,
       roomNameErr: false,
       previewTracks: null,
-      localMediaAvailable: false,
       hasJoinedRoom: false,
       activeRoom: null,
       participants: [],
@@ -123,6 +122,7 @@ export default class VideoComponent extends Component {
   hardcodeo(participant) {
     this.state.participants.push(participant);
   }
+
   attachLocalParticipantTracks(participant, container) {
     var tracks = Array.from(participant.tracks.values());
     tracks.forEach(track => {
@@ -178,7 +178,7 @@ export default class VideoComponent extends Component {
     this.detachattachLocalParticipantTracks()
     document.getElementById("local-media").remove()
     this.state.activeRoom.disconnect()
-    this.setState({ activeRoom: false, localMediaAvailable: false })
+    this.setState({ activeRoom: false })
   }
   participantConnected(participant) {
     const div = document.createElement("div");
@@ -305,6 +305,7 @@ export default class VideoComponent extends Component {
           {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
           <div className="barraOpciones">
             <ButtonBar
+              history={this.props.history}
               disconnect={this.disconnected2}
               videoDisable={this.videoDisable}
               audioDisable={this.audioDisable}

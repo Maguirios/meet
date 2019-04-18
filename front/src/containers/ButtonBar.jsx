@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import { setCallTime } from '../redux/action-creators/roomsActions'
 
 const styles = theme => ({
   timeCall: {
@@ -42,6 +43,7 @@ export class ButtonBar extends Component {
     this.state = {
       timer: 0,
     }
+    this.endCall = this.endCall.bind(this)
   }
 
   componentDidMount() {
@@ -59,6 +61,13 @@ export class ButtonBar extends Component {
     let min = time / 60 | 0;
     if (min/10 < 1) min = '0' + min;
     return `${min}:${seg}`;
+  }
+
+  endCall(){
+    console.log('BOTON!!!!!', this.props)
+    this.props.setCallTime(this.format(this.state.timer))
+    this.props.disconnect()
+    this.props.history.push('/endcall')
   }
 
   render() {
@@ -82,7 +91,7 @@ export class ButtonBar extends Component {
           />
         </Button>
         <Button className={classes.micCam} onClick={() => this.props.handleOpenSendFile()}><img src="/utils/images/share-screen.svg" className={classes.icons} /></Button>
-        <Button className={classes.timeCall} onClick={this.props.disconnect}>
+        <Button className={classes.timeCall} onClick={this.endCall}>
           <img src="/utils/images/end-call.svg" className={classes.icons} />
         </Button>
       </div>
@@ -94,6 +103,10 @@ export class ButtonBar extends Component {
 
 const mapStateToProps = state => ({});
 
-const mapDispatchToProps = {};
+function mapDispatchToProps(dispatch) {
+  return {
+    setCallTime: time => dispatch(setCallTime(time))
+  }
+};
 
-export default withStyles(styles)(ButtonBar);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ButtonBar));

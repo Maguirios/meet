@@ -8,8 +8,9 @@ import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme'
 import { compose } from 'redux'
 import { firebaseConnect } from 'react-redux-firebase'
 
-import Home from '../containers/Home';
+import Home from './Home';
 import Streaming from './Streaming'
+import EndCall from '../components/EndCall'
 
 
 class Main extends Component {
@@ -21,6 +22,7 @@ class Main extends Component {
                 <MuiThemeProvider muiTheme={GetMuiTheme(lightBaseTheme)} >
                         <Switch>
                             <Route path='/room/:code' render={({ history, match }) => <Streaming match={match} history={history} userName={this.props.userName} />} />
+                            <Route path='/endcall' component={EndCall} />
                             <Route path='/' component={Home} />
                         </Switch>
                 </MuiThemeProvider>

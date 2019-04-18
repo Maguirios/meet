@@ -75,7 +75,8 @@ const styles = theme => ({
     overflowX: 'hidden',
     '&::-webkit-scrollbar':{
         width: '1px'
-    }
+    },
+    scrollbarWidth: 'none',
   },
   enviar: {
     margin: theme.spacing.unit,

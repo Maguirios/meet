@@ -130,7 +130,7 @@ export class createRoom extends Component {
       email: '',
       created: false,
       roomCode: 0,
-      dia: moment().format('LL')[1] === ' ' ? '0' + moment().format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-') : moment().format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-')
+      dia: moment().format('LL')[1] === ' ' ? '0' + moment().format('LL').slice(0, 19).replace(/ de /g, '-') : moment().format('LL').slice(0, 19).replace(/ de /g, '-')
     };
   }
 
@@ -144,13 +144,13 @@ export class createRoom extends Component {
   handleDateChange(date) {
     this.setState({
       selectedDate: date,
-      dia: date.format('LL')[1] === ' ' ? '0' + date.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-') : date.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-')
+      dia: date.format('LL')[1] === ' ' ? '0' + date.format('LL').slice(0, 19).replace(/ de /g, '-') : date.format('LL').slice(0, 19).replace(/ de /g, '-')
     });
   };
 
   handleTimeChange(time) {
     this.setState({ selectedDate: time,
-      dia: time.format('LL')[1] === ' ' ? '0' + time.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-') : time.format('LL').slice(0, 19).replace(' de ', '-').replace(' de ', '-')
+      dia: time.format('LL')[1] === ' ' ? '0' + time.format('LL').slice(0, 19).replace(/ de /g, '-') : time.format('LL').slice(0, 19).replace(/ de /g, '-')
      });
   }
   handleEmail(e) {
@@ -263,6 +263,7 @@ export class createRoom extends Component {
               />
               <InlineDatePicker
                 onlyCalendar
+                minDate={new Date()}
                 className={classes.outlinedFecha}
                 label="Fecha"
                 margin="normal"
