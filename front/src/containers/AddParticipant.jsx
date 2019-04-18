@@ -47,18 +47,16 @@ export class AddParticipant extends React.Component {
         firebase.database().ref(`/rooms/${this.props.dataSala}`).on("value", (snapshot) => {
             this.setState({ countEmails: snapshot.val().emails, roomTitle: snapshot.val().name, date: snapshot.val().date, roomCode: snapshot.val().code })
         })
-        
     }
 
     handleChange(e) {
         this.setState({ [e.target.name]: e.target.value })
-        
     }
 
     handleSubmit(e) {
         e.preventDefault();
         const addEmails = this.state.countEmails.concat(this.state.email.replace(/\s/g, "").split(','))
-        firebase.database().ref(`rooms/${this.props.dataSala.roomName}/emails/`)
+        firebase.database().ref(`rooms/${this.props.dataSala}/emails/`)
             .set(addEmails)
            
             this.setState({ open: false })
