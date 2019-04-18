@@ -4,6 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { setCallTime } from '../redux/action-creators/roomsActions'
 
+
 const styles = theme => ({
   timeCall: {
     width: 100,
@@ -39,6 +40,8 @@ const styles = theme => ({
 export class ButtonBar extends Component {
   constructor(props) {
     super(props)
+    
+    this.handleFormat = this.handleFormat.bind(this)
 
     this.state = {
       timer: 0,
@@ -64,10 +67,13 @@ export class ButtonBar extends Component {
   }
 
   endCall(){
-    console.log('BOTON!!!!!', this.props)
     this.props.setCallTime(this.format(this.state.timer))
     this.props.disconnect()
     this.props.history.push('/endcall')
+
+  handleFormat() {
+    var color = document.getElementById('videocam')
+    color.style.color = 'rgba(255, 255, 255, 0.3)'
   }
 
   render() {
@@ -76,22 +82,16 @@ export class ButtonBar extends Component {
     return (
       <div>
         <Button className={classes.timeCall}><p className={classes.timer}>{this.format(timer)}</p></Button>
-        <Button className={classes.micCam}>
-          <img
-            onClick={this.props.videoDisable}
-            src="/utils/images/video.svg"
-            className={classes.icons}
-          />
+          <Button className={classes.micCam} onClick={(e) => this.props.videoDisable(e)}>
+          <i className="material-icons" id='videocam'>videocam</i>
+          </Button>
+          <Button className={classes.micCam} onClick={this.props.audioDisable}>
+          <i className="material-icons" id='mic'>mic_none</i>
+          </Button>
+        <Button className={classes.micCam} onClick={() => this.props.handleOpenSendFile()}>
+        <img src="/utils/images/share-screen.svg" className={classes.icons} />
         </Button>
-        <Button className={classes.micCam}>
-          <img
-            onClick={this.props.audioDisable}
-            src="/utils/images/mute.svg"
-            className={classes.icons}
-          />
-        </Button>
-        <Button className={classes.micCam} onClick={() => this.props.handleOpenSendFile()}><img src="/utils/images/share-screen.svg" className={classes.icons} /></Button>
-        <Button className={classes.timeCall} onClick={this.endCall}>
+         <Button className={classes.timeCall} onClick={this.endCall}>
           <img src="/utils/images/end-call.svg" className={classes.icons} />
         </Button>
       </div>
@@ -99,7 +99,14 @@ export class ButtonBar extends Component {
   }
 }
 
-
+function format(time) {
+  let seg = time / 100 | 0;
+  if (seg > 59) seg = seg % 60;
+  if (seg / 10 < 1) seg = '0' + seg;
+  let min = time / 6000 | 0;
+  if (min / 10 < 1) min = '0' + min;
+  return `${min}:${seg}`;
+}
 
 const mapStateToProps = state => ({});
 
