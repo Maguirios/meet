@@ -16,26 +16,36 @@ import axios from 'axios'
 
 
 const styles = theme => ({
-  createRoom: {
+  createRoom2: {
     width: 528,
     height: 290,
+    width: 560,
+    height: 380,
     borderRadius: 5,
     boxShadow: '0 2 20 5 rgba(0, 0, 0, 0.2)',
+    boxShadow: '0px 2px 20px 5px rgba(0, 0, 0, 0.2)',
     backgroundColor: 'white',
-    paddingLeft: 40,
+    display: 'grid',
+    'grid-template-rows': '1fr 2fr 1fr 2fr 1fr 2fr',
+    justifyItems: 'center',
+    alignItems: 'center',
+    padding: '10px 0px'
+  },
+  createRoom: {
+    width: 528,
+    //height: 380,
+    borderRadius: 5,
+    boxShadow: '0 2 20 5 rgba(0, 0, 0, 0.2)',
+    backgroundColor: 'white'
   },
   outlinedSala: {
-    padding: 0,
     width: 245,
-    height: 32,
-    marginRight: 10,
-    border: 2,
-    borderRadius: 5,
+    height: 53,
   },
   outlinedFecha: {
     padding: 0,
     width: 92,
-    height: 32,
+    height: 53,
     marginRight: 10,
     border: 2,
     borderRadius: 5,
@@ -43,30 +53,31 @@ const styles = theme => ({
   outlinedHora: {
     padding: 0,
     width: 68,
-    height: 32,
+    height: 53,
     border: 2,
     borderRadius: 5,
   },
   outlinedEmailInput: {
     width: 435,
-    height: 32,
+    height: 53,
     border: 2,
     borderRadius: 5,
   },
   button1: {
     width: 110,
-    height: 32,
+    height: 36,
     borderRadius: 5,
     backgroundColor: '##5c6f7b',
+    textDecoration: 'none',
   },
   button2: {
     width: 110,
-    height: 32,
+    height: 36,
     borderRadius: 5,
     backgroundColor: '#4dc2f1',
   },
   text: {
-    fontFamily: 'Avenir',
+    fontFamily: 'Roboto',
     fontSize: 12,
     fontWeight: 500,
     fontStyle: 'normal',
@@ -78,6 +89,71 @@ const styles = theme => ({
   buttons: {
     justifyContent: "center",
     margin: '0 auto',
+    marginBottom: 10
+  },
+  title: {
+    fontFamily: 'Roboto',
+    fontWeight: 900,
+    fontStyle: 'normal',
+    fontStretch: 'normal',
+    lineHeight: 'normal',
+    letterSpacing: 'normal',
+    textAlign: 'center',
+    color: '#5c6f7b',
+    width: 528
+
+  },
+  roomCreated: {
+    textAlign: 'center',
+    fontSize: 18,
+    marginBottom: 0,
+    marginTop: 40
+  },
+  invitation: {
+    textAlign: 'center',
+    fontSize: 18,
+    marginTop: 2,
+    marginBottom: 40
+  },
+  code: {
+    textAlign: 'center',
+    fontSize: 12,
+
+
+  },
+  codeNumber: {
+    textAlign: 'center',
+    fontSize: 28,
+    margin: 0,
+    marginBottom: 20
+  },
+  link: {
+    textDecoration: 'none'
+  },
+  topContainer: {
+    margin: '0 auto'
+  },
+  top: {
+    display: 'grid',
+    'grid-template-columns': '3fr 1fr 1fr',
+    justifyItems: 'center'
+  },
+  middle: {
+    display: 'grid',
+    justifyItems: 'center'
+  },
+  buttom: {
+    display: 'grid',
+    'justify-items': 'center',
+    'grid-template-columns': '1fr 1fr',
+    'grid-column-gap': '27px',
+    'margin-bottom': '10px',
+  },
+  texts: {
+    display: 'grid',
+    justifyItems: 'start',
+    width: '100%',
+    paddingLeft: 120,
   }
 })
 moment.locale("es");
@@ -90,22 +166,32 @@ export class createRoom extends Component {
     super(props)
     this.state = {
       selectedDate: moment(),
-      selectedTime: moment(),
       room: '',
       email: '',
       created: false,
       roomCode: 0,
+      dia: moment().format('LL')[1] === ' ' ? '0' + moment().format('LL').slice(0, 19).replace(/ de /g, '-') : moment().format('LL').slice(0, 19).replace(/ de /g, '-')
     };
   }
 
-  handleDateChange(date) {
-    console.log(date)
-    this.setState({ selectedDate: date });
-  };
+  componentDidMount() {
+    (this.props.currentUser.isEmpty) ? this.props.history.push('/') :
+      firebase.database().ref(`/rooms/`).on('value', snapshoot => {
+        this.setState({ rooms: Object.keys(snapshoot.val()) })
+      })
+  }
 
+  handleDateChange(date) {
+    this.setState({
+      selectedDate: date,
+      dia: date.format('LL')[1] === ' ' ? '0' + date.format('LL').slice(0, 19).replace(/ de /g, '-') : date.format('LL').slice(0, 19).replace(/ de /g, '-')
+    });
+  };
+ 
   handleTimeChange(time) {
-    console.log(time)
-    this.setState({ selectedTime: time });
+    this.setState({ selectedDate: time,
+      dia: time.format('LL')[1] === ' ' ? '0' + time.format('LL').slice(0, 19).replace(/ de /g, '-') : time.format('LL').slice(0, 19).replace(/ de /g, '-')
+     });
   }
   handleEmail(e) {
     this.setState({ email: e.target.value })
@@ -114,87 +200,100 @@ export class createRoom extends Component {
   handleRoom(e) {
     this.setState({ room: e.target.value })
   }
+
+  genRoomCode() {
+    let roomCode = Math.floor(1000 + Math.random() * 9000);
+    if (this.state.rooms.includes(roomCode)) {
+      return genRoomCode()
+    }
+    return roomCode
+  }
+
   handleSubmit(e) {
     e.preventDefault();
-    let roomCode = Math.floor(1000 + Math.random() * 9000);
+    let roomCode = this.genRoomCode()
+    let fullDate = this.state.selectedDate.format('LLL')[1] === ' ' ? '0' + this.state.selectedDate.format('LLL') : this.state.selectedDate.format('LLL')
+    let roomEmails = this.state.email.replace(/\s/g, "").split(',') === [""] ? [] : this.state.email.replace(/\s/g, "").split(',')
     let newRoom = {
       code: roomCode,
       name: this.state.room,
-      emails: this.state.email.replace(/\s/g, "").split(',').concat(this.props.currentUser.email),
-      time: this.state.selectedTime.format('LT'),
-      date: this.state.selectedDate.format('LL'),
+      emails: roomEmails.concat(this.props.currentUser.email),
+      date: fullDate,
+      status: 'active',
+      dia: this.state.dia,
     }
     firebase.database().ref(`rooms/${roomCode}`).set(newRoom)
       .catch(err => {
         console.log('err', err)
       })
-      this.setState({created:true})
-      this.setState({roomCode})
+    this.setState({ created: true })
+    this.setState({ roomCode })
 
-        var template_content = [
-          { "name": "guestName",  "content": 'Hola' },
-          { "name": "guestEmail", "content": 'plataforma@mail'  },
-          { "name": "roomCode",   "content":  roomCode },
-          { "name": "roomTitle",  "content": this.state.room },
-          { "name": "roomDate",   "content":  this.state.selectedDate.format('LL') + ' ' + this.state.selectedTime.format('LT') + ' hs' },
-          { "name": "ownerName",  "content": this.props.currentUser.displayName },
-          { "name": "ownerEmail", "content": 'owner@gmail.com' }
-        ]
-        
-        var emails = this.state.email.replace(/\s/g, "").split(',')
-        
-        const params = {
-        message : {
-            to: [],
-            from_email: 'no-reply@insideone.com.ar',
-            from_name: 'Meet',
-            subject : `Videollamada`,
-            "global_merge_vars": [
-                {
-                    "name": "LINK",
-                    "content": `http://localhost:3000/room/${roomCode}`
-                },
-                {
-                    "name": "participants",
-                    "content": emails
-                },
-                {
-                    "name": "hasParticipants",
-                    "content": true
-                }
-            ]
+    if (this.state.email) {
+      var template_content = [
+        { "name": "guestName", "content": 'Hola' },
+        { "name": "guestEmail", "content": 'plataforma@mail' },
+        { "name": "roomCode", "content": roomCode },
+        { "name": "roomTitle", "content": this.state.room },
+        { "name": "roomDate", "content": this.state.selectedDate.format('LLL') + ' hs' },
+        { "name": "ownerName", "content": this.props.currentUser.displayName },
+        { "name": "ownerEmail", "content": 'owner@gmail.com' }
+      ]
+
+      var emails = this.state.email.replace(/\s/g, "").split(',')
+
+      const params = {
+        message: {
+          to: [],
+          from_email: 'no-reply@insideone.com.ar',
+          from_name: 'Meet',
+          subject: `Videollamada`,
+          "global_merge_vars": [
+            {
+              "name": "LINK",
+              "content": `http://localhost:3000/room/${roomCode}`
+            },
+            {
+              "name": "participants",
+              "content": emails
+            },
+            {
+              "name": "hasParticipants",
+              "content": true
+            }
+          ]
 
         },
-        template_name : 'meeting-invite',
+        template_name: 'meeting-invite',
         template_content
-    }
+      }
 
-        emails.map(userEmail => {
-        params.message.to.push({email: userEmail})
-        
+      emails.map(userEmail => {
+        params.message.to.push({ email: userEmail })
+
       })
-  
-    axios.post('/api/sendEmail', params )
-   .then(email => {
-     console.log(email)    
-   })
-}
-      
+
+      axios.post('/api/sendEmail', params)
+        .then(email => {
+          console.log(email)
+        })
+    }
+  }
+
 
   render() {
     const { classes } = this.props
     const { selectedDate, selectedTime } = this.state;
 
-    const create = (<Grid
-      container
-      direction='row'
-    >
-      <form className={classes.createRoom}>
-        <MuiPickersUtilsProvider utils={MomentUtils}>
-          <Grid
-            item sm>
+    const create = (
+
+      < MuiPickersUtilsProvider utils={MomentUtils} >
+        <form className={classes.createRoom2} >
+          <div className={classes.texts}>
             <p className={classes.text}>SALA</p>
-            <TextField
+          </div>
+          <div className={classes.top}>
+          <TextField
               className={classes.outlinedSala}
               label="Nombre de la Sala"
               margin="normal"
@@ -203,9 +302,11 @@ export class createRoom extends Component {
             />
             <InlineDatePicker
               onlyCalendar
+              minDate={new Date()}
               className={classes.outlinedFecha}
               label="Fecha"
               margin="normal"
+              fullWidth
               variant="outlined"
               value={selectedDate}
               onChange={date => this.handleDateChange(date)}
@@ -216,14 +317,14 @@ export class createRoom extends Component {
               label="Hora"
               margin="normal"
               variant="outlined"
-              value={selectedTime}
+              value={selectedDate}
               onChange={time => this.handleTimeChange(time)}
             />
-          </Grid>
-        </MuiPickersUtilsProvider>
-        <Grid
-          item sm>
-          <p className={classes.text}>INVITADOS</p>
+          </div >
+          <div className={classes.texts}>
+            <p className={classes.text}>INVITADOS</p>
+          </div>
+          <div className={classes.middle}>
           <TextField
             className={classes.outlinedEmailInput}
             label="E-mail"
@@ -235,35 +336,38 @@ export class createRoom extends Component {
             variant="outlined"
             onChange={(e) => this.handleEmail(e)}
           />
-          <p className={classes.text}>Agregar otro invitado</p>
-        </Grid>
-        <Grid className={classes.buttons} container spacing={24}>
-          <Grid item>
+          </div>
+          <div className={classes.texts}>
+            <p className={classes.text}>Agregar otro invitado</p>
+          </div>
+          <div className={classes.buttom}>
             <Link to='/' ><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>
-          </Grid>
-          <Grid item>
             <Button variant="contained" color="primary" onClick={(e) => this.handleSubmit(e)} className={classes.button2}>Crear</Button>
-          </Grid>
-        </Grid>
-      </form>
-    </Grid>)
+          </div>
+        </form >
+      </MuiPickersUtilsProvider >
+    )
 
     const created = (
       <div className={classes.createRoom}>
-      <Grid>
-        <p className={classes.text}>La sala fue creada exitosamente {'\n'} y las invitaciones fueron enviadas.</p>
+        <Grid container>
+          <Grid>
+            <p className={classes.title + ' ' + classes.roomCreated}>La sala fue creada exitosamente</p>
+            <p className={classes.title + ' ' + classes.invitation}> y las invitaciones fueron enviadas.</p>
 
-        <p className={classes.text}>CODIGO{this.state.roomCode}</p>
-        <p className={classes.text}>{this.state.roomCode}</p>
-      </Grid>
-      <Grid className={classes.buttons} container spacing={24}>
-          <Grid item>
-            <Link to='/' ><Button variant="contained" className={classes.button1}>VOLVER</Button></Link>
+            <p className={classes.title + ' ' + classes.code}>CODIGO</p>
+            <p className={classes.title + ' ' + classes.codeNumber}>{this.state.roomCode}</p>
           </Grid>
-          <Grid item>
-            <Link to={`/room/${this.state.roomCode}`} ><Button variant="contained" color="primary" className={classes.button2}>INGRESAR</Button></Link>
+          <Grid className={classes.buttons} container spacing={24}>
+            <Grid item>
+              <Link to='/' className={classes.link}><Button variant="contained" className={classes.button1}>VOLVER</Button></Link>
+            </Grid>
+            <Grid item>
+              <Link to={`/room/${this.state.roomCode}`} className={classes.link} ><Button variant="contained" color="primary" className={classes.button2}>INGRESAR</Button></Link>
+            </Grid>
           </Grid>
         </Grid>
+
       </div>
     )
 
@@ -288,3 +392,9 @@ const mapDispatchToProps = {
 }
 
 export default withStyles(styles)(createRoom)
+
+
+  //
+
+
+//

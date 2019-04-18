@@ -2,6 +2,7 @@ const express = require('express');
 const app = express.Router();
 var mandrill = require('mandrill-api/mandrill');
 var mandrill_client = new mandrill.Mandrill('zD0Xb_KXdE2oqQerDZfd7g');
+const ics = require('ics')
 
 
 

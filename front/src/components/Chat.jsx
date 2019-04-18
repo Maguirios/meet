@@ -7,6 +7,8 @@ import Input from '@material-ui/core/Input';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
+import { compose } from 'redux'
+import { firebaseConnect } from 'react-redux-firebase'
 import Axios from 'axios';
 
 
@@ -42,7 +44,8 @@ const styles = theme => ({
     lineHeight: 'normal',
     letterSpacing: 'normal',
     color: '#ffffff',
-    'word-break': 'break-all'
+    'word-break': 'break-all',
+    wordBreak: 'normal',
   },
   name: {
     fontFamily: 'Roboto',
@@ -72,7 +75,8 @@ const styles = theme => ({
     overflowX: 'hidden',
     '&::-webkit-scrollbar':{
         width: '1px'
-    }
+    },
+    scrollbarWidth: 'none',
   },
   enviar: {
     margin: theme.spacing.unit,
@@ -156,9 +160,16 @@ class Chat extends React.Component {
       }
       else {
         var show = document.getElementById('style-1').lastChild;
+        show && show.scrollIntoView(false)
       }
-      (show) ? show.scrollIntoView(false) : null
     })
+  }
+
+  componentDidUpdate(prevState){
+    if(prevState.messages != this.state.messages){
+      var show = document.getElementById('style-1').lastChild;
+      show && show.scrollIntoView(false)
+    }
   }
 
   handleDownload(fileName) {
@@ -169,7 +180,7 @@ class Chat extends React.Component {
     var storageRef = storage.ref();
 
     //var  pathReference= storage.refFromURL('my url obtained from file properties in firebase storage');
-    var pathReference = storageRef.child(`meet/${fileName}`);
+    var pathReference = storageRef.child(`meet/${this.props.room}/${fileName}`);
 
     // Get the download URL
     pathReference.getDownloadURL().then(function (url) {
@@ -234,7 +245,6 @@ class Chat extends React.Component {
   render() {
     let time = 0
     time = moment().format('LT')
-
     const { classes } = this.props;
     return (
       <div>
@@ -294,13 +304,15 @@ Chat.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 const mapStateToProps = (state) => ({
-  userName: state.users.userName,
+  userName: state.users.userName ? state.users.userName : state.firebase.auth.displayName,
 });
 const mapDispatchToProps = (dispatch) => ({
 
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Chat));
+export default compose(firebaseConnect([
+  'rooms']),
+ connect(mapStateToProps, mapDispatchToProps))(withStyles(styles)(Chat))
 
 
 

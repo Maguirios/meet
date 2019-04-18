@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import Video from "twilio-video";
 import axios from "axios";
-
+import { Route } from 'react-router-dom';
 import UploadFiles from "./UploadFiles";
 import Dialog from "@material-ui/core/Dialog";
 import AddParticipant from "./AddParticipant";
 import firebase from "../firebase";
-
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
 import Button from "@material-ui/core/Button";
+import { Icon } from "@material-ui/core";
 
 export default class VideoComponent extends Component {
   constructor(props) {
@@ -18,10 +18,9 @@ export default class VideoComponent extends Component {
 
     this.state = {
       identity: null,
-      roomName: "",
+      roomName: this.props.match.params.code,
       roomNameErr: false,
       previewTracks: null,
-      localMediaAvailable: false,
       hasJoinedRoom: false,
       activeRoom: null,
       participants: [],
@@ -31,9 +30,8 @@ export default class VideoComponent extends Component {
       audio: true,
       main: false,
       container: "",
-      statusParticipants: [],
-      track: ""
     };
+
     this.disconnected2 = this.disconnected2.bind(this);
     this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(
       this
@@ -51,6 +49,12 @@ export default class VideoComponent extends Component {
   }
 
   componentDidMount() {
+    if (!this.props.userName) {
+      this.props.history.push("/");
+    }
+
+    this._isMounted = true;
+
     firebase
       .database()
       .ref(`rooms/${this.props.match.params.code}`)
@@ -58,13 +62,11 @@ export default class VideoComponent extends Component {
         if (!snapshoot.val()) {
           this.props.history.push("/");
         }
-        this.setState({ roomName: snapshoot.val().code });
-
-        this.joinRoom();
       });
-    axios.post("/token").then(results => {
+    axios.post("/token", { name: this.props.userName }).then(results => {
       const { identity, token } = results.data;
-      this.setState({ identity, token });
+      console.log('RESULT', results)
+      if (this._isMounted) this.setState({ identity, token }, () => this.joinRoom());
     });
   }
 
@@ -118,48 +120,52 @@ export default class VideoComponent extends Component {
       this.props.history.push("/");
     });
   }
-  videoDisable() {
+
+  videoDisable(e) {
     let img = new Image();
     img.src = "/utils/images/video.svg";
     img.style.position = "relative";
     img.id = "local-icon";
     this.state.Video == true
       ? this.state.localId.videoTracks.forEach(videoTracks => {
-          videoTracks.track.disable();
-          this.trackUnsubscribed(videoTracks.track);
-          console.log(this.state.container);
-          this.state.container.appendChild(videoTracks.track.attach(img));
-          this.setState({ Video: false });
-        })
+        videoTracks.track.disable();
+        this.trackUnsubscribed(videoTracks.track)
+        console.log(this.state.container)
+        this.state.container.appendChild(videoTracks.track.attach(img));
+        this.setState({ Video: false });
+      })
       : this.state.localId.videoTracks.forEach(videoTracks => {
           document.getElementById(img.id).remove();
           this.state.container.appendChild(videoTracks.track.attach());
           videoTracks.track.enable();
           this.setState({ Video: true });
         });
+        document.getElementById('videocam').classList.toggle('show')
   }
   audioDisable() {
-    let micro = new Image();
-    micro.src = "/utils/images/mute.svg";
-    micro.id = "micro-local";
-    micro.position = "absolute";
+    let micro = new Image()
+    micro.src = "/utils/images/mute.svg"
+    micro.id = "micro"
     this.state.audio == true
       ? this.state.localId.audioTracks.forEach(audioTracks => {
-          audioTracks.track.disable();
-          this.setState({ audio: false });
-        })
-      : this.state.localId.audioTracks.forEach(audioTracks => {
-          audioTracks.track.enable();
 
-          this.setState({ audio: true });
-        });
+        audioTracks.track.disable();
+        this.state.container.appendChild(micro)
+        this.setState({ audio: false });
+      })
+      : this.state.localId.audioTracks.forEach(audioTracks => {
+        audioTracks.track.enable();
+        document.getElementById('micro').remove()
+        this.setState({ audio: true });
+      });
+      document.getElementById('mic').classList.toggle('show')
   }
 
   disconnected2() {
-    this.state.activeRoom.disconnect();
-    document.getElementById("local-media").remove();
-    this.setState({ activeRoom: false, localMediaAvailable: false });
-    this.detachattachLocalParticipantTracks();
+    this.detachattachLocalParticipantTracks()
+    document.getElementById("local-media").remove()
+    this.state.activeRoom.disconnect()
+    this.setState({ activeRoom: false })
   }
   Main(participant) {
     this.state.main = true;
@@ -180,32 +186,33 @@ export default class VideoComponent extends Component {
     let remoteMedias = document.getElementById("main-media");
     remoteMedias.appendChild(div);
   }
-  onClick(track) {
-    let main = document.getElementById("main-media");
-    main.appendChild(track);
-  }
 
   participantConnected(participant) {
     const div = document.createElement("div");
-    div.id = participant.sid
-    this.state.participants.push(participant);
+    const div2 = document.createElement("h6");
+    div.id = participant.sid;
+    div2.innerText = participant.identity
     participant.on("trackSubscribed", track => {
       this.trackSubscribed(div, track);
     });
     participant.on("trackUnsubscribed", this.trackUnsubscribed);
     participant.tracks.forEach(publication => {
+
       if (publication.isSubscribed) {
         trackSubscribed(div, publication.track);
       }
     });
-
     if (this.state.main == false) {
       this.Main(participant)
       
     }
-    
     let remoteMedias = document.getElementById("remote-media");
     remoteMedias.appendChild(div);
+    div.appendChild(div2)
+  }
+  onClick(track) {
+    let main = document.getElementById("main-media");
+    main.appendChild(track);
   }
   participantDisconnected(participant) {
     this.state.main = false;
@@ -270,6 +277,7 @@ export default class VideoComponent extends Component {
     this.setState({ sendFileOpen: false });
   }
   render() {
+    console.log(this.props)
     return (
       <div className="Views">
         <div className="logoVideoConferencia">
@@ -299,7 +307,7 @@ export default class VideoComponent extends Component {
           </div>
 
           <div className="participantes">
-            <AddParticipant dataSala={this.state} />
+            <AddParticipant dataSala={this.props.match.params.code} />
             <div id="totalRemote">
               <div
                 onClick={e => this.onClick(e.target)}
@@ -314,12 +322,13 @@ export default class VideoComponent extends Component {
         <div className="divDeAbajo">
           {/* AQUI SE MUESTRA EL CHAT */}
           <div className="chat">
-            <Chat room={this.props.match.params.code} />
+            <Route path={`/room/${this.props.match.params.code}`} render={() => <Chat room={this.props.match.params.code} />} />
           </div>
 
           {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
           <div className="barraOpciones">
             <ButtonBar
+              history={this.props.history}
               disconnect={this.disconnected2}
               videoDisable={this.videoDisable}
               audioDisable={this.audioDisable}
@@ -340,6 +349,7 @@ export default class VideoComponent extends Component {
               />
             </Dialog>
             {/* EN ESTE DIV SE VA A MOSTRAR LA CAMARA DEL USUARIO QUE INGRESA A LA VIDEOCONFERENCIA */}
+            <div id='ellocal'>{this.props.userName} </div>
             <div ref="localMedia" id="local-media" />
           </div>
         </div>
@@ -347,3 +357,4 @@ export default class VideoComponent extends Component {
     );
   }
 }
+

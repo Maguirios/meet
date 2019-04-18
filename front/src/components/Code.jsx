@@ -4,17 +4,16 @@ import { TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
-import Input from '@material-ui/core/Input';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux'
 import { setUser } from '../redux/action-creators/usersActions'
-import { Link } from 'react-router-dom'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import firebase from '../firebase';
+import moment from 'moment';
 
 const styles = theme => ({
   container: {
@@ -100,15 +99,19 @@ class Code extends React.Component {
           try {
           throw new Error("Esta sala no existe");
         } catch (e) {
-          this.setState({ error: "Esta sala no existe", open: true })
+          this.setState({ error: "Esta sala no existe", description: 'Compruebe su código de sala' , open: true })
         }
         } else{
+          if(moment(snapshoot.val().dia ,"DD-MMMM-YYYY").isBetween(moment().startOf('date').subtract(1, 'days'), moment().add(1, 'days')) && Number(snapshoot.val().date.slice(20,22)-4 < Number(moment().format('HH'))) && snapshoot.val().status === 'active'){
           this.props.setUser(user)
-          this.props.history.push(`/room/${this.state.code}`)
+          this.props.history.push(`/room/${this.state.code}`)}
+          else {
+            this.setState({ error: "Esta sala no se encuentra habilitada por el momento", description: 'Compruebe la fecha de la conferencia o la hora de la misma' , open: true })
+          }
         }
       })
     } else {
-        this.setState({ error: "Debe completar ambos campos", open: true })
+        this.setState({ error: "Debe completar ambos campos", description: 'Para continuar debe ingresar los 4 digitos del codigo video conferencia y su nombre', open: true })
       }
 
   }
@@ -184,7 +187,7 @@ class Code extends React.Component {
                     <DialogTitle >{error}</DialogTitle>
                     <DialogContent>
                       <DialogContentText id="alert-dialog-description">
-                       { this.state.error === "Debe completar ambos campos" ? 'Para continuar debe ingresar los 4 digitos del codigo video conferencia y su nombre' : 'Compruebe se código de sala' }
+                       { this.state.description }
                     </DialogContentText>
                     </DialogContent>
                     <DialogActions>
