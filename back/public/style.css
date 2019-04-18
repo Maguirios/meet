@@ -3,8 +3,8 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-  width: 100vw;
-  height: 100vh;
+  width: 97vw;
+  height: 97vh;
   margin: 0px;
   background-color: #000;
 }
@@ -17,16 +17,13 @@ body {
 .home-top {
   display: "inline";
   margin-left: 100px;
+  margin-top: 15px
 }
 
 #register {
   margin-left: 30px;
   text-decoration: none;
 }
-
-/* .button-home{
-    margin-left: 20px;
-} */
 
 .hora {
   float: right;
@@ -43,6 +40,12 @@ body {
   width: 364px;
   height: 76px;
 }
+/* @media only screen and (min-width: 300px){
+  .isologo-horizontal-white {
+      width: 70%;
+  }    
+} */
+
 .containerInputs {
   display: grid;
   width: 528px;
@@ -99,14 +102,26 @@ body {
   margin-left: 10px;
   width: 500px;
 }
-#micro {
-  width: 40px;
+@media only screen and (min-width: 768px){
+    div.informacion-evento {
+        width: 70%;
+        margin: 0 auto;
+        margin-top: 50px
+    }    
+}#micro {
+  width: 17px;
   height: 25px;
-  top: 61px;
   position: absolute;
-  right: 25px;
+  right: 10px;
+  top: 58px;
+  z-index: 99;
 }
-#local-icon {
+#micro-local{
+  position: absolute;
+  top: 592px;
+  left: 1029px;
+}
+#remote-icon{
   width: 120px;
   height: 90px;
   border-radius: 10px;
@@ -115,19 +130,37 @@ body {
 }
 
 #local-media video {
-  width: 150px;
-  height: 120px;
+  position: relative;
+  width: 120px;
+  height: 90px;
   border-radius: 10px;
+}
+#local-media {
+  position: relative;
 }
 #totalRemote {
   width: 100%;
   height: 200px;
 }
+#totalRemote #remote-media h6 {
+  margin: 0 auto;
+  width: 120px;
+  height: 20px;
+  float: right;
+  color: white;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 16px;
+  background-color: rgba(0, 0, 0, 0.8);
+  font-size: 13px;
+}
 #totalRemote #remote-media div {
+  display: grid;
   margin: 10px;
   width: 150px;
   height: 120px;
   float: right;
+  justify-items: center;
 }
 #main-media video {
   width: 300px;
@@ -140,6 +173,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
   background-color: #000000;
+  grid-row-start: 1;
 }
 
 #text-permisos {
@@ -291,4 +325,77 @@ input[type="number"]::-webkit-outer-spin-button {
 
 a{
   text-decoration: none
+}
+.material-icons{
+  color: rgba(255, 255, 255, 1);
+  font-size: 30px;
+}
+.show {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+#add-participant{
+  float: right;
+  margin-right: 15px;
+  margin-top: 10px
+}
+
+#local-icon {
+  width: 120px;
+  height: 90px;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
+  background-color: #000000;
+}
+
+#remote-icon{
+  width: 120px;
+  height: 90px;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
+  background-color: #000000;
+  z-index: 0;
+}
+
+#ellocal {
+  width: 120px;
+  height: 20px;
+  border-radius: 16px;
+  background-color: rgba(0, 0, 0, 0.8);
+  font-family: Avenir;
+  font-size: 13px;
+  font-weight: 900;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  vertical-align: middle;
+  color: #ffffff;
+  position: relative;
+  top: 85%;
+  margin-bottom: 100px;
+}
+.endCall{
+  background-color: #000000;
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  grid-template-rows: 0.4fr 8fr; 
+  align-items: center;
+  justify-items: center
+
+}
+.llamadaFinalizada {
+  width: 155px;
+  height: 23px;
+  font-family: Roboto;
+  font-size: 18px;
+  font-weight: 900;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
 }

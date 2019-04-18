@@ -36,6 +36,7 @@ class Home extends Component {
     .catch(function (error) {
         console.log('El error fue', error)
       });
+      this.props.history.push('/')
   }
 
   render() {

@@ -70,7 +70,6 @@ export class AddParticipant extends React.Component {
       open: false,
       roomCode: '',
       countEmails: []
-
     }
     this.handleClose = this.handleClose.bind(this);
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -81,18 +80,16 @@ export class AddParticipant extends React.Component {
     firebase.database().ref(`/rooms/${this.props.dataSala}`).on("value", (snapshot) => {
       this.setState({ countEmails: snapshot.val().emails, roomTitle: snapshot.val().name, date: snapshot.val().date, roomCode: snapshot.val().code })
     })
-
   }
 
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value })
-
   }
 
   handleSubmit(e) {
     e.preventDefault();
     const addEmails = this.state.countEmails.concat(this.state.email.replace(/\s/g, "").split(','))
-    firebase.database().ref(`rooms/${this.props.dataSala.roomName}/emails/`)
+    firebase.database().ref(`rooms/${this.props.dataSala}/emails/`)
       .set(addEmails)
 
     this.setState({ open: false })
@@ -146,6 +143,7 @@ export class AddParticipant extends React.Component {
       })
   }
 
+
   handleClickOpen() {
     this.setState({ open: true });
   };
@@ -154,9 +152,9 @@ export class AddParticipant extends React.Component {
     this.setState({ open: false });
   };
 
+
   render() {
     const { dataSala, classes } = this.props
-    console.log('El STATE PASADO POR PROPS', this.state)
     return (
       <div>
 
@@ -210,15 +208,16 @@ export class AddParticipant extends React.Component {
     );
   }
 }
-  AddParticipant.propTypes = {
-    classes: PropTypes.object.isRequired
-  };
 
-  const mapStateToProps = (state) => ({
-  });
+AddParticipant.propTypes = {
+  classes: PropTypes.object.isRequired
+};
 
-  const mapDispatchToProps = (dispatch) => ({
+const mapStateToProps = (state) => ({
+});
 
-  });
+const mapDispatchToProps = (dispatch) => ({
 
-  export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(AddParticipant));
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(AddParticipant));
