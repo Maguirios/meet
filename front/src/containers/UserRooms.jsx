@@ -118,6 +118,7 @@ export class UserRooms extends Component {
 
                   </Grid>
                   <Divider />
+                  </Grid>
                 </div>
               ))}
             </Grid>

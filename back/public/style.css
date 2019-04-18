@@ -114,8 +114,8 @@ body {
 
 #local-media video {
   position: relative;
-  width: 150px;
-  height: 120px;
+  width: 120px;
+  height: 90px;
   border-radius: 10px;
 }
 #local-media {
@@ -333,5 +333,27 @@ a{
   color: #ffffff;
   position: relative;
   top: 85%;
+  margin-bottom: 100px;
 }
+.endCall{
+  background-color: #000000;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 0.4fr 8fr; 
+  align-items: center;
+  justify-items: center
 
+}
+.llamadaFinalizada {
+  width: 155px;
+  height: 23px;
+  font-family: Roboto;
+  font-size: 18px;
+  font-weight: 900;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+}

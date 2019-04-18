@@ -70,6 +70,7 @@ export class ButtonBar extends Component {
     this.props.setCallTime(this.format(this.state.timer))
     this.props.disconnect()
     this.props.history.push('/endcall')
+  }
 
   handleFormat() {
     var color = document.getElementById('videocam')

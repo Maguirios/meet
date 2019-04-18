@@ -5,13 +5,13 @@ import { connect } from "react-redux";
 function EndCall(props) {
     setTimeout(() => props.history.push('/'), 5000)
     return (
-    <div>
+    <div className = 'endCall'>
       <div>
         <img src='/utils/images/logor.png' style={{width:'100px'}}/>
       </div>
       <div>
-          <p>Llamada finalizada</p>
-          <p>{props.callTime} min.</p>
+          <p className = 'llamadaFinalizada'>Llamada finalizada</p>
+          <p className = 'llamadaFinalizada'>{props.callTime} min.</p>
       </div>
     </div>
   )
