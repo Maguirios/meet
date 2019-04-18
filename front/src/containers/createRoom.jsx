@@ -213,10 +213,11 @@ export class createRoom extends Component {
     e.preventDefault();
     let roomCode = this.genRoomCode()
     let fullDate = this.state.selectedDate.format('LLL')[1] === ' ' ? '0' + this.state.selectedDate.format('LLL') : this.state.selectedDate.format('LLL')
+    let roomEmails = this.state.email.replace(/\s/g, "").split(',') === [""] ? [] : this.state.email.replace(/\s/g, "").split(',')
     let newRoom = {
       code: roomCode,
       name: this.state.room,
-      emails: this.state.email.replace(/\s/g, "").split(',').concat(this.props.currentUser.email),
+      emails: roomEmails.concat(this.props.currentUser.email),
       date: fullDate,
       status: 'active',
       dia: this.state.dia,
