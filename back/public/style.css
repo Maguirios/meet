@@ -3,8 +3,8 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-  width: 100vw;
-  height: 100vh;
+  width: 97vw;
+  height: 97vh;
   margin: 0px;
 }
 .home {
@@ -40,6 +40,12 @@ body {
   width: 364px;
   height: 76px;
 }
+/* @media only screen and (min-width: 300px){
+  .isologo-horizontal-white {
+      width: 70%;
+  }    
+} */
+
 .containerInputs {
   display: grid;
   width: 528px;
@@ -96,7 +102,13 @@ body {
   margin-left: 10px;
   width: 500px;
 }
-#micro {
+@media only screen and (min-width: 768px){
+    div.informacion-evento {
+        width: 70%;
+        margin: 0 auto;
+        margin-top: 50px
+    }    
+}#micro {
   width: 40px;
   height: 25px;
   position: absolute;

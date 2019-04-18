@@ -48,7 +48,10 @@ export default class VideoComponent extends Component {
   }
 
   componentDidMount() {
-    console.log('object', this.props)
+    if (!this.props.userName) {
+      this.props.history.push("/");
+    }
+
     this._isMounted = true;
 
     firebase
