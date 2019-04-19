@@ -325,7 +325,6 @@ export default class VideoComponent extends Component {
               render={() => <Chat room={this.props.match.params.code} />}
             />
           </div>
-
           {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
           <div className="barraOpciones">
             <ButtonBar
@@ -336,7 +335,6 @@ export default class VideoComponent extends Component {
               handleOpenSendFile={this.handleOpenSendFile}
             />
           </div>
-
           <div className="camaraLocal">
             <Dialog
               open={this.state.sendFileOpen}

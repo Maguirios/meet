@@ -6,6 +6,7 @@ body {
   width: 97vw;
   height: 97vh;
   margin: 0px;
+  background-color: #000;
 }
 .home {
   display: grid;
@@ -13,7 +14,6 @@ body {
   width: 95vw;
   height: 95vh;
 }
-
 .home-top {
   display: "inline";
   margin-left: 100px;
@@ -109,11 +109,11 @@ body {
         margin-top: 50px
     }    
 }#micro {
-  width: 40px;
+  width: 17px;
   height: 25px;
   position: absolute;
-  right: 5px;
-  top: 87px;
+  right: 10px;
+  top: 58px;
   z-index: 99;
 }
 #micro-local{
@@ -140,8 +140,8 @@ body {
 
 #local-media video {
   position: relative;
-  width: 150px;
-  height: 120px;
+  width: 120px;
+  height: 90px;
   border-radius: 10px;
 }
 #local-media {
@@ -206,14 +206,30 @@ i {
 .iconos {
   margin: 0 auto;
   width: 300px;
+  display: grid;
+  grid-template-columns: 50% 50%
 }
 .watermark {
-  margin: 10px 75px 200px 75px;
+  margin: 0px auto;
+  display: block;
+  padding-top: 30px;
   width: 150px;
-  height: 26px;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
   background-image: contain;
   opacity: 0.4;
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+}
+#video-camera {
+  height: 40px;
+  margin: 0px auto;
+  margin-top: 15px;
+  object-fit: contain;
+  width: 57px;
+}
+#microphone{
+  height: 58px;
+  margin: 0px auto;
+  object-fit: contain;
+  width: 32px;
 }
 #telephone {
   display: block;
@@ -307,6 +323,14 @@ input[type="number"]::-webkit-outer-spin-button {
   min-width: 75px;
   object-fit: contain;
 }
+#permisos{
+  background-color: #000;
+  height: 600px;
+  width: 100%;
+}
+#centrando-permiso{
+  height: 50%;;
+}
 
 a{
   text-decoration: none
@@ -326,8 +350,8 @@ a{
 }
 
 #local-icon {
-  width: 150px;
-  height: 120px;
+  width: 120px;
+  height: 90px;
   border-radius: 10px;
   box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.25);
   background-color: #000000;
@@ -359,5 +383,28 @@ a{
   color: #ffffff;
   position: relative;
   top: 85%;
+  margin-bottom: 100px;
 }
+.endCall{
+  background-color: #000000;
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  grid-template-rows: 0.4fr 8fr; 
+  align-items: center;
+  justify-items: center
 
+}
+.llamadaFinalizada {
+  width: 155px;
+  height: 23px;
+  font-family: Roboto;
+  font-size: 18px;
+  font-weight: 900;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+}
