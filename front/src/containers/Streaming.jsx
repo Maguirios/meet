@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Video from "twilio-video";
 import axios from "axios";
-import { Route } from 'react-router-dom';
+import { Route } from "react-router-dom";
 import UploadFiles from "./UploadFiles";
 import Dialog from "@material-ui/core/Dialog";
 import AddParticipant from "./AddParticipant";
@@ -15,46 +15,40 @@ export default class VideoComponent extends Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
-
     this.state = {
-      identity: null,
-      roomName: this.props.match.params.code,
-      roomNameErr: false,
-      previewTracks: null,
-      hasJoinedRoom: false,
-      activeRoom: null,
-      participants: [],
-      localId: "",
-      sendFileOpen: false,
       Video: true,
       audio: true,
       main: false,
+      localId: "",
       container: "",
+      identity: null,
+      activeRoom: null,
+      sendFileOpen: false,
+      roomName: this.props.match.params.code
     };
 
-    this.disconnected2 = this.disconnected2.bind(this);
-    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(
-      this
-    );
+    this.onClick = this.onClick.bind(this);
+    this.mainScreen = this.mainScreen.bind(this);
     this.videoDisable = this.videoDisable.bind(this);
-    this.handleOpenSendFile = this.handleOpenSendFile.bind(this);
-    this.handleCloseSendFile = this.handleCloseSendFile.bind(this);
     this.audioDisable = this.audioDisable.bind(this);
-    this.participantConnected = this.participantConnected.bind(this);
-    this.participantDisconnected = this.participantDisconnected.bind(this);
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
-    this.Main = this.Main.bind(this);
-    this.onClick = this.onClick.bind(this);
+    this.localDisconnected = this.localDisconnected.bind(this);
+    this.handleOpenSendFile = this.handleOpenSendFile.bind(this);
+    this.handleCloseSendFile = this.handleCloseSendFile.bind(this);
+    this.participantConnected = this.participantConnected.bind(this);
+    this.participantDisconnected = this.participantDisconnected.bind(this);
+    this.detachLocalParticipantTracks = this.detachLocalParticipantTracks.bind(
+      this
+    );
   }
 
   componentDidMount() {
     if (!this.props.userName) {
       this.props.history.push("/");
     }
-
+    //flag of mounted component
     this._isMounted = true;
-
     firebase
       .database()
       .ref(`rooms/${this.props.match.params.code}`)
@@ -65,8 +59,9 @@ export default class VideoComponent extends Component {
       });
     axios.post("/token", { name: this.props.userName }).then(results => {
       const { identity, token } = results.data;
-      console.log('RESULT', results)
-      if (this._isMounted) this.setState({ identity, token }, () => this.joinRoom());
+      console.log("RESULT", results);
+      if (this._isMounted)
+        this.setState({ identity, token }, () => this.joinRoom());
     });
   }
 
@@ -86,18 +81,16 @@ export default class VideoComponent extends Component {
           previewContainer
         );
       }
-
-      room.on("participantConnected", participant => {
-        console.log(participant);
-      });
-      room.on("participantConnected", this.participantConnected);
-      room.participants.forEach(this.participantConnected);
-
       this.setState({
         localId: room.localParticipant,
         activeRoom: room,
         container: previewContainer
       });
+
+      room.on("participantConnected", this.participantConnected);
+
+      room.participants.forEach(this.participantConnected);
+
       room.on("participantDisconnected", this.participantDisconnected);
 
       room.once("disconnected", error =>
@@ -105,14 +98,15 @@ export default class VideoComponent extends Component {
       );
     });
   }
-
+  //attach the local track to the room
   attachLocalParticipantTracks(participant, container) {
     var tracks = Array.from(participant.tracks.values());
     tracks.forEach(track => {
       container.appendChild(track.track.attach());
     });
   }
-  detachattachLocalParticipantTracks() {
+  //detach the local track to the room
+  detachLocalParticipantTracks() {
     var tracks = Array.from(this.state.localId.tracks.values());
     tracks.forEach(track => {
       const attachedElements = track.track.detach();
@@ -121,59 +115,86 @@ export default class VideoComponent extends Component {
     });
   }
 
+  // LocalVideo Disable
   videoDisable(e) {
     let img = new Image();
     img.src = "/utils/images/video.svg";
-    img.style.position = "relative";
     img.id = "local-icon";
+    //flag for Video Disabling
     this.state.Video == true
       ? this.state.localId.videoTracks.forEach(videoTracks => {
-        videoTracks.track.disable();
-        this.trackUnsubscribed(videoTracks.track)
-        console.log(this.state.container)
-        this.state.container.appendChild(videoTracks.track.attach(img));
-        this.setState({ Video: false });
-      })
+          videoTracks.track.disable();
+          this.trackUnsubscribed(videoTracks.track);
+          this.state.container.appendChild(videoTracks.track.attach(img));
+          this.setState({ Video: false });
+        })
       : this.state.localId.videoTracks.forEach(videoTracks => {
           document.getElementById(img.id).remove();
           this.state.container.appendChild(videoTracks.track.attach());
           videoTracks.track.enable();
           this.setState({ Video: true });
         });
-        document.getElementById('videocam').classList.toggle('show')
+    document.getElementById("videocam").classList.toggle("show");
   }
+  //LocalAudio Disable
   audioDisable() {
-    let micro = new Image()
-    micro.src = "/utils/images/mute.svg"
-    micro.id = "micro"
+    let micro = new Image();
+    micro.src = "/utils/images/mute.svg";
+    micro.id = "micro";
+    //Flag for Audio Disabling
     this.state.audio == true
       ? this.state.localId.audioTracks.forEach(audioTracks => {
-
-        audioTracks.track.disable();
-        this.state.container.appendChild(micro)
-        this.setState({ audio: false });
-      })
+          audioTracks.track.disable();
+          this.state.container.appendChild(micro);
+          this.setState({ audio: false });
+        })
       : this.state.localId.audioTracks.forEach(audioTracks => {
-        audioTracks.track.enable();
-        document.getElementById('micro').remove()
-        this.setState({ audio: true });
-      });
-      document.getElementById('mic').classList.toggle('show')
+          audioTracks.track.enable();
+          document.getElementById("micro").remove();
+          this.setState({ audio: true });
+        });
+    document.getElementById("mic").classList.toggle("show");
   }
 
-  disconnected2() {
-    this.detachattachLocalParticipantTracks()
-    document.getElementById("local-media").remove()
-    this.state.activeRoom.disconnect()
-    this.setState({ activeRoom: false })
+  // the Function  speaks for itselft
+  localDisconnected() {
+    this.detachLocalParticipantTracks();
+    document.getElementById("local-media").remove();
+    this.state.activeRoom.disconnect();
+    this.setState({ activeRoom: false });
   }
-  Main(participant) {
+
+  //Manage Participants properties
+  participantConnected(participant) {
+    const div = document.createElement("div");
+    const div2 = document.createElement("h6");
+    div.id = participant.sid;
+    div2.innerText = participant.identity;
+    participant.on("trackSubscribed", track => {
+      this.trackSubscribed(div, track);
+    });
+    participant.on("trackUnsubscribed", this.trackUnsubscribed);
+    participant.tracks.forEach(publication => {
+      if (publication.isSubscribed) {
+        trackSubscribed(div, publication.track);
+      }
+    });
+    if (this.state.main == false) {
+      //this.state.main is  flag  to only have one mainScreen ,later on the functions is change to True
+      this.mainScreen(participant);
+    }
+    let remoteMedias = document.getElementById("remote-media");
+    remoteMedias.appendChild(div);
+    div.appendChild(div2);
+  }
+
+  //Manage MainScreen  properties
+  mainScreen(participant) {
     this.state.main = true;
     const div = document.createElement("div");
-    div.id = participant.sid;
-
+    //changes the Div ID  to make a manageable syntax
+    div.id = "main";
     participant.on("trackSubscribed", track => {
-      this.setState({ track: track });
       this.trackSubscribed(div, track);
     });
     participant.on("trackUnsubscribed", this.trackUnsubscribed);
@@ -187,48 +208,33 @@ export default class VideoComponent extends Component {
     remoteMedias.appendChild(div);
   }
 
-  participantConnected(participant) {
-    const div = document.createElement("div");
-    const div2 = document.createElement("h6");
-    div.id = participant.sid;
-    div2.innerText = participant.identity
-    participant.on("trackSubscribed", track => {
-      this.trackSubscribed(div, track);
-    });
-    participant.on("trackUnsubscribed", this.trackUnsubscribed);
-    participant.tracks.forEach(publication => {
-
-      if (publication.isSubscribed) {
-        trackSubscribed(div, publication.track);
-      }
-    });
-    if (this.state.main == false) {
-      this.Main(participant)
-      
-    }
-    let remoteMedias = document.getElementById("remote-media");
-    remoteMedias.appendChild(div);
-    div.appendChild(div2)
-  }
-  onClick(track) {
-    let main = document.getElementById("main-media");
-    main.appendChild(track);
-  }
   participantDisconnected(participant) {
+    //Flag for mainScreen
     this.state.main = false;
     document.getElementById(participant.sid).remove();
   }
 
+  //Select a MainScreen ??
+  onClick(track) {
+    console.log("12312312", track);
+    console.log(document.getElementById(track));
+    document.getElementById("remote-media");
+  }
+
+  //Attaching and Detaching participants tracks
   trackSubscribed(div, track) {
     let img = new Image();
     img.src = "/utils/images/video.svg";
-    img.style.position = "absolute";
     img.id = "remote-icon";
+    let bigImg = new Image();
+    bigImg.src = "/utils/images/video.svg";
+    bigImg.id = "remote-icon";
     let micro = new Image();
     micro.src = "/utils/images/mute.svg";
     micro.id = "micro";
     micro.style.zIndex = "initial";
     div.style.position = "relative";
+
     if (track.kind == "audio") {
       track.isEnabled
         ? div.appendChild(track.attach())
@@ -239,37 +245,30 @@ export default class VideoComponent extends Component {
         ? div.appendChild(track.attach())
         : div.appendChild(track.attach(img));
     }
- 
+    //waiting for  events from other Participants
     track.on("disabled", () => {
       if (track.kind == "video") {
-        if (!track.isEnabled ) {
-          this.trackUnsubscribed(track)
-          div.appendChild(track.attach(img));
-        }
+        this.trackUnsubscribed(track);
+        div.id !== "main" ? div.appendChild(img) : div.appendChild(bigImg);
       } else {
-        if (!track.isEnabled) {
-          div.appendChild(track.attach(micro));
-        }
+        div.appendChild(track.attach(micro));
       }
     });
     track.on("enabled", () => {
       if (track.kind == "video") {
-        if (track.isEnabled) {
-          track.detach(img).remove();
-          div.appendChild(track.attach());
-        }
+        track.detach(img).remove();
+        track.detach(bigImg).remove();
+        div.appendChild(track.attach());
       } else {
-        if (track.isEnabled) {
-          track.detach(micro).remove();
-        }
+        track.detach(micro).remove();
       }
     });
-  
   }
 
   trackUnsubscribed(track) {
     track.detach().forEach(element => element.remove());
   }
+  //sending Files
   handleOpenSendFile() {
     this.setState({ sendFileOpen: true });
   }
@@ -277,7 +276,6 @@ export default class VideoComponent extends Component {
     this.setState({ sendFileOpen: false });
   }
   render() {
-    console.log(this.props)
     return (
       <div className="Views">
         <div className="logoVideoConferencia">
@@ -322,13 +320,16 @@ export default class VideoComponent extends Component {
         <div className="divDeAbajo">
           {/* AQUI SE MUESTRA EL CHAT */}
           <div className="chat">
-            <Route path={`/room/${this.props.match.params.code}`} render={() => <Chat room={this.props.match.params.code} />} />
+            <Route
+              path={`/room/${this.props.match.params.code}`}
+              render={() => <Chat room={this.props.match.params.code} />}
+            />
           </div>
           {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
           <div className="barraOpciones">
             <ButtonBar
               history={this.props.history}
-              disconnect={this.disconnected2}
+              disconnect={this.localDisconnected}
               videoDisable={this.videoDisable}
               audioDisable={this.audioDisable}
               handleOpenSendFile={this.handleOpenSendFile}
@@ -347,7 +348,7 @@ export default class VideoComponent extends Component {
               />
             </Dialog>
             {/* EN ESTE DIV SE VA A MOSTRAR LA CAMARA DEL USUARIO QUE INGRESA A LA VIDEOCONFERENCIA */}
-            <div id='ellocal'>{this.props.userName} </div>
+            <div id="ellocal">{this.props.userName} </div>
             <div ref="localMedia" id="local-media" />
           </div>
         </div>
