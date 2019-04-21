@@ -254,6 +254,11 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+#iconos {
+  width: 100vw;
+  height: 100vh;
+}
+
 /* ESTA ES LA GRILLA DE LA VIDEO CONFERENCIA, SUPER IMPORTANTE !!!! */
 
 .Views {
@@ -325,8 +330,8 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 #permisos{
   background-color: #000;
-  height: 600px;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
 }
 #centrando-permiso{
   height: 50%;;
