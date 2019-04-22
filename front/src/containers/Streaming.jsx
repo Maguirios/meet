@@ -222,10 +222,10 @@ class VideoComponent extends Component {
 
   // the Function speaks for itselft
   localDisconnected() {
-    this.detachLocalParticipantTracks();
-    document.getElementById("local-media").remove();
     this.state.activeRoom.disconnect();
-    this.setState({ activeRoom: false });
+    this.detachLocalParticipantTracks()
+    document.getElementById("local-media").remove();
+    this.setState({ activeRoom: false })
   }
 
   //Manage Participants properties
@@ -239,17 +239,20 @@ class VideoComponent extends Component {
       this.mainScreen(participant)}
 
     div2.innerText = participant.identity;
-    // firebase.database().ref(`rooms/${this.state.roomName}/messages/`).on('value', snapshoot => {
-    //   const actMsj = snapshoot.val().length ? snapshoot.val().length : 0
-    //   const newMessage = {
-    //     id: actMsj,
-    //     username: participant.identity,
-    //     textMessage: 'Ha ingresado a la sala',
-    //     time: moment().format('LT')
-    //   }
-    //   firebase.database().ref(`rooms/${this.state.roomName}/messages/${newMessage.id}`)
-    //   .set(newMessage)
-    // })
+    
+    firebase.database().ref(`rooms/${this.state.roomName}/messages/`).once('value')
+    .then(snapshoot => {
+      const actMsj = snapshoot.val().length ? snapshoot.val().length : 0
+      console.log('Mensajes', actMsj)
+      firebase.database().ref(`rooms/${this.state.roomName}/messages/${actMsj}`)
+      .set({
+        id: actMsj,
+        username: participant.identity,
+        textMessage: 'Ha ingresado a la sala',
+        time: moment().format('LT')
+      })
+    })
+
     participant.on("trackSubscribed", track => {
       this.trackSubscribed(div, track);
     });
