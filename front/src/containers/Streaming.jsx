@@ -174,16 +174,17 @@ export default class VideoComponent extends Component {
     const div2 = document.createElement("h6");
     div.id = participant.sid;
     div2.innerText = participant.identity;
-    // firebase.database().ref(`rooms/${this.state.roomName}/messages/`).on('value', snapshoot => {
+    // firebase.database().ref(`rooms/${this.state.roomName}/messages/`).once('value')
+    // .then(snapshoot => {
     //   const actMsj = snapshoot.val().length ? snapshoot.val().length : 0
-    //   const newMessage = {
+    //   console.log('Mensajes', actMsj)
+    //   firebase.database().ref(`rooms/${this.state.roomName}/messages/${newMessage.id}`)
+    //   .set({
     //     id: actMsj,
     //     username: participant.identity,
     //     textMessage: 'Ha ingresado a la sala',
     //     time: moment().format('LT')
-    //   }
-    //   firebase.database().ref(`rooms/${this.state.roomName}/messages/${newMessage.id}`)
-    //   .set(newMessage)
+    //   })
     // })
     participant.on("trackSubscribed", track => {
       this.trackSubscribed(div, track);
