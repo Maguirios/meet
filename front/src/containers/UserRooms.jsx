@@ -98,9 +98,9 @@ export class UserRooms extends Component {
                           <Icon>keyboard_arrow_right</Icon>
                         </Button>
                       </Link>
-                    <Divider />
                     </Grid>
                   </Grid>
+                  <Divider />
                 </div>
               ))}
             </Grid>
