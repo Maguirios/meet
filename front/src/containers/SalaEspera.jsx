@@ -2,11 +2,7 @@ import React from 'react'
 
 function SalaEspera() {
   return (
-    <div className='iconos'>
-      <div>
-        <img className='watermark' src='/utils/images/logor.png' />
-      </div>
-
+    <div className='salaespera'>
       <h4 id='text-permisos'> Esperando otros participantes <br/> Eres el único en esta sala </h4>
     </div>
   )
