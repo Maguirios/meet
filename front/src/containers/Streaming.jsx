@@ -94,7 +94,7 @@ class VideoComponent extends Component {
             pContainer.style['grid-template-columns'] = '1fr 1fr'
             participant.style.width = '450px'
             participant.style.height = 'auto'
-          } else if (participants.length > 3) {
+          } else if (participants.length >= 3) {
             pContainer.style['grid-template-columns'] = '1fr 1fr'
             pContainer.style['grid-template-rows'] = '1fr 1fr'
             pContainer.style['justify-items'] = 'center'
