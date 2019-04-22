@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import firebase from '../firebase'
 import Dialog from '@material-ui/core/Dialog';
@@ -14,6 +15,21 @@ const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
+  },
+  button1: {
+    width: 110,
+    height: 36,
+    borderRadius: 5,
+    backgroundColor: '##5c6f7b',
+    textDecoration: 'none',
+    marginRight: 5,
+  },
+  button2: {
+    width: 110,
+    height: 36,
+    borderRadius: 5,
+    backgroundColor: '#4dc2f1',
+    marginLeft: 5,
   },
   textField: {
     marginLeft: theme.spacing.unit,
@@ -74,7 +90,7 @@ class Register extends React.Component {
       })
       .catch((error) => {
         0.2
-        if(error.code == 'auth/argument-error') this.setState({ error: 'Los campos de Email y Contraseña son obligatorios', open: true })
+        if(error.code == 'auth/argument-error') this.setState({ error: 'Todos los campos son obligatorios', open: true })
         else if(error.code == 'auth/email-already-in-use') this.setState({ error: 'El email ingresado ya esta en uso', open: true })
         else if(error.code == 'auth/weak-password') this.setState({ error: 'La contraseña debe tener minimo 6 caracteres', open: true })
       });
@@ -117,10 +133,13 @@ class Register extends React.Component {
           name="password"
           onChange={this.handleChange}
         />
-        <Button variant="contained" color="primary" className='buttonsStyle' type='submit'>
+
+        <div>
+        <Link to='/' ><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>
+        <Button variant="contained" color="primary" className= {classes.button2} type='submit'>
           Registrarse
         </Button>
-        
+        </div>
         <Dialog
           open={this.state.open && this.state.open}
           onClose={this.handleClose}
