@@ -153,7 +153,7 @@ class Chat extends React.Component {
     this.handleChangeMessage = this.handleChangeMessage.bind(this)
   }
   componentDidMount() {
-    firebase.database().ref(`rooms/${this.props.room}/messages/`).on('value', snapshoot => {
+    this.chat = firebase.database().ref(`rooms/${this.props.room}/messages/`).on('value', snapshoot => {
       const actMsj = snapshoot.val()
       if (actMsj !== null) {
         this.setState({
@@ -172,6 +172,10 @@ class Chat extends React.Component {
       var show = document.getElementById('style-1').lastChild;
       show && show.scrollIntoView(false)
     }
+  }
+
+  componentWillUnmount(){
+    firebase.database().ref(`rooms/${this.props.room}/messages/`).off('value', this.chat)
   }
 
   handleDownload(fileName) {
