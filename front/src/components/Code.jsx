@@ -94,7 +94,7 @@ class Code extends React.Component {
     e.preventDefault();
     const user = this.state.name
     if(this.state.name.replace(/\s/g, "") && this.state.code.replace(/\s/g, "")){
-      firebase.database().ref(`rooms/${this.state.code}`).on('value', snapshoot => {
+      firebase.database().ref(`rooms/${this.state.code}`).once('value', snapshoot => {
         if (!snapshoot.val()) {
           try {
           throw new Error("Esta sala no existe");

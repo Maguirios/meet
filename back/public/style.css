@@ -10,7 +10,10 @@ body {
   width: 97vw;
   height: 97vh;
   margin: 0px;
-  background-color: #000;
+  background-image: url("/utils/images/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .home {
   background-image: url("/utils/images/background.jpg");
