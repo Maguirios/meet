@@ -277,7 +277,6 @@ input[type="number"]::-webkit-outer-spin-button {
 /* ESTA ES LA GRILLA DE LA VIDEO CONFERENCIA, SUPER IMPORTANTE !!!! */
 
 .streaming{
-  background-color: #000;
   width: 97vw;
   height: 97vh;
 }
