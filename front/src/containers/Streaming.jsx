@@ -254,7 +254,6 @@ export default class VideoComponent extends Component {
   }
 
   render() {
-    console.log(this.props)
     return (
       <div className="Views">
         <div className="logoVideoConferencia">
