@@ -12,7 +12,9 @@ import { compose } from 'redux'
 import { firebaseConnect } from 'react-redux-firebase'
 import { connect } from 'react-redux';
 import Permisos from './Permisos';
+import SalaEspera from './SalaEspera';
 import Button from "@material-ui/core/Button";
+import moment from 'moment';
 import { Icon } from "@material-ui/core";
 
 class VideoComponent extends Component {
@@ -31,7 +33,8 @@ class VideoComponent extends Component {
       activeRoom: null,
       sendFileOpen: false,
       roomName: this.props.match.params.code,
-      permisos: false
+      permisos: false,
+      participants: false,
     };
 
     this.onClick = this.onClick.bind(this);
@@ -216,7 +219,7 @@ class VideoComponent extends Component {
     document.getElementById("mic").classList.toggle("show");
   }
 
-  // the Function  speaks for itselft
+  // the Function speaks for itselft
   localDisconnected() {
     this.detachLocalParticipantTracks();
     document.getElementById("local-media").remove();
@@ -226,10 +229,22 @@ class VideoComponent extends Component {
 
   //Manage Participants properties
   participantConnected(participant) {
+    this.setState({ participants: true })
     const div = document.createElement("div");
     const div2 = document.createElement("h6");
     div.id = participant.sid;
     div2.innerText = participant.identity;
+    // firebase.database().ref(`rooms/${this.state.roomName}/messages/`).on('value', snapshoot => {
+    //   const actMsj = snapshoot.val().length ? snapshoot.val().length : 0
+    //   const newMessage = {
+    //     id: actMsj,
+    //     username: participant.identity,
+    //     textMessage: 'Ha ingresado a la sala',
+    //     time: moment().format('LT')
+    //   }
+    //   firebase.database().ref(`rooms/${this.state.roomName}/messages/${newMessage.id}`)
+    //   .set(newMessage)
+    // })
     participant.on("trackSubscribed", track => {
       this.trackSubscribed(div, track);
     });
@@ -267,6 +282,8 @@ class VideoComponent extends Component {
 
     let remoteMedias = document.getElementById("main-media");
     remoteMedias.appendChild(div);
+    // let video = document.querySelector('# main video')
+    // video.webkitEnterFullscreen()
   }
 
   participantDisconnected(participant) {
@@ -295,7 +312,7 @@ class VideoComponent extends Component {
     micro.src = "/utils/images/mute.svg";
     micro.id = "micro";
     micro.style.zIndex = "initial";
-    div.style.position = "relative";
+    // div.style.position = "absolute";
 
     if (track.kind == "audio") {
       track.isEnabled
@@ -346,9 +363,9 @@ class VideoComponent extends Component {
     this.setState({ sendFileOpen: false });
   }
   render() {
-    const { permisos } = this.state
+    const { permisos, participants } = this.state
     return (
-      <div>
+      <div className='streaming'>
         {permisos ?
           <div className="Views">
             <div className="logoVideoConferencia">
@@ -356,27 +373,29 @@ class VideoComponent extends Component {
                 <img className="logoConferencia" src="/utils/images/logor.png" />
               </div>
             </div>
-
             <div className="divDelMedio">
-              {/* EN ESTE DIV SE VA A MOSTRAR LAS OPCIONES DE VISTA DE LA VIDEOCONFERENCIA Y LA LISTA DE PARTICIPANTES */}
-              <div className="opcionesVista">
-                <Button
-                  onClick={this.handleViewsAll}
-                  style={{ float: "right", marginTop: "12px" }}
-                >
-                  <img className="add-participant" src="/utils/images/layout.svg" />
-                </Button>
-                <Button
-                  onClick={this.handleViewsOne}
-                  style={{ float: "right", marginTop: "12px" }}
-                >
-                  <img
-                    className="add-participant"
-                    src="/utils/images/layout-full.svg"
-                  />
-                </Button>
-              </div>
+              {participants ?
+                < div className="opcionesVista">
+                  <Button
+                    onClick={this.handleViewsAll}
+                    style={{ float: "right", marginTop: "12px" }}
+                  >
+                    <img className="add-participant" src="/utils/images/layout.svg" />
+                  </Button>
+                  <Button
+                    onClick={this.handleViewsOne}
+                    style={{ float: "right", marginTop: "12px" }}
+                  >
+                    <img
+                      className="add-participant"
+                      src="/utils/images/layout-full.svg"
+                    />
+                  </Button>
+                </div>
 
+
+                :
+                <SalaEspera />}
               <div className="participantes">
                 <AddParticipant dataSala={this.props.match.params.code} />
                 <div id="totalRemote">
@@ -389,7 +408,6 @@ class VideoComponent extends Component {
                 <div ref="mainmedia" id="main-media" />
               </div>
             </div>
-
             <div className="divDeAbajo">
               {/* AQUI SE MUESTRA EL CHAT */}
               <div className="chat">
@@ -425,9 +443,11 @@ class VideoComponent extends Component {
                 <div ref="localMedia" id="local-media" />
               </div>
             </div>
-          </div>
+            <div ref="mainmedia" id="main-media" />
+          </div >
           :
-          <Permisos />}
+          <Permisos />
+        }
       </div>
     );
   }
