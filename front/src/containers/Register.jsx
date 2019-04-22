@@ -1,5 +1,4 @@
 import React from 'react';
-import {withRouter} from 'react-router-dom'
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
@@ -33,31 +32,6 @@ const styles = theme => ({
   },
 });
 
-const inlineStyles = {
-  anchorVertical: {
-    top: {
-      top: -5,
-    },
-    center: {
-      top: 'calc(50% - 5px)',
-    },
-    bottom: {
-      bottom: -5,
-    },
-  },
-  anchorHorizontal: {
-    left: {
-      left: -5,
-    },
-    center: {
-      left: 'calc(50% - 5px)',
-    },
-    right: {
-      right: -5,
-    },
-  },
-};
-
 class Register extends React.Component {
   constructor(props) {
     super(props)
@@ -72,11 +46,11 @@ class Register extends React.Component {
   }
 
   componentDidMount() {
-    (this.props.currentUser.email)? this.props.history.push('/') : null
+    (this.props.currentUser) ? this.props.history.push('/') : null
   }
 
-  componentDidUpdate(prevProps){
-    (prevProps.currentUser.email !== this.props.currentUser.email)? this.props.history.push('/') : null
+  componentDidUpdate(prevProps) {
+    (prevProps.currentUser !== this.props.currentUser) ? this.props.history.push('/') : null
   }
 
   handleChange(e) {
@@ -93,17 +67,16 @@ class Register extends React.Component {
         firebase.auth().currentUser.updateProfile({
           displayName: this.state.userName
         })
-        .then(() => {
-          // Update successful.
-          this.props.history.push('/')
-        })
+          .then(() => {
+            // Update successful.
+            this.props.history.push('/')
+          })
       })
       .catch((error) => {
         0.2
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log('El codigo de error es', errorCode, ' y el mensaje es: ', errorMessage)
-        this.setState({ error: errorMessage, open: true })
+        if(error.code == 'auth/argument-error') this.setState({ error: 'Los campos de Email y Contraseña son obligatorios', open: true })
+        else if(error.code == 'auth/email-already-in-use') this.setState({ error: 'El email ingresado ya esta en uso', open: true })
+        else if(error.code == 'auth/weak-password') this.setState({ error: 'La contraseña debe tener minimo 6 caracteres', open: true })
       });
   }
   handleClickOpen() {
@@ -114,12 +87,11 @@ class Register extends React.Component {
     this.setState({ open: false });
   };
   render() {
-    console.log('Props registro', this.props)
     const { classes } = this.props;
     return (
       <form noValidate autoComplete="off" className='containerInputs' onSubmit={this.handleSubmit}>
         <TextField
-          label="Username"
+          label="Nombre de Usuario"
           className='inputStyle'
           margin="dense"
           name="userName"
@@ -137,7 +109,7 @@ class Register extends React.Component {
         />
         <TextField
           id="standard-password-input"
-          label="Password"
+          label="Contraseña"
           className='inputStyle'
           type="Password"
           autoComplete="current-password"
@@ -148,6 +120,7 @@ class Register extends React.Component {
         <Button variant="contained" color="primary" className='buttonsStyle' type='submit'>
           Registrarse
         </Button>
+        
         <Dialog
           open={this.state.open && this.state.open}
           onClose={this.handleClose}

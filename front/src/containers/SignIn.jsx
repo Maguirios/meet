@@ -25,11 +25,11 @@ class SingUp extends React.Component {
   }
 
   componentDidMount() {
-    (this.props.currentUser.email)? this.props.history.push('/') : null
+    (this.props.currentUser)? this.props.history.push('/') : null
   }
 
   componentDidUpdate(prevProps){
-    (prevProps.currentUser.email !== this.props.currentUser.email)? this.props.history.push('/') : null
+    (prevProps.currentUser !== this.props.currentUser)? this.props.history.push('/') : null
   }
 
 
@@ -46,8 +46,12 @@ class SingUp extends React.Component {
         0.2
         var errorCode = error.code;
         var errorMessage = error.message;
+        if(error.code == 'auth/invalid-email') this.setState({ error: 'El email no ha sido ingresado o tiene un formato incorrecto', open: true })
+        else if(error.code == 'auth/wrong-password') this.setState({ error: 'La combinacion de email y contraseña ingresada es incorrecta o no ha ingresado una contraseña', open: true })
+        else if(error.code == 'auth/user-not-found') this.setState({ error: 'El email ingresado no corresponde a un usuario creado', open: true })
+        else if(error.code == 'auth/user-not-found') this.setState({ error: 'El email ingresado no corresponde a un usuario creado', open: true })
         console.log('El codigo de error es', errorCode, ' y el mensaje es: ', errorMessage)
-        this.setState({ error: errorMessage, open: true })
+
       });
   }
   handleClickOpen() {
@@ -72,7 +76,7 @@ class SingUp extends React.Component {
 
         <TextField
           className="inputStyle"
-          label="Password"
+          label="Contraseña"
           margin="normal"
           name="password"
           type='password'

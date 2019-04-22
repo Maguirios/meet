@@ -4,12 +4,16 @@ import { TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
-import Input from '@material-ui/core/Input';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux'
 import { setUser } from '../redux/action-creators/usersActions'
-import { Link } from 'react-router-dom'
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import firebase from '../firebase';
+import moment from 'moment';
 
 const styles = theme => ({
   container: {
@@ -72,26 +76,48 @@ class Code extends React.Component {
 
     this.state = {
       name: '',
-      code: ''
+      code: '',
+      open: false,
+      error: '',
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChangeName = this.handleChangeName.bind(this)
     this.handleChangeCode = this.handleChangeCode.bind(this)
+    this.handleClose = this.handleClose.bind(this)
   }
+
+  handleClose() {
+    this.setState({ open: false });
+  };
 
   handleSubmit(e) {
     e.preventDefault();
     const user = this.state.name
     if(this.state.name.replace(/\s/g, "") && this.state.code.replace(/\s/g, "")){
-      this.props.setUser(user)
-      this.props.history.push(`/room/${this.state.code}`)
-    }else{
-      alert('Ambos campos son requeridos')
-    }
+      firebase.database().ref(`rooms/${this.state.code}`).on('value', snapshoot => {
+        if (!snapshoot.val()) {
+          try {
+          throw new Error("Esta sala no existe");
+        } catch (e) {
+          this.setState({ error: "Esta sala no existe", description: 'Compruebe su código de sala' , open: true })
+        }
+        } else{
+          if(moment(snapshoot.val().dia ,"DD-MMMM-YYYY").isBetween(moment().startOf('date').subtract(1, 'days'), moment().add(1, 'days')) && Number(snapshoot.val().date.slice(20,22)-4 < Number(moment().format('HH'))) && snapshoot.val().status === 'active'){
+          this.props.setUser(user)
+          this.props.history.push(`/room/${this.state.code}`)}
+          else {
+            this.setState({ error: "Esta sala no se encuentra habilitada por el momento", description: 'Compruebe la fecha de la conferencia o la hora de la misma' , open: true })
+          }
+        }
+      })
+    } else {
+        this.setState({ error: "Debe completar ambos campos", description: 'Para continuar debe ingresar los 4 digitos del codigo video conferencia y su nombre', open: true })
+      }
+
   }
 
   handleChangeName(event) {
-    const value = event.target.value.toUpperCase();
+    const value = event.target.value;
     this.setState({ name: value })
 
   }
@@ -100,8 +126,8 @@ class Code extends React.Component {
     this.setState({ code: value })
   }
   render() {
-    console.log('statesss', this.props)
     const { classes } = this.props;
+    const { error } = this.state;
     return (
       <div>
         <Grid
@@ -118,8 +144,7 @@ class Code extends React.Component {
                 className={classes.title}
                 onChange={this.handleChangeCode}
                 type='number'
-                // error={this.state.code === ""}
-                // helperText={this.state.code === "" ? 'campo obligatorio' : ''}
+                helperText={this.state.code === "" ? 'campo obligatorio' : ''}
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 4)
                 }}
@@ -142,8 +167,7 @@ class Code extends React.Component {
                     margin="normal"
                     className={classes.text2}
                     onChange={this.handleChangeName}
-                    // error={this.state.name === ""}
-                    // helperText={this.state.name === "" ? 'campo obligatorio' : ''}
+                    helperText={this.state.name === "" ? 'campo obligatorio' : ''}
                   >
                   </TextField>
                 </Grid>
@@ -154,6 +178,25 @@ class Code extends React.Component {
                   <Button variant="contained" size="small" color="primary" onClick={this.handleSubmit} className={classes.buttonSendStyle}>
                     <Icon>keyboard_arrow_right</Icon>
                   </Button>
+                  <Dialog
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                  >
+                    <DialogTitle >{error}</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText id="alert-dialog-description">
+                       { this.state.description }
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={this.handleClose} color="primary">
+                        Aceptar
+                    </Button>
+                    </DialogActions>
+                  </Dialog>
+
                 </Grid>
               </Grid>
 
