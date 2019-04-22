@@ -93,6 +93,7 @@ export default class VideoComponent extends Component {
       room.on("participantConnected", this.participantConnected);
 
       room.participants.forEach(this.participantConnected);
+     
 
       room.on("participantDisconnected", this.participantDisconnected);
 
@@ -159,7 +160,7 @@ export default class VideoComponent extends Component {
     document.getElementById("mic").classList.toggle("show");
   }
 
-  // the Function  speaks for itselft
+  // the Function speaks for itselft
   localDisconnected() {
     this.detachLocalParticipantTracks();
     document.getElementById("local-media").remove();
@@ -173,6 +174,10 @@ export default class VideoComponent extends Component {
     const div = document.createElement("div");
     const div2 = document.createElement("h6");
     div.id = participant.sid;
+    div.onclick = (e) => {
+      document.getElementById("main-media").innerHTML=""
+      this.mainScreen(participant)}
+
     div2.innerText = participant.identity;
     // firebase.database().ref(`rooms/${this.state.roomName}/messages/`).once('value')
     // .then(snapshoot => {
@@ -216,25 +221,25 @@ export default class VideoComponent extends Component {
     participant.on("trackUnsubscribed", this.trackUnsubscribed);
     participant.tracks.forEach(publication => {
       if (publication.isSubscribed) {
-        trackSubscribed(div, publication.track);
+        this.trackSubscribed(div, publication.track);
       }
     });
 
     let remoteMedias = document.getElementById("main-media");
     remoteMedias.appendChild(div);
+    // let video = document.querySelector('# main video')
+    // video.webkitEnterFullscreen()
+  }
+
+  //Select a MainScreen ??
+  onClick(track) {
+    
   }
 
   participantDisconnected(participant) {
     //Flag for mainScreen
     this.state.main = false;
     document.getElementById(participant.sid).remove();
-  }
-
-  //Select a MainScreen ??
-  onClick(track) {
-    console.log("12312312", track);
-    console.log(document.getElementById(track));
-    document.getElementById("remote-media");
   }
 
   //Attaching and Detaching participants tracks
@@ -249,8 +254,9 @@ export default class VideoComponent extends Component {
     micro.src = "/utils/images/mute.svg";
     micro.id = "micro";
     micro.style.zIndex = "initial";
-    div.style.position = "relative";
+    // div.style.position = "absolute";
 
+   
     if (track.kind == "audio") {
       track.isEnabled
         ? div.appendChild(track.attach())
@@ -262,6 +268,7 @@ export default class VideoComponent extends Component {
         : div.appendChild(track.attach(img));
     }
     //waiting for  events from other Participants
+
     track.on("disabled", () => {
       if (track.kind == "video") {
         this.trackUnsubscribed(track);
@@ -291,6 +298,7 @@ export default class VideoComponent extends Component {
   handleCloseSendFile() {
     this.setState({ sendFileOpen: false });
   }
+
   render() {
     const { permisos, participants } = this.state
     return (
@@ -380,3 +388,5 @@ export default class VideoComponent extends Component {
     );
   }
 }
+
+
