@@ -8,13 +8,16 @@ import AddParticipant from "./AddParticipant";
 import firebase from "../firebase";
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
+import { compose } from 'redux'
+import { firebaseConnect } from 'react-redux-firebase'
+import { connect } from 'react-redux';
 import Permisos from './Permisos';
 import SalaEspera from './SalaEspera';
 import Button from "@material-ui/core/Button";
 import moment from 'moment';
 import { Icon } from "@material-ui/core";
 
-export default class VideoComponent extends Component {
+class VideoComponent extends Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
@@ -24,6 +27,8 @@ export default class VideoComponent extends Component {
       main: false,
       localId: "",
       container: "",
+      statusParticipants: [],
+      viewsAll: false,
       identity: null,
       activeRoom: null,
       sendFileOpen: false,
@@ -44,6 +49,8 @@ export default class VideoComponent extends Component {
     this.participantConnected = this.participantConnected.bind(this);
     this.participantDisconnected = this.participantDisconnected.bind(this);
     this.detachLocalParticipantTracks = this.detachLocalParticipantTracks.bind(this);
+    this.handleViewsOne = this.handleViewsOne.bind(this)
+    this.handleViewsAll = this.handleViewsAll.bind(this)
   }
 
   componentDidMount() {
@@ -68,6 +75,59 @@ export default class VideoComponent extends Component {
     });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.viewsAll !== this.state.viewsAll) {
+      if (this.state.viewsAll) {
+        let pContainer = document.querySelector('#remote-media')
+        document.querySelector('#main-media video').style.display = 'none'
+        let participants = document.querySelectorAll('#remote-media video')
+        pContainer.style.position = 'absolute'
+        pContainer.style.display = 'grid'
+        pContainer.style['justify-items'] = 'start'
+        pContainer.style.width = '88vw'
+        pContainer.style.height = '93vh'
+        pContainer.style.zIndex = '0'
+        pContainer.style.right = '10px'
+        pContainer.style.top = '40px'
+        participants.forEach(participant => {
+          if (participants.length < 3) {
+            pContainer.style['grid-template-columns'] = '1fr 1fr'
+            participant.style.width = '450px'
+            participant.style.height = 'auto'
+          } else if (participants.length > 3) {
+            pContainer.style['grid-template-columns'] = '1fr 1fr'
+            pContainer.style['grid-template-rows'] = '1fr 1fr'
+            pContainer.style['justify-items'] = 'center'
+            participant.style.width = '300px'
+            participant.style.height = 'auto'
+          }
+        })
+      } else {
+        let pContainer = document.querySelector('#remote-media')
+        if (pContainer) {
+          document.querySelector('#main-media video').style.display = 'inline'
+          let participants = document.querySelectorAll('#remote-media video')
+          pContainer.style.position = ''
+          pContainer.style.display = ''
+          pContainer.style['justify-items'] = ''
+          pContainer.style.width = ''
+          pContainer.style.height = ''
+          pContainer.style.zIndex = ''
+          pContainer.style.right = ''
+          pContainer.style.top = ''
+          pContainer.style['grid-template-columns'] = ''
+          participants.forEach(participant => {
+            participant.style.width = '120px'
+            participant.style.height = '90px'
+          })
+        }
+      }
+    }
+  }
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
   joinRoom() {
     let connectOptions = {
       name: this.state.roomName
@@ -76,19 +136,19 @@ export default class VideoComponent extends Component {
     Video.connect(this.state.token, connectOptions).then(room => {
       this.setState({ permisos: true }, () => {
         var previewContainer = this.refs.localMedia;
-          if (!previewContainer.querySelector("video")) {
-            this.attachLocalParticipantTracks(
-              room.localParticipant,
-              previewContainer
-            );
-            this.setState({
-              localId: room.localParticipant,
-              activeRoom: room,
-              container: previewContainer
-            });
-          }
-        })
-      
+        if (!previewContainer.querySelector("video")) {
+          this.attachLocalParticipantTracks(
+            room.localParticipant,
+            previewContainer
+          );
+          this.setState({
+            localId: room.localParticipant,
+            activeRoom: room,
+            container: previewContainer
+          });
+        }
+      })
+
 
       room.on("participantConnected", this.participantConnected);
 
@@ -170,7 +230,7 @@ export default class VideoComponent extends Component {
 
   //Manage Participants properties
   participantConnected(participant) {
-    this.setState({participants: true})
+    this.setState({ participants: true })
     const div = document.createElement("div");
     const div2 = document.createElement("h6");
     div.id = participant.sid;
@@ -197,6 +257,7 @@ export default class VideoComponent extends Component {
     participant.tracks.forEach(publication => {
       if (publication.isSubscribed) {
         trackSubscribed(div, publication.track);
+
       }
     });
     if (this.state.main == false) {
@@ -239,6 +300,14 @@ export default class VideoComponent extends Component {
     //Flag for mainScreen
     this.state.main = false;
     document.getElementById(participant.sid).remove();
+  }
+
+  //Select a MainScreen ??
+  onClick(track) {
+    console.log("12312312", track);
+    console.log(document.getElementById(track));
+    if (this.state.viewsAll) return
+    document.getElementById("remote-media");
   }
 
   //Attaching and Detaching participants tracks
@@ -288,9 +357,17 @@ export default class VideoComponent extends Component {
   }
 
   trackUnsubscribed(track) {
+    track.on('enabled', (e) => {
+      console.log(e, track)
+    })
     track.detach().forEach(element => element.remove());
   }
-  //sending Files
+  handleViewsAll() {
+    this.setState({ viewsAll: true })
+  }
+  handleViewsOne() {
+    this.setState({ viewsAll: false })
+  }
   handleOpenSendFile() {
     this.setState({ sendFileOpen: true });
   }
@@ -304,23 +381,22 @@ export default class VideoComponent extends Component {
       <div className='streaming'>
         {permisos ?
           <div className="Views">
-              <div className="logoVideoConferencia">
-                <div className="logoConferencia">
-                  <img className="logoConferencia" src="/utils/images/logor.png" />
-                </div>
+            <div className="logoVideoConferencia">
+              <div className="logoConferencia">
+                <img className="logoConferencia" src="/utils/images/logor.png" />
               </div>
-              {participants ? 
-              <div className="divDelMedio">
-                {/* EN ESTE DIV SE VA A MOSTRAR LAS OPCIONES DE VISTA DE LA VIDEOCONFERENCIA Y LA LISTA DE PARTICIPANTES */}
-                <div className="opcionesVista">
+            </div>
+            <div className="divDelMedio">
+              {participants ?
+                < div className="opcionesVista">
                   <Button
-                    onClick={this.handleClickOpen}
+                    onClick={this.handleViewsAll}
                     style={{ float: "right", marginTop: "12px" }}
                   >
                     <img className="add-participant" src="/utils/images/layout.svg" />
                   </Button>
                   <Button
-                    onClick={this.handleClickOpen}
+                    onClick={this.handleViewsOne}
                     style={{ float: "right", marginTop: "12px" }}
                   >
                     <img
@@ -330,62 +406,73 @@ export default class VideoComponent extends Component {
                   </Button>
                 </div>
 
-                <div className="participantes">
-                  <AddParticipant dataSala={this.props.match.params.code} />
-                  <div id="totalRemote">
-                    <div
-                      onClick={e => this.onClick(e.target)}
-                      ref="remotmemedia"
-                      id="remote-media"
-                    />
-                  </div>
-                  <div ref="mainmedia" id="main-media" />
-                </div>
-              </div>
-              :
-              <SalaEspera />}
 
-              <div className="divDeAbajo">
-                {/* AQUI SE MUESTRA EL CHAT */}
-                <div className="chat">
-                  <Route
-                    path={`/room/${this.props.match.params.code}`}
-                    render={() => <Chat room={this.props.match.params.code} />}
+                :
+                <SalaEspera />}
+              <div className="participantes">
+                <AddParticipant dataSala={this.props.match.params.code} />
+                <div id="totalRemote">
+                  <div
+                    onClick={e => this.onClick(e.target)}
+                    ref="remotmemedia"
+                    id="remote-media"
                   />
                 </div>
-                {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
-                <div className="barraOpciones">
-                  <ButtonBar
-                    history={this.props.history}
-                    disconnect={this.localDisconnected}
-                    videoDisable={this.videoDisable}
-                    audioDisable={this.audioDisable}
-                    handleOpenSendFile={this.handleOpenSendFile}
-                  />
-                </div>
-                <div className="camaraLocal">
-                  <Dialog
-                    open={this.state.sendFileOpen}
-                    onClose={this.handleCloseSendFile}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                  >
-                    <UploadFiles
-                      handleCloseSendFile={this.handleCloseSendFile}
-                      roomCode={this.props.match.params.code}
-                    />
-                  </Dialog>
-                  {/* EN ESTE DIV SE VA A MOSTRAR LA CAMARA DEL USUARIO QUE INGRESA A LA VIDEOCONFERENCIA */}
-                  <div id="ellocal">{this.props.userName} </div>
-                  <div ref="localMedia" id="local-media" />
-                </div>
+                <div ref="mainmedia" id="main-media" />
               </div>
-          </div>
+            </div>
+            <div className="divDeAbajo">
+              {/* AQUI SE MUESTRA EL CHAT */}
+              <div className="chat">
+                <Route
+                  path={`/room/${this.props.match.params.code}`}
+                  render={() => <Chat room={this.props.match.params.code} />}
+                />
+              </div>
+              {/* AQUI SE MUESTRA LA BARRA DE OPCIONES */}
+              <div className="barraOpciones">
+                <ButtonBar
+                  history={this.props.history}
+                  disconnect={this.localDisconnected}
+                  videoDisable={this.videoDisable}
+                  audioDisable={this.audioDisable}
+                  handleOpenSendFile={this.handleOpenSendFile}
+                />
+              </div>
+              <div className="camaraLocal">
+                <Dialog
+                  open={this.state.sendFileOpen}
+                  onClose={this.handleCloseSendFile}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <UploadFiles
+                    handleCloseSendFile={this.handleCloseSendFile}
+                    roomCode={this.props.match.params.code}
+                  />
+                </Dialog>
+                {/* EN ESTE DIV SE VA A MOSTRAR LA CAMARA DEL USUARIO QUE INGRESA A LA VIDEOCONFERENCIA */}
+                <div id="ellocal">{this.props.userName} </div>
+                <div ref="localMedia" id="local-media" />
+              </div>
+            </div>
+            <div ref="mainmedia" id="main-media" />
+          </div >
           :
-          <Permisos />}
+          <Permisos />
+        }
       </div>
     );
   }
 }
 
+const mapStateToProps = (state) => ({
+  userLogin: state.firebase.auth,
+})
 
+const mapDispatchToProps = (dispatch) => ({
+})
+
+export default compose(firebaseConnect([
+  'rooms']),
+  connect(mapStateToProps, mapDispatchToProps))(VideoComponent)
