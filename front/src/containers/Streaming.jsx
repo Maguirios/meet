@@ -9,7 +9,9 @@ import firebase from "../firebase";
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
 import Permisos from './Permisos';
+import SalaEspera from './SalaEspera';
 import Button from "@material-ui/core/Button";
+import moment from 'moment';
 import { Icon } from "@material-ui/core";
 
 export default class VideoComponent extends Component {
@@ -26,7 +28,8 @@ export default class VideoComponent extends Component {
       activeRoom: null,
       sendFileOpen: false,
       roomName: this.props.match.params.code,
-      permisos: false
+      permisos: false,
+      participants: false,
     };
 
     this.onClick = this.onClick.bind(this);
@@ -40,9 +43,7 @@ export default class VideoComponent extends Component {
     this.handleCloseSendFile = this.handleCloseSendFile.bind(this);
     this.participantConnected = this.participantConnected.bind(this);
     this.participantDisconnected = this.participantDisconnected.bind(this);
-    this.detachLocalParticipantTracks = this.detachLocalParticipantTracks.bind(
-      this
-    );
+    this.detachLocalParticipantTracks = this.detachLocalParticipantTracks.bind(this);
   }
 
   componentDidMount() {
@@ -168,10 +169,22 @@ export default class VideoComponent extends Component {
 
   //Manage Participants properties
   participantConnected(participant) {
+    this.setState({participants: true})
     const div = document.createElement("div");
     const div2 = document.createElement("h6");
     div.id = participant.sid;
     div2.innerText = participant.identity;
+    // firebase.database().ref(`rooms/${this.state.roomName}/messages/`).on('value', snapshoot => {
+    //   const actMsj = snapshoot.val().length ? snapshoot.val().length : 0
+    //   const newMessage = {
+    //     id: actMsj,
+    //     username: participant.identity,
+    //     textMessage: 'Ha ingresado a la sala',
+    //     time: moment().format('LT')
+    //   }
+    //   firebase.database().ref(`rooms/${this.state.roomName}/messages/${newMessage.id}`)
+    //   .set(newMessage)
+    // })
     participant.on("trackSubscribed", track => {
       this.trackSubscribed(div, track);
     });
@@ -280,9 +293,9 @@ export default class VideoComponent extends Component {
     this.setState({ sendFileOpen: false });
   }
   render() {
-    const { permisos } = this.state
+    const { permisos, participants } = this.state
     return (
-      <div>
+      <div className='streaming'>
         {permisos ?
           <div className="Views">
               <div className="logoVideoConferencia">
@@ -290,7 +303,7 @@ export default class VideoComponent extends Component {
                   <img className="logoConferencia" src="/utils/images/logor.png" />
                 </div>
               </div>
-
+              {participants ? 
               <div className="divDelMedio">
                 {/* EN ESTE DIV SE VA A MOSTRAR LAS OPCIONES DE VISTA DE LA VIDEOCONFERENCIA Y LA LISTA DE PARTICIPANTES */}
                 <div className="opcionesVista">
@@ -323,6 +336,8 @@ export default class VideoComponent extends Component {
                   <div ref="mainmedia" id="main-media" />
                 </div>
               </div>
+              :
+              <SalaEspera />}
 
               <div className="divDeAbajo">
                 {/* AQUI SE MUESTRA EL CHAT */}
