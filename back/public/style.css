@@ -1,3 +1,11 @@
+@font-face{
+  font-family: 'AvenirNextLTPro-Regular';
+  src: url("./utils/ave_next_ssv/AvenirNextLTPro-Regular.otf");
+}
+
+*{
+  font-family: 'AvenirNextLTPro-Regular'
+}
 body {
   background-image: url("/utils/images/background.jpg");
   background-size: cover;
@@ -17,6 +25,7 @@ body {
 .home-top {
   display: "inline";
   margin-left: 100px;
+  margin-top: 10px;
 }
 
 #register {
@@ -267,4 +276,11 @@ input[type="number"]::-webkit-outer-spin-button {
 
 a{
   text-decoration: none
+}
+
+.unoDedos{
+  margin: 10px;
+  width: 500px;
+  height: 500px;
+  float: right;
 }

@@ -38,6 +38,7 @@ const styles = theme => ({
     lineHeight: 'normal',
     letterSpacing: 'normal',
     color: '#5c6f7b',
+    textAlign: 'start'
   },
   textDate: {
     fontSize: 12,
@@ -48,6 +49,7 @@ const styles = theme => ({
     letterSpacing: 'normal',
     color: '#8d9aa3',
     margin: 5,
+    textAlign: 'start'
   },
   centerButton: {
     width: 44,
@@ -57,6 +59,11 @@ const styles = theme => ({
   progress:{
     width: 50,
     heigth: 50,
+  }, 
+  noRooms:{
+    fontFamily: 'Roboto',
+    textAlign: 'center',
+    fontSize: 18
   }
 })
 
@@ -68,6 +75,7 @@ export class UserRooms extends Component {
     return (
       <div>
         {this.props.rooms ?
+         this.props.rooms.length != 0 ? 
         <Grid
           className={classes.container}
           container
@@ -100,11 +108,11 @@ export class UserRooms extends Component {
                     </p>
                   </Grid>
                   <Grid
-                    className={classes.centerButton}
+                    
                     item sm
                   >
                     <Link to={`/room/${room.code}`}>
-                      <Button variant="contained" size="small" color="primary" >
+                      <Button variant="contained" size="small" color="primary" className={classes.centerButton}>
                         <Icon>keyboard_arrow_right</Icon>
                       </Button>
                     </Link>
@@ -114,6 +122,10 @@ export class UserRooms extends Component {
               </div>
             ))}
         </Grid>
+        : 
+        <div className={classes.container}>
+        <p className = {classes.noRooms} >No tiene ninguna sala activa</p>
+        </div>
           :
           <CircularProgress className={classes.progress} color="secondary" />
       }

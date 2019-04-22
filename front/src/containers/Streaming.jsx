@@ -32,13 +32,12 @@ class VideoComponent extends Component {
       audio: true,
       main: 0,
       container: "",
-      statusParticipants: []
+      statusParticipants: [],
+      viewsAll: false
     };
 
     this.disconnected2 = this.disconnected2.bind(this);
-    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(
-      this
-    );
+    this.detachattachLocalParticipantTracks = this.detachattachLocalParticipantTracks.bind(this);
     this.videoDisable = this.videoDisable.bind(this);
     this.handleOpenSendFile = this.handleOpenSendFile.bind(this);
     this.handleCloseSendFile = this.handleCloseSendFile.bind(this);
@@ -48,6 +47,8 @@ class VideoComponent extends Component {
     this.trackSubscribed = this.trackSubscribed.bind(this);
     this.trackUnsubscribed = this.trackUnsubscribed.bind(this);
     this.hardcodeo = this.hardcodeo.bind(this);
+    this.handleViewsAll = this.handleViewsAll.bind(this)
+    this.handleViewsOne = this.handleViewsOne.bind(this)
   }
 
   componentDidMount() {
@@ -75,6 +76,19 @@ class VideoComponent extends Component {
 
   }
 
+  componentDidUpdate(prevProps, prevState){
+    if(prevState.viewsAll !== this.state.viewsAll){
+      if(this.state.viewsAll){
+        let participantsContainer = document.querySelectorAll('#remote-media video')
+        participantsContainer.forEach(participant => {
+          if(participantsContainer.length < 3){
+            participant.style.width = '500px'
+            participant.style.height = '500px'
+          }
+        })
+      }
+    }
+  }
   componentWillUnmount() {
     this._isMounted = false
   }
@@ -256,6 +270,12 @@ class VideoComponent extends Component {
     })
     track.detach().forEach(element => element.remove());
   }
+  handleViewsAll(){
+    this.setState({ viewsAll: true })
+  }
+  handleViewsOne(){
+    this.setState({ viewsAll: false })
+  }
   handleOpenSendFile() {
     this.setState({ sendFileOpen: true });
   }
@@ -264,6 +284,7 @@ class VideoComponent extends Component {
   }
 
   render() {
+    console.log('El estado del componente', this.state)
     return (
       <div className="Views">
         <div className="logoVideoConferencia">
@@ -276,13 +297,13 @@ class VideoComponent extends Component {
           {/* EN ESTE DIV SE VA A MOSTRAR LAS OPCIONES DE VISTA DE LA VIDEOCONFERENCIA Y LA LISTA DE PARTICIPANTES */}
           <div className="opcionesVista">
             <Button
-              onClick={this.handleClickOpen}
+              onClick={this.handleViewsAll}
               style={{ float: "right", marginTop: "12px" }}
             >
               <img className="add-participant" src="/utils/images/layout.svg" />
             </Button>
             <Button
-              onClick={this.handleClickOpen}
+              onClick={this.handleViewsOne}
               style={{ float: "right", marginTop: "12px" }}
             >
               <img
@@ -293,7 +314,7 @@ class VideoComponent extends Component {
           </div>
 
           <div className="participantes">
-            <AddParticipant dataSala={this.state} />
+            <AddParticipant dataSala={this.props.match.params.code} />
             <div id="totalRemote">
               <div
                 onClick={(e) => {
