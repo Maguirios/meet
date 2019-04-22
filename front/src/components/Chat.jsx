@@ -165,6 +165,7 @@ class Chat extends React.Component {
     })
   }
 
+
   componentDidUpdate(prevState){
     if(prevState.messages != this.state.messages){
       var show = document.getElementById('style-1').lastChild;
@@ -280,10 +281,15 @@ class Chat extends React.Component {
               <Grid item sm>
                 <Input
                   placeholder="Escribe algo"
-                  onChange={this.handleChangeMessage}
-                  value={this.state.message}
-                  className={classes.input}
-                  inputProps={{
+             ENVIAR INVITACIÓN
+
+     onChange={this.handleChangeMessage}
+             ENVIAR INVITACIÓN
+     value={this.state.message}
+             ENVIAR INVITACIÓN
+     className={classes.input}
+             ENVIAR INVITACIÓN
+     inputProps={{
                     'aria-label': 'Description',
                   }}
                 />

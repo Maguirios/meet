@@ -8,14 +8,12 @@ import AddParticipant from "./AddParticipant";
 import firebase from "../firebase";
 import ButtonBar from "./ButtonBar";
 import Chat from "../components/Chat";
-import { compose } from 'redux'
-import { firebaseConnect } from 'react-redux-firebase'
-import { connect } from 'react-redux';
-import Permisos from './Permisos';
-import SalaEspera from './SalaEspera';
+import { compose } from "redux";
+import { firebaseConnect } from "react-redux-firebase";
+import { connect } from "react-redux";
+import Permisos from "./Permisos";
+import SalaEspera from "./SalaEspera";
 import Button from "@material-ui/core/Button";
-import moment from 'moment';
-import { Icon } from "@material-ui/core";
 
 class VideoComponent extends Component {
   constructor(props) {
@@ -34,7 +32,7 @@ class VideoComponent extends Component {
       sendFileOpen: false,
       roomName: this.props.match.params.code,
       permisos: false,
-      participants: false,
+      participants: false
     };
 
     this.onClick = this.onClick.bind(this);
@@ -48,9 +46,11 @@ class VideoComponent extends Component {
     this.handleCloseSendFile = this.handleCloseSendFile.bind(this);
     this.participantConnected = this.participantConnected.bind(this);
     this.participantDisconnected = this.participantDisconnected.bind(this);
-    this.detachLocalParticipantTracks = this.detachLocalParticipantTracks.bind(this);
-    this.handleViewsOne = this.handleViewsOne.bind(this)
-    this.handleViewsAll = this.handleViewsAll.bind(this)
+    this.detachLocalParticipantTracks = this.detachLocalParticipantTracks.bind(
+      this
+    );
+    this.handleViewsOne = this.handleViewsOne.bind(this);
+    this.handleViewsAll = this.handleViewsAll.bind(this);
   }
 
   componentDidMount() {
@@ -78,54 +78,54 @@ class VideoComponent extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.viewsAll !== this.state.viewsAll) {
       if (this.state.viewsAll) {
-        let pContainer = document.querySelector('#remote-media')
-        document.querySelector('#main-media video').style.display = 'none'
-        let participants = document.querySelectorAll('#remote-media video')
-        pContainer.style.position = 'absolute'
-        pContainer.style.display = 'grid'
-        pContainer.style['justify-items'] = 'start'
-        pContainer.style.width = '88vw'
-        pContainer.style.height = '93vh'
-        pContainer.style.zIndex = '0'
-        pContainer.style.right = '10px'
-        pContainer.style.top = '40px'
+        let pContainer = document.querySelector("#remote-media");
+        document.querySelector("#main-media video").style.display = "none";
+        let participants = document.querySelectorAll("#remote-media video");
+        pContainer.style.position = "absolute";
+        pContainer.style.display = "grid";
+        pContainer.style["justify-items"] = "start";
+        pContainer.style.width = "88vw";
+        pContainer.style.height = "93vh";
+        pContainer.style.zIndex = "0";
+        pContainer.style.right = "10px";
+        pContainer.style.top = "40px";
         participants.forEach(participant => {
           if (participants.length < 3) {
-            pContainer.style['grid-template-columns'] = '1fr 1fr'
-            participant.style.width = '450px'
-            participant.style.height = 'auto'
+            pContainer.style["grid-template-columns"] = "1fr 1fr";
+            participant.style.width = "450px";
+            participant.style.height = "auto";
           } else if (participants.length > 3) {
-            pContainer.style['grid-template-columns'] = '1fr 1fr'
-            pContainer.style['grid-template-rows'] = '1fr 1fr'
-            pContainer.style['justify-items'] = 'center'
-            participant.style.width = '300px'
-            participant.style.height = 'auto'
+            pContainer.style["grid-template-columns"] = "1fr 1fr";
+            pContainer.style["grid-template-rows"] = "1fr 1fr";
+            pContainer.style["justify-items"] = "center";
+            participant.style.width = "300px";
+            participant.style.height = "auto";
           }
-        })
+        });
       } else {
-        let pContainer = document.querySelector('#remote-media')
+        let pContainer = document.querySelector("#remote-media");
         if (pContainer) {
-          document.querySelector('#main-media video').style.display = 'inline'
-          let participants = document.querySelectorAll('#remote-media video')
-          pContainer.style.position = ''
-          pContainer.style.display = ''
-          pContainer.style['justify-items'] = ''
-          pContainer.style.width = ''
-          pContainer.style.height = ''
-          pContainer.style.zIndex = ''
-          pContainer.style.right = ''
-          pContainer.style.top = ''
-          pContainer.style['grid-template-columns'] = ''
+          document.querySelector("#main-media video").style.display = "inline";
+          let participants = document.querySelectorAll("#remote-media video");
+          pContainer.style.position = "";
+          pContainer.style.display = "";
+          pContainer.style["justify-items"] = "";
+          pContainer.style.width = "";
+          pContainer.style.height = "";
+          pContainer.style.zIndex = "";
+          pContainer.style.right = "";
+          pContainer.style.top = "";
+          pContainer.style["grid-template-columns"] = "";
           participants.forEach(participant => {
-            participant.style.width = '120px'
-            participant.style.height = '90px'
-          })
+            participant.style.width = "120px";
+            participant.style.height = "90px";
+          });
         }
       }
     }
   }
   componentWillUnmount() {
-    this._isMounted = false
+    this._isMounted = false;
   }
 
   joinRoom() {
@@ -147,13 +147,11 @@ class VideoComponent extends Component {
             container: previewContainer
           });
         }
-      })
-
+      });
 
       room.on("participantConnected", this.participantConnected);
 
       room.participants.forEach(this.participantConnected);
-     
 
       room.on("participantDisconnected", this.participantDisconnected);
 
@@ -187,17 +185,17 @@ class VideoComponent extends Component {
     //flag for Video Disabling
     this.state.Video == true
       ? this.state.localId.videoTracks.forEach(videoTracks => {
-        videoTracks.track.disable();
-        this.trackUnsubscribed(videoTracks.track);
-        this.state.container.appendChild(videoTracks.track.attach(img));
-        this.setState({ Video: false });
-      })
+          videoTracks.track.disable();
+          this.trackUnsubscribed(videoTracks.track);
+          this.state.container.appendChild(videoTracks.track.attach(img));
+          this.setState({ Video: false });
+        })
       : this.state.localId.videoTracks.forEach(videoTracks => {
-        document.getElementById(img.id).remove();
-        this.state.container.appendChild(videoTracks.track.attach());
-        videoTracks.track.enable();
-        this.setState({ Video: true });
-      });
+          document.getElementById(img.id).remove();
+          this.state.container.appendChild(videoTracks.track.attach());
+          videoTracks.track.enable();
+          this.setState({ Video: true });
+        });
     document.getElementById("videocam").classList.toggle("show");
   }
   //LocalAudio Disable
@@ -208,15 +206,15 @@ class VideoComponent extends Component {
     //Flag for Audio Disabling
     this.state.audio == true
       ? this.state.localId.audioTracks.forEach(audioTracks => {
-        audioTracks.track.disable();
-        this.state.container.appendChild(micro);
-        this.setState({ audio: false });
-      })
+          audioTracks.track.disable();
+          this.state.container.appendChild(micro);
+          this.setState({ audio: false });
+        })
       : this.state.localId.audioTracks.forEach(audioTracks => {
-        audioTracks.track.enable();
-        document.getElementById("micro").remove();
-        this.setState({ audio: true });
-      });
+          audioTracks.track.enable();
+          document.getElementById("micro").remove();
+          this.setState({ audio: true });
+        });
     document.getElementById("mic").classList.toggle("show");
   }
 
@@ -230,13 +228,14 @@ class VideoComponent extends Component {
 
   //Manage Participants properties
   participantConnected(participant) {
-    this.setState({ participants: true })
+    this.setState({ participants: true });
     const div = document.createElement("div");
     const div2 = document.createElement("h6");
     div.id = participant.sid;
-    div.onclick = (e) => {
-      document.getElementById("main-media").innerHTML=""
-      this.mainScreen(participant)}
+    div.onclick = e => {
+      document.getElementById("main-media").innerHTML = "";
+      this.mainScreen(participant);
+    };
 
     div2.innerText = participant.identity;
     // firebase.database().ref(`rooms/${this.state.roomName}/messages/`).on('value', snapshoot => {
@@ -257,7 +256,6 @@ class VideoComponent extends Component {
     participant.tracks.forEach(publication => {
       if (publication.isSubscribed) {
         trackSubscribed(div, publication.track);
-
       }
     });
     if (this.state.main == false) {
@@ -292,9 +290,7 @@ class VideoComponent extends Component {
   }
 
   //Select a MainScreen ??
-  onClick(track) {
-    
-  }
+  onClick(track) {}
 
   participantDisconnected(participant) {
     //Flag for mainScreen
@@ -306,7 +302,7 @@ class VideoComponent extends Component {
   onClick(track) {
     console.log("12312312", track);
     console.log(document.getElementById(track));
-    if (this.state.viewsAll) return
+    if (this.state.viewsAll) return;
     document.getElementById("remote-media");
   }
 
@@ -324,7 +320,6 @@ class VideoComponent extends Component {
     micro.style.zIndex = "initial";
     // div.style.position = "absolute";
 
-   
     if (track.kind == "audio") {
       track.isEnabled
         ? div.appendChild(track.attach())
@@ -357,16 +352,16 @@ class VideoComponent extends Component {
   }
 
   trackUnsubscribed(track) {
-    track.on('enabled', (e) => {
-      console.log(e, track)
-    })
+    track.on("enabled", e => {
+      console.log(e, track);
+    });
     track.detach().forEach(element => element.remove());
   }
   handleViewsAll() {
-    this.setState({ viewsAll: true })
+    this.setState({ viewsAll: true });
   }
   handleViewsOne() {
-    this.setState({ viewsAll: false })
+    this.setState({ viewsAll: false });
   }
   handleOpenSendFile() {
     this.setState({ sendFileOpen: true });
@@ -376,24 +371,30 @@ class VideoComponent extends Component {
   }
 
   render() {
-    const { permisos, participants } = this.state
+    const { permisos, participants } = this.state;
     return (
-      <div className='streaming'>
-        {permisos ?
+      <div className="streaming">
+        {permisos ? (
           <div className="Views">
             <div className="logoVideoConferencia">
               <div className="logoConferencia">
-                <img className="logoConferencia" src="/utils/images/logor.png" />
+                <img
+                  className="logoConferencia"
+                  src="/utils/images/logor.png"
+                />
               </div>
             </div>
             <div className="divDelMedio">
-              {participants ?
-                < div className="opcionesVista">
+              {participants ? (
+                <div className="opcionesVista">
                   <Button
                     onClick={this.handleViewsAll}
                     style={{ float: "right", marginTop: "12px" }}
                   >
-                    <img className="add-participant" src="/utils/images/layout.svg" />
+                    <img
+                      className="add-participant"
+                      src="/utils/images/layout.svg"
+                    />
                   </Button>
                   <Button
                     onClick={this.handleViewsOne}
@@ -405,10 +406,9 @@ class VideoComponent extends Component {
                     />
                   </Button>
                 </div>
-
-
-                :
-                <SalaEspera />}
+              ) : (
+                <SalaEspera />
+              )}
               <div className="participantes">
                 <AddParticipant dataSala={this.props.match.params.code} />
                 <div id="totalRemote">
@@ -457,22 +457,25 @@ class VideoComponent extends Component {
               </div>
             </div>
             <div ref="mainmedia" id="main-media" />
-          </div >
-          :
+          </div>
+        ) : (
           <Permisos />
-        }
+        )}
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => ({
-  userLogin: state.firebase.auth,
-})
+const mapStateToProps = state => ({
+  userLogin: state.firebase.auth
+});
 
-const mapDispatchToProps = (dispatch) => ({
-})
+const mapDispatchToProps = dispatch => ({});
 
-export default compose(firebaseConnect([
-  'rooms']),
-  connect(mapStateToProps, mapDispatchToProps))(VideoComponent)
+export default compose(
+  firebaseConnect(["rooms"]),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
+)(VideoComponent);
