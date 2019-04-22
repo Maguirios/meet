@@ -153,7 +153,7 @@ class VideoComponent extends Component {
       room.on("participantConnected", this.participantConnected);
 
       room.participants.forEach(this.participantConnected);
-     
+
 
       room.on("participantDisconnected", this.participantDisconnected);
 
@@ -236,8 +236,9 @@ class VideoComponent extends Component {
     div.id = participant.sid;
     div.style.position = 'relative'
     div.onclick = (e) => {
-      document.getElementById("main-media").innerHTML=""
-      this.mainScreen(participant)}
+      document.getElementById("main-media").innerHTML = ""
+      this.mainScreen(participant)
+    }
 
     div2.innerText = participant.identity;
     // firebase.database().ref(`rooms/${this.state.roomName}/messages/`).on('value', snapshoot => {
@@ -294,7 +295,7 @@ class VideoComponent extends Component {
 
   //Select a MainScreen ??
   onClick(track) {
-    
+
   }
 
   participantDisconnected(participant) {
@@ -325,7 +326,7 @@ class VideoComponent extends Component {
     micro.style.zIndex = "initial";
     // div.style.position = "absolute";
 
-   
+
     if (track.kind == "audio") {
       track.isEnabled
         ? div.appendChild(track.attach())
@@ -388,7 +389,7 @@ class VideoComponent extends Component {
               </div>
             </div>
             <div className="divDelMedio">
-              {/* {participants ? */}
+              {participants ?
                 < div className="opcionesVista">
                   <Button
                     onClick={this.handleViewsAll}
@@ -406,10 +407,9 @@ class VideoComponent extends Component {
                     />
                   </Button>
                 </div>
-
-
-                {/* :
-                <SalaEspera />} */}
+                :
+                <SalaEspera />
+              }
               <div className="participantes">
                 <AddParticipant dataSala={this.props.match.params.code} />
                 <div id="totalRemote">

@@ -24,6 +24,7 @@ const styles = theme => ({
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     padding: 10,
     marginBottom: 5,
+    'overflow-wrap': 'break-word'
   },
   inputField: {
     width: 200,
