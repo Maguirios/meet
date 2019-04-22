@@ -158,7 +158,7 @@ export default class VideoComponent extends Component {
     document.getElementById("mic").classList.toggle("show");
   }
 
-  // the Function  speaks for itselft
+  // the Function speaks for itselft
   localDisconnected() {
     this.detachLocalParticipantTracks();
     document.getElementById("local-media").remove();
@@ -208,6 +208,8 @@ export default class VideoComponent extends Component {
 
     let remoteMedias = document.getElementById("main-media");
     remoteMedias.appendChild(div);
+    // let video = document.querySelector('# main video')
+    // video.webkitEnterFullscreen()
   }
 
   participantDisconnected(participant) {
@@ -235,7 +237,7 @@ export default class VideoComponent extends Component {
     micro.src = "/utils/images/mute.svg";
     micro.id = "micro";
     micro.style.zIndex = "initial";
-    div.style.position = "relative";
+    // div.style.position = "absolute";
 
     if (track.kind == "audio") {
       track.isEnabled

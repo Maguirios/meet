@@ -171,10 +171,13 @@ body {
   float: right;
   justify-items: center;
 }
-#main-media video {
-  width: 300px;
-  height: 300px;
-  border-radius: 10px;
+#main video {
+    position: absolute;
+    top: 0px;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
 }
 #remote-media video {
   width: 120px;
