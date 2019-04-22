@@ -39,6 +39,7 @@ const styles = theme => ({
     lineHeight: 'normal',
     letterSpacing: 'normal',
     color: '#5c6f7b',
+    textAlign: 'start'
   },
   textDate: {
     textAlign: 'start',
@@ -50,6 +51,7 @@ const styles = theme => ({
     letterSpacing: 'normal',
     color: '#8d9aa3',
     margin: 5,
+    textAlign: 'start'
   },
   centerButton: {
     width: 44,
@@ -100,7 +102,6 @@ export class UserRooms extends Component {
                       </Link>
                     </Grid>
                   </Grid>
-                  <Divider />
                 </div>
               ))}
             </Grid>

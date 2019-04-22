@@ -13,6 +13,7 @@ import firebase from '../firebase';
 import CreateRoom from './createRoom';
 import Rooms from './UserRooms';
 import { setLogin } from '../redux/action-creators/usersActions';
+import VistasPruebas from './VistasPrueba'
 
 class Home extends Component {
   constructor(props) {
@@ -77,6 +78,7 @@ class Home extends Component {
             <Route path='/register' render={({ history }) => <RegisterContainer history={history} currentUser={!userLogin.isEmpty} />} />
             <Route path='/signIn' render={({ history }) => <SignIn history={history} currentUser={!userLogin.isEmpty} />} />
             <Route path='/createroom' render={({ history }) => <CreateRoom history={history} currentUser={userLogin} />} />
+            <Route path='/prueba' render={() => <VistasPruebas /> } />
             {!userLogin.isEmpty ? <Route exact path='/' component={Rooms} /> : <Route exact path='/' component={Code} />}
           </div>
         </div>
