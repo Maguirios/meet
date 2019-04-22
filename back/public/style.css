@@ -10,7 +10,10 @@ body {
   width: 97vw;
   height: 97vh;
   margin: 0px;
-  background-color: #000;
+  background-image: url("/utils/images/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .home {
   background-image: url("/utils/images/background.jpg");
@@ -112,6 +115,9 @@ body {
   margin-left: 10px;
   width: 500px;
 }
+#main #micro {
+  display: none
+}
 @media only screen and (min-width: 768px){
     div.informacion-evento {
         width: 70%;
@@ -122,9 +128,9 @@ body {
   width: 17px;
   height: 25px;
   position: absolute;
-  right: 10px;
+  right: 22px;
   top: 58px;
-  z-index: 99;
+  z-index: 80;
 }
 #micro-local{
   position: absolute;
@@ -353,6 +359,7 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 75px;
   min-width: 75px;
   object-fit: contain;
+  z-index: 30
 }
 #permisos{
   background-color: #000;
@@ -380,11 +387,19 @@ a{
 .show {
   color: rgba(255, 255, 255, 0.3);
 }
-
+#main img {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+}
 #add-participant{
   float: right;
   margin-right: 15px;
-  margin-top: 10px
+  margin-top: 10px;
+  z-index: 30
 }
 
 #local-icon {

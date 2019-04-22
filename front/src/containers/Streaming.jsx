@@ -94,7 +94,7 @@ class VideoComponent extends Component {
             pContainer.style['grid-template-columns'] = '1fr 1fr'
             participant.style.width = '450px'
             participant.style.height = 'auto'
-          } else if (participants.length > 3) {
+          } else if (participants.length >= 3) {
             pContainer.style['grid-template-columns'] = '1fr 1fr'
             pContainer.style['grid-template-rows'] = '1fr 1fr'
             pContainer.style['justify-items'] = 'center'
@@ -234,6 +234,7 @@ class VideoComponent extends Component {
     const div = document.createElement("div");
     const div2 = document.createElement("h6");
     div.id = participant.sid;
+    div.style.position = 'relative'
     div.onclick = (e) => {
       document.getElementById("main-media").innerHTML=""
       this.mainScreen(participant)}
@@ -387,7 +388,7 @@ class VideoComponent extends Component {
               </div>
             </div>
             <div className="divDelMedio">
-              {participants ?
+              {/* {participants ? */}
                 < div className="opcionesVista">
                   <Button
                     onClick={this.handleViewsAll}
@@ -407,8 +408,8 @@ class VideoComponent extends Component {
                 </div>
 
 
-                :
-                <SalaEspera />}
+                {/* :
+                <SalaEspera />} */}
               <div className="participantes">
                 <AddParticipant dataSala={this.props.match.params.code} />
                 <div id="totalRemote">
