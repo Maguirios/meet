@@ -75,7 +75,8 @@ const styles = theme => ({
     overflowX: 'hidden',
     '&::-webkit-scrollbar':{
         width: '1px'
-    }
+    },
+    scrollbarWidth: 'none',
   },
   enviar: {
     margin: theme.spacing.unit,
@@ -159,9 +160,16 @@ class Chat extends React.Component {
       }
       else {
         var show = document.getElementById('style-1').lastChild;
+        show && show.scrollIntoView(false)
       }
-      (show) ? show.scrollIntoView(false) : null
     })
+  }
+
+  componentDidUpdate(prevState){
+    if(prevState.messages != this.state.messages){
+      var show = document.getElementById('style-1').lastChild;
+      show && show.scrollIntoView(false)
+    }
   }
 
   handleDownload(fileName) {
@@ -172,7 +180,7 @@ class Chat extends React.Component {
     var storageRef = storage.ref();
 
     //var  pathReference= storage.refFromURL('my url obtained from file properties in firebase storage');
-    var pathReference = storageRef.child(`meet/${fileName}`);
+    var pathReference = storageRef.child(`meet/${this.props.room}/${fileName}`);
 
     // Get the download URL
     pathReference.getDownloadURL().then(function (url) {

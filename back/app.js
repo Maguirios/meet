@@ -14,7 +14,6 @@ var API_SECRET ="jpAqNvuLvbLvhgUxSG3vw9Di1TA814Sf";
 const Twilio = require("twilio");
 
 const client = new Twilio(ACCOUNT_SID, API_SECRET, { ACCOUNT_SID });
-const faker = require("faker");
 
 const apiRoutes = require('./routes/email');
 const port = 3000
@@ -32,16 +31,17 @@ app.use('/api', apiRoutes);
 
 
 app.post("/token", function (req, res) {
-  console.log(req.body,'-----------------------')
-  var identity = faker.name.findName();
+  var identity = req.body.name
   var token = new AccessToken(ACCOUNT_SID, API_KEY, API_SECRET, AUTH_TOKEN);
   token.identity = identity;
   const grant = new VideoGrant();
   token.addGrant(grant);
-  res.send({
+  let valid ={
     identity: identity,
     token: token.toJwt()
-  });
+  } 
+  console.log(valid)
+  res.send(valid);
 });
 
 app.post('/participants', (req, res) => {
