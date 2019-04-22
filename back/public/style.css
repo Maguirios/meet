@@ -233,6 +233,8 @@ i {
   display: grid;
   justify-items: center;
   align-items: center;
+  position: absolute;
+    left: 45%;
 }
 .watermark {
   margin: 0px auto;
