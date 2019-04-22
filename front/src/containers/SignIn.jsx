@@ -2,21 +2,43 @@ import React from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import { withStyles } from "@material-ui/core/styles";
+import PropTypes from 'prop-types'
 import { connect } from "react-redux";
 import { fetchUser } from "../redux/action-creators/usersActions";
 import firebase from '../firebase'
+import { Link } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+
+const styles = theme => ({
+  button1: {
+    width: 110,
+    height: 36,
+    borderRadius: 5,
+    backgroundColor: '##5c6f7b',
+    textDecoration: 'none',
+    marginRight: 5,
+  },
+  button2: {
+    width: 110,
+    height: 36,
+    borderRadius: 5,
+    backgroundColor: '#4dc2f1',
+    marginLeft: 5,
+  }
+})
 class SingUp extends React.Component {
   constructor() {
     super();
     this.state = {
       open: false,
-      error: ''
+      error: '',
+      password: '',
+      email: ''
     };
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -62,6 +84,7 @@ class SingUp extends React.Component {
     this.setState({ open: false });
   };
   render() {
+    const { classes } = this.props
     return (
       <form className="containerInputs" noValidate autoComplete="off">
         <TextField
@@ -82,16 +105,18 @@ class SingUp extends React.Component {
           type='password'
           onChange={this.handleLogin}
         />
-
+        <div>
+        <Link to='/' ><Button variant="contained" className={classes.button1}>Cancelar</Button></Link>
         <Button
           onClick={this.handleSubmit}
           variant="contained"
           color="primary"
-          className="buttonsStyle"
+          className={classes.button2}
         >
           {" "}
           Ingresar{" "}
         </Button>
+        </div>
         <Dialog
           open={this.state.open && this.state.open}
           onClose={this.handleClose}
@@ -114,6 +139,11 @@ class SingUp extends React.Component {
     );
   }
 }
+
+SingUp.propTypes = {
+  classes: PropTypes.object.isRequired,
+}
+
 const mapStateToProps = state => {
   return {
   };
@@ -124,8 +154,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SingUp);
-
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SingUp));
